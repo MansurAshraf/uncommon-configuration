@@ -1,1 +1,3 @@
-This file was created by IntelliJ IDEA 11.0.2 for binding GitHub repository
+uncommon-configuration provides a simple and type safe facade
+to read configuration data from various configuration sources
+ such as properties files , XML, JSon etc
