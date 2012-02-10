@@ -1,3 +1,1 @@
-uncommon-configuration provides a simple and type safe facade
-to read configuration data from various configuration sources
- such as properties files , XML, JSon etc
+uncommon-configuration provides a simple and type safe facade to read configuration data from various configuration sources such as properties files , XML, JSon etc
