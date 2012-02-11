@@ -17,7 +17,7 @@ public abstract class BaseConverterRegistry {
         loadDefaultConverters();
     }
 
-
+    @SuppressWarnings(value = "unchecked")
     protected <T> Converter<T> getConverter(Class<T> type) {
         final Converter<T> converter = (Converter<T>) converters.get(type);
         if (Preconditions.isNull(converter)) {
