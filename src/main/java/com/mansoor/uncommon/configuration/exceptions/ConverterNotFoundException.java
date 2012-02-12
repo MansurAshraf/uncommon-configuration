@@ -14,22 +14,22 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration.Exceptions;
+package com.mansoor.uncommon.configuration.exceptions;
 
 /**
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
 public class ConverterNotFoundException extends RuntimeException {
-    public ConverterNotFoundException(String s) {
-        super(s);
+    public ConverterNotFoundException(final String msg) {
+        super(msg);
     }
 
-    public ConverterNotFoundException(String s, Throwable throwable) {
-        super(s, throwable);
+    public ConverterNotFoundException(final String msg, final Throwable throwable) {
+        super(msg, throwable);
     }
 
-    public ConverterNotFoundException(Throwable throwable) {
+    public ConverterNotFoundException(final Throwable throwable) {
         super(throwable);
     }
 }

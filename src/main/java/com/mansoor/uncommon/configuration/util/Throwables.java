@@ -16,14 +16,14 @@
 
 package com.mansoor.uncommon.configuration.util;
 
-import com.mansoor.uncommon.configuration.Exceptions.ConverterNotFoundException;
-import com.mansoor.uncommon.configuration.Exceptions.PropertyConversionException;
+import com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 
 /**
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
-public class Throwables {
+public final class Throwables {
     private Throwables() {
     }
 
@@ -31,7 +31,7 @@ public class Throwables {
         throw new ConverterNotFoundException(msg, throwable);
     }
 
-    public static void converterNotFoundException(String s) {
+    public static void converterNotFoundException(final String s) {
         throw new ConverterNotFoundException(s);
     }
 

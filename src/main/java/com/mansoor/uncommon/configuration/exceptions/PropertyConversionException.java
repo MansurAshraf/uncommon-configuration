@@ -14,22 +14,22 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration.Exceptions;
+package com.mansoor.uncommon.configuration.exceptions;
 
 /**
  * @author Muhammad Ashraf
  * @since 2/10/12
  */
 public class PropertyConversionException extends RuntimeException {
-    public PropertyConversionException(String s) {
-        super(s);
+    public PropertyConversionException(final String msg) {
+        super(msg);
     }
 
-    public PropertyConversionException(String s, Throwable throwable) {
-        super(s, throwable);
+    public PropertyConversionException(final String msg, final Throwable throwable) {
+        super(msg, throwable);
     }
 
-    public PropertyConversionException(Throwable throwable) {
+    public PropertyConversionException(final Throwable throwable) {
         super(throwable);
     }
 }

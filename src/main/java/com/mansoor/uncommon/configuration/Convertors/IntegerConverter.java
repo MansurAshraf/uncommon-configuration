@@ -29,7 +29,7 @@ public class IntegerConverter implements Converter<Integer> {
      * @param input value to be converted
      * @return converted value
      */
-    public Integer convert(String input) {
+    public Integer convert(final String input) {
         return (Preconditions.isNotNull(input)) ? new Integer(input) : null;
     }
 }

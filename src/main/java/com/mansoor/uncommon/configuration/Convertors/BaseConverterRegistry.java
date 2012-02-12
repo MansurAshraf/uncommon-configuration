@@ -28,13 +28,13 @@ import java.util.Map;
 public abstract class BaseConverterRegistry {
     protected final Map<Class<?>, Converter<?>> converters;
 
-    public BaseConverterRegistry(Map<Class<?>, Converter<?>> converters) {
+    public BaseConverterRegistry(final Map<Class<?>, Converter<?>> converters) {
         this.converters = converters;
         loadDefaultConverters();
     }
 
     @SuppressWarnings(value = "unchecked")
-    protected <T> Converter<T> getConverter(Class<T> type) {
+    protected <T> Converter<T> getConverter(final Class<T> type) {
         final Converter<T> converter = (Converter<T>) converters.get(type);
         if (Preconditions.isNull(converter)) {
             Throwables.converterNotFoundException("no converter found for " + type);

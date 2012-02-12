@@ -47,12 +47,12 @@ public class PropertyConfiguration implements Configuration {
         properties = loadPropertiesFile();
     }
 
-    public <E> E get(Class<E> type, String key) {
+    public <E> E get(final Class<E> type, final String key) {
         final Converter<E> converter = converterRegistry.getConverter(type);
         return getAndConvert(converter, key);
     }
 
-    private <E> E getAndConvert(Converter<E> converter, String key) {
+    private <E> E getAndConvert(final Converter<E> converter, final String key) {
         try {
             return converter.convert(properties.getProperty(key));
         } catch (Exception e) {

@@ -16,7 +16,7 @@
 
 package com.mansoor.uncommon.configuration;
 
-import com.mansoor.uncommon.configuration.Exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,6 @@ import static junit.framework.Assert.fail;
 public class PropertyConfigurationTest {
 
     private Configuration configuration;
-    private File file;
 
     @Before
     public void setUp() throws Exception {

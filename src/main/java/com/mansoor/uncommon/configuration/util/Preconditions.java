@@ -20,15 +20,15 @@ package com.mansoor.uncommon.configuration.util;
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
-public class Preconditions {
+public final class Preconditions {
     private Preconditions() {
     }
 
-    public static boolean isNull(Object reference) {
+    public static boolean isNull(final Object reference) {
         return reference == null;
     }
 
-    public static boolean isNotNull(Object reference) {
+    public static boolean isNotNull(final Object reference) {
         return !isNull(reference);
     }
 

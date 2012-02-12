@@ -17,8 +17,8 @@
 package com.mansoor.uncommon.configuration.Convertors;
 
 import com.mansoor.uncommon.configuration.Configuration;
-import com.mansoor.uncommon.configuration.Exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.PropertyConfiguration;
+import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,6 +61,7 @@ public class IntegerConverterTest {
     }
 
     @Test
+    @SuppressWarnings(value = "unchecked")
     public void testCustomIntegerConverter() throws Exception {
         final Converter customConverter = mock(Converter.class);
         when(customConverter.convert("1")).thenReturn(2);
