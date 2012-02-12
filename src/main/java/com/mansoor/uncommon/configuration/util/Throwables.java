@@ -17,6 +17,7 @@
 package com.mansoor.uncommon.configuration.util;
 
 import com.mansoor.uncommon.configuration.Exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.Exceptions.PropertyConversionException;
 
 /**
  * @author Muhammad Ashraf
@@ -32,5 +33,9 @@ public class Throwables {
 
     public static void converterNotFoundException(String s) {
         throw new ConverterNotFoundException(s);
+    }
+
+    public static PropertyConversionException propertyConversionException(final String msg, final Throwable throwable) {
+        throw new PropertyConversionException(msg, throwable);
     }
 }

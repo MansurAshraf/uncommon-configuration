@@ -16,9 +16,11 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.util.Preconditions;
+import com.mansoor.uncommon.configuration.util.Throwables;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +45,17 @@ public class PropertyConfiguration implements Configuration {
     }
 
     public <E> E get(Class<E> type, String key) {
-        return converterRegistry.getConverter(type).convert(properties.getProperty(key));
+        final Converter<E> converter = converterRegistry.getConverter(type);
+        return getAndConvert(converter, key);
+    }
+
+    private <E> E getAndConvert(Converter<E> converter, String key) {
+        try {
+            return converter.convert(properties.getProperty(key));
+        } catch (Exception e) {
+            throw Throwables.propertyConversionException("conversion failed", e);
+        }
+
     }
 
     public void load(final File propertyFile) {
