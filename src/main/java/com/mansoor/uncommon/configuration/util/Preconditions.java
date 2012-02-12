@@ -37,4 +37,10 @@ public final class Preconditions {
             throw new IllegalArgumentException(msg);
         }
     }
+
+    public static void checkBlank(final String ref, final String msg) {
+        if (ref == null || ref.equals("") || ref.equals(" ")) {
+            throw new IllegalArgumentException(msg);
+        }
+    }
 }
