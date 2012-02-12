@@ -34,14 +34,17 @@ import java.util.Properties;
  */
 public class PropertyConfiguration implements Configuration {
     private final ConverterRegistry converterRegistry;
-    private final Properties properties = new Properties();
+    private final Properties properties;
 
     public PropertyConfiguration() {
         this.converterRegistry = new DefaultConverterRegistry();
+        properties = loadPropertiesFile();
     }
 
     public PropertyConfiguration(final ConverterRegistry converterRegistry) {
+        Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
         this.converterRegistry = converterRegistry;
+        properties = loadPropertiesFile();
     }
 
     public <E> E get(Class<E> type, String key) {
@@ -75,5 +78,9 @@ public class PropertyConfiguration implements Configuration {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    Properties loadPropertiesFile() {
+        return new Properties();
     }
 }

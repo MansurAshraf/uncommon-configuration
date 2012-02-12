@@ -14,24 +14,23 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration;
+package com.mansoor.uncommon.configuration.Convertors;
 
-import com.mansoor.uncommon.configuration.Exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.Configuration;
+import com.mansoor.uncommon.configuration.Exceptions.PropertyConversionException;
+import com.mansoor.uncommon.configuration.PropertyConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 /**
- * @author mansoor
- * @since 2/9/12
+ * @author Muhammad Ashraf
+ * @since 2/11/12
  */
-public class PropertyConfigurationTest {
+public class IntegerConverterTest {
 
     private Configuration configuration;
-    private File file;
 
     @Before
     public void setUp() throws Exception {
@@ -39,20 +38,18 @@ public class PropertyConfigurationTest {
         configuration.load(this.getClass().getResourceAsStream("/testProp.properties"));
     }
 
-    @org.junit.Test(expected = ConverterNotFoundException.class)
-    public void testConverterNotFoundException() throws Exception {
-        configuration.get(String.class, "name");
+    @Test
+    public void testGetInteger() throws Exception {
+        final Integer one = configuration.get(Integer.class, "one");
+        assertNotNull("Null value returned!", one);
+        final Integer expected = 1;
+        assertEquals("Incorrect value returned", expected, one);
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullConversionStrategy() throws Exception {
-        configuration = new PropertyConfiguration(null);
-        fail("Expected Illegal Argument Exception");
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testLoadFile() throws Exception {
-        configuration.load(new File(""));
+    @org.junit.Test(expected = PropertyConversionException.class)
+    public void testIntegerConversionException() throws Exception {
+        configuration.get(Integer.class, "integerException");
+        fail("expected conversion exception");
     }
 }
