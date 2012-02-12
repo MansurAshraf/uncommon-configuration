@@ -17,12 +17,12 @@
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.Exceptions.PropertyConversionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.*;
 
 /**
  * @author mansoor
@@ -49,6 +49,12 @@ public class PropertyConfigurationTest {
         assertNotNull("Null value returned!", one);
         final Integer expected = 1;
         assertEquals("Incorrect value returned", expected, one);
+    }
+
+    @org.junit.Test(expected = PropertyConversionException.class)
+    public void testConversionException() throws Exception {
+        final Integer actual = configuration.get(Integer.class, "integerException");
+        fail("expected conversion exception");
     }
 
     @After
