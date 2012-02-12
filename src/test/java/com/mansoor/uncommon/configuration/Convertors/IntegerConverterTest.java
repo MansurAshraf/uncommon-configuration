@@ -35,13 +35,12 @@ import static org.mockito.Mockito.*;
 public class IntegerConverterTest {
 
     private Configuration configuration;
-    private InputStream inputStream;
 
     @Before
     public void setUp() throws Exception {
 
         configuration = new PropertyConfiguration();
-        inputStream = this.getClass().getResourceAsStream("/testProp.properties");
+        final InputStream inputStream = this.getClass().getResourceAsStream("/testProp.properties");
         configuration.load(inputStream);
     }
 

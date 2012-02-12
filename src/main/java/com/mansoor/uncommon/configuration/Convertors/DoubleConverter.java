@@ -16,23 +16,20 @@
 
 package com.mansoor.uncommon.configuration.Convertors;
 
-import java.util.HashMap;
+import com.mansoor.uncommon.configuration.util.Preconditions;
 
 /**
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 2/11/12
  */
-public class DefaultConverterRegistry extends BaseConverterRegistry implements ConverterRegistry {
-    public DefaultConverterRegistry() {
-        super(new HashMap<Class<?>, Converter<?>>());
-    }
-
-
-    public <A> void addConverter(final Class<A> type, final Converter<A> converter) {
-        converters.put(type, converter);
-    }
-
-    public void clear() {
-        converters.clear();
+public class DoubleConverter implements Converter<Double> {
+    /**
+     * Converts a value to type T
+     *
+     * @param input value to be converted
+     * @return converted value
+     */
+    public Double convert(final String input) {
+        return Preconditions.isNotNull(input) ? Double.valueOf(input) : null;
     }
 }

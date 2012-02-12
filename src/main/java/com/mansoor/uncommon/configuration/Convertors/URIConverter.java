@@ -19,31 +19,29 @@ package com.mansoor.uncommon.configuration.Convertors;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import com.mansoor.uncommon.configuration.util.Throwables;
 
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 2/11/12
  */
-abstract class BaseConverterRegistry implements ConverterRegistry {
-    protected final Map<Class<?>, Converter<?>> converters;
-
-    public BaseConverterRegistry(final Map<Class<?>, Converter<?>> converters) {
-        this.converters = converters;
-        loadDefaultConverters();
-    }
-
-    @SuppressWarnings(value = "unchecked")
-    public <T> Converter<T> getConverter(final Class<T> type) {
-        final Converter<T> converter = (Converter<T>) converters.get(type);
-        if (Preconditions.isNull(converter)) {
-            Throwables.converterNotFoundException("no converter found for " + type);
+public class URIConverter implements Converter<URI> {
+    /**
+     * Converts a value to type T
+     *
+     * @param input value to be converted
+     * @return converted value
+     */
+    public URI convert(final String input) {
+        URI result = null;
+        if (Preconditions.isNotNull(input)) {
+            try {
+                result = new URI(input);
+            } catch (URISyntaxException e) {
+                Throwables.propertyConversionException("conversion failed! ", e);
+            }
         }
-        return converter;
+        return result;
     }
-
-    protected void loadDefaultConverters() {
-        converters.put(Integer.class, new IntegerConverter());
-    }
-
 }
