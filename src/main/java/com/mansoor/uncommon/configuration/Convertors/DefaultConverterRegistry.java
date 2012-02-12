@@ -28,11 +28,11 @@ public class DefaultConverterRegistry extends BaseConverterRegistry implements C
     }
 
 
-    public <A> void addConverter(Class<A> type, Converter<A> converter) {
+    public <A> void addConverter(final Class<A> type, final Converter<A> converter) {
         converters.put(type, converter);
     }
 
-    public <A> Converter<A> getConverter(Class<A> type) {
+    public <A> Converter<A> getConverter(final Class<A> type) {
         return super.getConverter(type);
     }
 

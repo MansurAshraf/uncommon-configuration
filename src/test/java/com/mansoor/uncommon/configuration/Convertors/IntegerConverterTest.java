@@ -22,7 +22,11 @@ import com.mansoor.uncommon.configuration.PropertyConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.InputStream;
+
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Muhammad Ashraf
@@ -31,11 +35,14 @@ import static junit.framework.Assert.*;
 public class IntegerConverterTest {
 
     private Configuration configuration;
+    private InputStream inputStream;
 
     @Before
     public void setUp() throws Exception {
+
         configuration = new PropertyConfiguration();
-        configuration.load(this.getClass().getResourceAsStream("/testProp.properties"));
+        inputStream = this.getClass().getResourceAsStream("/testProp.properties");
+        configuration.load(inputStream);
     }
 
     @Test
@@ -51,5 +58,22 @@ public class IntegerConverterTest {
     public void testIntegerConversionException() throws Exception {
         configuration.get(Integer.class, "integerException");
         fail("expected conversion exception");
+    }
+
+    @Test
+    public void testCustomIntegerConverter() throws Exception {
+        final Converter customConverter = mock(Converter.class);
+        when(customConverter.convert("1")).thenReturn(2);
+        final ConverterRegistry registry = new DefaultConverterRegistry();
+        registry.addConverter(Integer.class, customConverter);
+
+        final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(registry);
+        propertyConfiguration.load(new File(this.getClass().getResource("/testProp.properties").toURI()));
+
+        final Integer one = propertyConfiguration.get(Integer.class, "one");
+        assertNotNull("Null value returned!", one);
+        final Integer expected = 2;
+        assertEquals("Incorrect value returned", expected, one);
+        verify(customConverter, times(1)).convert("1");
     }
 }
