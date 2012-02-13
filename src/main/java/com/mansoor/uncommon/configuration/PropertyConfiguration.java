@@ -83,4 +83,8 @@ public class PropertyConfiguration implements Configuration {
     Properties loadPropertiesFile() {
         return new Properties();
     }
+
+    public ConverterRegistry getConverterRegistry() {
+        return converterRegistry;
+    }
 }
