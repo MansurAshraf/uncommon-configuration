@@ -31,8 +31,8 @@ public final class Throwables {
         throw new ConverterNotFoundException(msg, throwable);
     }
 
-    public static void converterNotFoundException(final String s) {
-        throw new ConverterNotFoundException(s);
+    public static void converterNotFoundException(final String msg) {
+        throw new ConverterNotFoundException(msg);
     }
 
     public static void propertyConversionException(final String msg, final Throwable throwable) {
