@@ -19,6 +19,9 @@ package com.mansoor.uncommon.configuration.Convertors;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import com.mansoor.uncommon.configuration.util.Throwables;
 
+import java.io.File;
+import java.net.URI;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -44,6 +47,14 @@ abstract class BaseConverterRegistry implements ConverterRegistry {
 
     protected void loadDefaultConverters() {
         converters.put(Integer.class, new IntegerConverter());
+        converters.put(Date.class, new DateConverter());
+        converters.put(Byte.class, new ByteConverter());
+        converters.put(Double.class, new DoubleConverter());
+        converters.put(File.class, new FileConverter());
+        converters.put(Float.class, new FloatConverter());
+        converters.put(Long.class, new LongConverter());
+        converters.put(String.class, new StringConverter());
+        converters.put(URI.class, new URIConverter());
     }
 
 }
