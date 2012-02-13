@@ -14,26 +14,20 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration;
-
-import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
+package com.mansoor.uncommon.configuration.functional.functions;
 
 /**
- * @author mansoor
- * @since 2/9/12
+ * @author Muhammad Ashraf
+ * @since 2/7/12
  */
-public interface Configuration {
-    <E> E get(Class<E> type, String key);
+public interface BinaryFunction<A, B> {
 
-    <E> List<E> getList(Class<E> type, String key);
-
-    void load(File file);
-
-    void load(InputStream inputStream);
-
-    ConverterRegistry getConverterRegistry();
+    /**
+     * Lamda of kind (A,B) -> B
+     *
+     * @param seed  seed value
+     * @param input input
+     * @return result of Binary operation
+     */
+    B apply(final B seed, final A input);
 }

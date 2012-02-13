@@ -14,26 +14,18 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration;
-
-import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
+package com.mansoor.uncommon.configuration.functional.functions;
 
 /**
- * @author mansoor
- * @since 2/9/12
+ * @author Muhammad Ashraf
+ * @since 2/7/12
  */
-public interface Configuration {
-    <E> E get(Class<E> type, String key);
-
-    <E> List<E> getList(Class<E> type, String key);
-
-    void load(File file);
-
-    void load(InputStream inputStream);
-
-    ConverterRegistry getConverterRegistry();
+public interface Predicate<T> {
+    /**
+     * lamda of kind A -> boolean
+     *
+     * @param t type of input
+     * @return true if T satisfies the predicate, false otherwise
+     */
+    boolean apply(T t);
 }

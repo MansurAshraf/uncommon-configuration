@@ -14,26 +14,34 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration;
-
-import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
+package com.mansoor.uncommon.configuration.functional;
 
 /**
  * @author mansoor
- * @since 2/9/12
+ * @since 2/7/12
  */
-public interface Configuration {
-    <E> E get(Class<E> type, String key);
+public class Pair<L, R> {
+    private L left;
+    private R right;
 
-    <E> List<E> getList(Class<E> type, String key);
+    public Pair(L left, R right) {
+        this.left = left;
+        this.right = right;
+    }
 
-    void load(File file);
+    public L getLeft() {
+        return left;
+    }
 
-    void load(InputStream inputStream);
+    public R getRight() {
+        return right;
+    }
 
-    ConverterRegistry getConverterRegistry();
+    public void setLeft(L left) {
+        this.left = left;
+    }
+
+    public void setRight(R right) {
+        this.right = right;
+    }
 }

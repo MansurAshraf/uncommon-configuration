@@ -14,26 +14,19 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration;
-
-import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
+package com.mansoor.uncommon.configuration.functional.functions;
 
 /**
- * @author mansoor
- * @since 2/9/12
+ * @author Muhammad Ashraf
+ * @since 2/7/12
  */
-public interface Configuration {
-    <E> E get(Class<E> type, String key);
+public interface UnaryFunction<A, B> {
 
-    <E> List<E> getList(Class<E> type, String key);
-
-    void load(File file);
-
-    void load(InputStream inputStream);
-
-    ConverterRegistry getConverterRegistry();
+    /**
+     * Lambda of kind A -> B
+     *
+     * @param input input
+     * @return result of lambda operation
+     */
+    B apply(final A input);
 }
