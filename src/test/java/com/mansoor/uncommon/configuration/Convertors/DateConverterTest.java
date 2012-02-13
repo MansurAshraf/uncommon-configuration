@@ -46,7 +46,6 @@ public class DateConverterTest {
 
         final Date dateOne = configuration.get(Date.class, "dateOne");
         Assert.assertEquals("incorrect date", result, dateOne);
-
     }
 
     @Test
