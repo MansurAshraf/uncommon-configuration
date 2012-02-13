@@ -16,6 +16,8 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
+
 import java.io.File;
 import java.io.InputStream;
 
@@ -29,4 +31,6 @@ public interface Configuration {
     void load(File file);
 
     void load(InputStream inputStream);
+
+    ConverterRegistry getConverterRegistry();
 }
