@@ -29,7 +29,7 @@ import java.util.Date;
  * @since 2/12/12
  */
 public class DateConverter implements Converter<Date> {
-    private final String default_format = "MM/dd/YYYY";
+    private final String default_format = "MM/dd/yyyy";
     private DateFormat df;
 
     public DateConverter() {

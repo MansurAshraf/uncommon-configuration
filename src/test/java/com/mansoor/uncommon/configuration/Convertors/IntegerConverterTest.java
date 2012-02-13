@@ -18,12 +18,12 @@ package com.mansoor.uncommon.configuration.Convertors;
 
 import com.mansoor.uncommon.configuration.Configuration;
 import com.mansoor.uncommon.configuration.PropertyConfiguration;
+import com.mansoor.uncommon.configuration.TestUtil;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.InputStream;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
@@ -39,9 +39,7 @@ public class IntegerConverterTest {
     @Before
     public void setUp() throws Exception {
 
-        configuration = new PropertyConfiguration();
-        final InputStream inputStream = this.getClass().getResourceAsStream("/testProp.properties");
-        configuration.load(inputStream);
+        configuration = TestUtil.getPropertyConfiguration("/testProp.properties");
     }
 
     @Test

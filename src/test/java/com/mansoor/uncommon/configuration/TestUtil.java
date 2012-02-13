@@ -14,22 +14,20 @@
  *    limitations under the License.
  */
 
-package com.mansoor.uncommon.configuration.Convertors;
-
-import com.mansoor.uncommon.configuration.util.Preconditions;
+package com.mansoor.uncommon.configuration;
 
 /**
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 2/12/12
  */
-public class ByteConverter implements Converter<Byte> {
-    /**
-     * Converts a value to type T
-     *
-     * @param input value to be converted
-     * @return converted value
-     */
-    public Byte convert(final String input) {
-        return Preconditions.isNotNull(input) ? new Byte(input) : null;
+public final class TestUtil {
+
+    private TestUtil() {
+    }
+
+    public static Configuration getPropertyConfiguration(final String location) {
+        final PropertyConfiguration configuration = new PropertyConfiguration();
+        configuration.load(TestUtil.class.getResourceAsStream(location));
+        return configuration;
     }
 }

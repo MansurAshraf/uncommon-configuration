@@ -48,7 +48,6 @@ abstract class BaseConverterRegistry implements ConverterRegistry {
     protected void loadDefaultConverters() {
         converters.put(Integer.class, new IntegerConverter());
         converters.put(Date.class, new DateConverter());
-        converters.put(Byte.class, new ByteConverter());
         converters.put(Double.class, new DoubleConverter());
         converters.put(File.class, new FileConverter());
         converters.put(Float.class, new FloatConverter());
