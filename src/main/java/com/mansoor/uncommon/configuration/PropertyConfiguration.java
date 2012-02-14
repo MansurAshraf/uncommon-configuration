@@ -21,6 +21,7 @@ import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
+import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -38,7 +40,7 @@ import java.util.Properties;
 public class PropertyConfiguration implements Configuration {
     private final ConverterRegistry converterRegistry;
     private final Properties properties;
-    private String deliminator = ",";
+    private char deliminator = ',';
 
     public PropertyConfiguration() {
         this.converterRegistry = new DefaultConverterRegistry();
@@ -60,20 +62,37 @@ public class PropertyConfiguration implements Configuration {
         final String property = properties.getProperty(key);
         List<E> result = null;
         if (Preconditions.isNotNull(property)) {
-            result = new FunctionalCollection<String>(property.split(deliminator)).map(new PropertyTransformer<E>(type)).asList();
+            result = new FunctionalCollection<String>(property.split(new String(new char[]{deliminator}))).map(new PropertyTransformer<E>(type)).asList();
         }
 
         return result;
     }
 
-    private <E> E getAndConvert(final Converter<E> converter, final String key) {
-        try {
-            return converter.convert(properties.getProperty(key));
-        } catch (Exception e) {
-            throw new PropertyConversionException("conversion failed", e);
-        }
-
+    public <E> void set(final Class<E> type, final String key, final E input) {
+        final Converter<E> converter = converterRegistry.getConverter(type);
+        properties.setProperty(key, converter.toString(input));
     }
+
+    public <E> void setList(final Class<E> type, final String key, final List<E> input) {
+        if (Preconditions.isNotEmpty(input)) {
+            final Converter<E> converter = converterRegistry.getConverter(type);
+            final StringBuffer stringBuffer = new FunctionalCollection<E>(input).foldLeft(new StringBuffer(), new BinaryFunction<E, StringBuffer>() {
+                public StringBuffer apply(final StringBuffer seed, final E input) {
+                    seed.append(converter.toString(input)).append(deliminator);
+                    return seed;
+                }
+            });
+            final String value = stringBuffer.substring(stringBuffer.length() - 1);
+            properties.setProperty(key, value);
+        }
+    }
+
+    public <E> void setList(final Class<E> type, final String key, final E... input) {
+        if (Preconditions.isNotNull(input)) {
+            setList(type, key, Arrays.asList(input));
+        }
+    }
+
 
     public void load(final File propertyFile) {
         try {
@@ -94,15 +113,25 @@ public class PropertyConfiguration implements Configuration {
         }
     }
 
-    Properties loadPropertiesFile() {
-        return new Properties();
-    }
 
     public ConverterRegistry getConverterRegistry() {
         return converterRegistry;
     }
 
-    public void setDeliminator(final String deliminator) {
+    private <E> E getAndConvert(final Converter<E> converter, final String key) {
+        try {
+            return converter.convert(properties.getProperty(key));
+        } catch (Exception e) {
+            throw new PropertyConversionException("conversion failed", e);
+        }
+
+    }
+
+    Properties loadPropertiesFile() {
+        return new Properties();
+    }
+
+    public void setDeliminator(final char deliminator) {
         this.deliminator = deliminator;
     }
 

@@ -34,4 +34,14 @@ public class FileConverter implements Converter<File> {
     public File convert(final String input) {
         return Preconditions.isNotNull(input) ? new File(input) : null;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final File input) {
+        return Preconditions.isNotNull(input) ? input.getAbsolutePath() : null;
+    }
 }

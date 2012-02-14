@@ -50,6 +50,16 @@ public class DateConverter implements Converter<Date> {
         return Preconditions.isNotNull(input) ? parseDate(input) : null;
     }
 
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final Date input) {
+        return Preconditions.isNotNull(input) ? df.format(input) : null;
+    }
+
     private Date parseDate(final String input) {
         try {
             return df.parse(input);

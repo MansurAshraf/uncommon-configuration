@@ -32,4 +32,14 @@ public class DoubleConverter implements Converter<Double> {
     public Double convert(final String input) {
         return Preconditions.isNotNull(input) ? Double.valueOf(input) : null;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final Double input) {
+        return Preconditions.isNotNull(input) ? String.valueOf(input) : null;
+    }
 }

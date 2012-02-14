@@ -49,4 +49,8 @@ public final class Preconditions {
     public static boolean isEmpty(final Collection ref) {
         return ref == null || ref.isEmpty();
     }
+
+    public static boolean isNotEmpty(final Collection ref) {
+        return !isEmpty(ref);
+    }
 }

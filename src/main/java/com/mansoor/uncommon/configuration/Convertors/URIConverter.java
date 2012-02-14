@@ -44,4 +44,14 @@ public class URIConverter implements Converter<URI> {
         }
         return result;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final URI input) {
+        return Preconditions.isNotNull(input) ? input.toString() : null;
+    }
 }

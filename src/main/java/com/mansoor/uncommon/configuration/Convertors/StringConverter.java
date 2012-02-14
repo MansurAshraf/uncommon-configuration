@@ -30,4 +30,14 @@ public class StringConverter implements Converter<String> {
     public String convert(final String input) {
         return input;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final String input) {
+        return input;
+    }
 }

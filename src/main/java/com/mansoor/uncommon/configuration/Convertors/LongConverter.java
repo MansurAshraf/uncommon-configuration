@@ -32,4 +32,14 @@ public class LongConverter implements Converter<Long> {
     public Long convert(final String input) {
         return Preconditions.isNotNull(input) ? Long.valueOf(input) : null;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final Long input) {
+        return Preconditions.isNotNull(input) ? String.valueOf(input) : null;
+    }
 }

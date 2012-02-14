@@ -29,4 +29,12 @@ public interface Converter<T> {
      * @return converted value
      */
     T convert(String input);
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    String toString(T input);
 }

@@ -32,4 +32,14 @@ public class FloatConverter implements Converter<Float> {
     public Float convert(final String input) {
         return Preconditions.isNotNull(input) ? Float.valueOf(input) : null;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final Float input) {
+        return Preconditions.isNotNull(input) ? String.valueOf(input) : null;
+    }
 }

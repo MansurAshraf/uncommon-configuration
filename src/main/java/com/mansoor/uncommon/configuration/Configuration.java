@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * @author mansoor
+ * @author Muhammad Ashraf
  * @since 2/9/12
  */
 public interface Configuration {
@@ -31,9 +31,16 @@ public interface Configuration {
 
     <E> List<E> getList(Class<E> type, String key);
 
+    <E> void set(Class<E> type, String key, E input);
+
+    <E> void setList(Class<E> type, String key, List<E> input);
+
+    <E> void setList(final Class<E> type, final String key, final E... input);
+
     void load(File file);
 
     void load(InputStream inputStream);
+
 
     ConverterRegistry getConverterRegistry();
 }

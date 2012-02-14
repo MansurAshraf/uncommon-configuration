@@ -32,4 +32,14 @@ public class IntegerConverter implements Converter<Integer> {
     public Integer convert(final String input) {
         return (Preconditions.isNotNull(input)) ? new Integer(input) : null;
     }
+
+    /**
+     * Converts type T to String
+     *
+     * @param input input to be converted
+     * @return String
+     */
+    public String toString(final Integer input) {
+        return Preconditions.isNotNull(input) ? String.valueOf(input) : null;
+    }
 }

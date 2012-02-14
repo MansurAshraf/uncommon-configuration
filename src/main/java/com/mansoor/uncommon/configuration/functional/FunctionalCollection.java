@@ -185,6 +185,16 @@ public class FunctionalCollection<T> implements Collection<T> {
         }
     }
 
+    public String toString(final char separator) {
+        final StringBuilder stringBuilder = foldLeft(new StringBuilder(), new BinaryFunction<T, StringBuilder>() {
+            public StringBuilder apply(final StringBuilder seed, final T input) {
+                seed.append(input).append(separator);
+                return seed;
+            }
+        });
+        return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
+    }
+
     public String toString() {
         return foldLeft(new StringBuilder(), new BinaryFunction<T, StringBuilder>() {
             public StringBuilder apply(final StringBuilder seed, final T input) {
