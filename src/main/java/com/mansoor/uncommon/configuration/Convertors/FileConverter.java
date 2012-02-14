@@ -42,6 +42,6 @@ public class FileConverter implements Converter<File> {
      * @return String
      */
     public String toString(final File input) {
-        return Preconditions.isNotNull(input) ? input.getAbsolutePath() : null;
+        return Preconditions.isNotNull(input) ? input.getPath() : null;
     }
 }

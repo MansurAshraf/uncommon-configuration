@@ -21,7 +21,6 @@ import com.mansoor.uncommon.configuration.PropertyConfiguration;
 import com.mansoor.uncommon.configuration.TestUtil;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.util.Preconditions;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +28,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Muhammad Ashraf
@@ -48,7 +49,7 @@ public class DateConverterTest {
         final Date result = dateFormat.parse("02/23/2012");
 
         final Date dateOne = configuration.get(Date.class, "dateOne");
-        Assert.assertEquals("incorrect date", result, dateOne);
+        assertEquals("incorrect date", result, dateOne);
     }
 
     @Test
@@ -58,7 +59,7 @@ public class DateConverterTest {
         final Date result = dateFormat.parse("02-12-2012");
 
         final Date dateOne = configuration.get(Date.class, "dateTwo");
-        Assert.assertEquals("incorrect date", result, dateOne);
+        assertEquals("incorrect date", result, dateOne);
 
     }
 
@@ -70,8 +71,8 @@ public class DateConverterTest {
     @Test
     public void testGetDateList() throws Exception {
         final List<Date> result = configuration.getList(Date.class, "dateList");
-        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
-        Assert.assertTrue("incorrect size", result.size() == 4);
+        assertFalse("result is empty", Preconditions.isEmpty(result));
+        assertTrue("incorrect size", result.size() == 4);
 
     }
 
@@ -79,8 +80,8 @@ public class DateConverterTest {
     public void testGetDateListWithCustomSeparator() throws Exception {
         ((PropertyConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList2");
-        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
-        Assert.assertTrue("incorrect size", result.size() == 4);
+        assertFalse("result is empty", Preconditions.isEmpty(result));
+        assertTrue("incorrect size", result.size() == 4);
     }
 
     @Test
@@ -88,7 +89,17 @@ public class DateConverterTest {
         configuration.getConverterRegistry().addConverter(Date.class, new DateConverter("MM-dd-yyyy"));
         ((PropertyConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList3");
-        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
-        Assert.assertTrue("incorrect size", result.size() == 4);
+        assertFalse("result is empty", Preconditions.isEmpty(result));
+        assertTrue("incorrect size", result.size() == 4);
+    }
+
+    @Test
+    public void testSetDate() throws Exception {
+        final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        final Date expectedDate = dateFormat.parse("02/23/2012");
+        configuration.set(Date.class, "date4", expectedDate);
+        final Date actualDate = configuration.get(Date.class, "date4");
+        assertEquals("dates did not match", actualDate, expectedDate);
+
     }
 }

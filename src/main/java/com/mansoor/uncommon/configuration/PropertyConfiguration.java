@@ -82,7 +82,7 @@ public class PropertyConfiguration implements Configuration {
                     return seed;
                 }
             });
-            final String value = stringBuffer.substring(stringBuffer.length() - 1);
+            final String value = stringBuffer.substring(0, stringBuffer.lastIndexOf(String.valueOf(deliminator)));
             properties.setProperty(key, value);
         }
     }
