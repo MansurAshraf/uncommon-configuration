@@ -77,7 +77,7 @@ public class DateConverterTest {
 
     @Test
     public void testGetDateListWithCustomSeparator() throws Exception {
-        ((PropertyConfiguration) configuration).setDeliminator(" ");
+        ((PropertyConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList2");
         Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
         Assert.assertTrue("incorrect size", result.size() == 4);
@@ -86,7 +86,7 @@ public class DateConverterTest {
     @Test
     public void testGetDateListWithCustomSeparatorAndCustomFormat() throws Exception {
         configuration.getConverterRegistry().addConverter(Date.class, new DateConverter("MM-dd-yyyy"));
-        ((PropertyConfiguration) configuration).setDeliminator(" ");
+        ((PropertyConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList3");
         Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
         Assert.assertTrue("incorrect size", result.size() == 4);
