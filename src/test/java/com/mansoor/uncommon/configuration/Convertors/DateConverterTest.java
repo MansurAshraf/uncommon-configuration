@@ -17,8 +17,10 @@
 package com.mansoor.uncommon.configuration.Convertors;
 
 import com.mansoor.uncommon.configuration.Configuration;
+import com.mansoor.uncommon.configuration.PropertyConfiguration;
 import com.mansoor.uncommon.configuration.TestUtil;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
+import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Muhammad Ashraf
@@ -62,5 +65,30 @@ public class DateConverterTest {
     @org.junit.Test(expected = PropertyConversionException.class)
     public void testInvalidData() throws Exception {
         configuration.get(Date.class, "invalidDate");
+    }
+
+    @Test
+    public void testGetDateList() throws Exception {
+        final List<Date> result = configuration.getList(Date.class, "dateList");
+        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
+        Assert.assertTrue("incorrect size", result.size() == 4);
+
+    }
+
+    @Test
+    public void testGetDateListWithCustomSeparator() throws Exception {
+        ((PropertyConfiguration) configuration).setDeliminator(" ");
+        final List<Date> result = configuration.getList(Date.class, "dateList2");
+        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
+        Assert.assertTrue("incorrect size", result.size() == 4);
+    }
+
+    @Test
+    public void testGetDateListWithCustomSeparatorAndCustomFormat() throws Exception {
+        configuration.getConverterRegistry().addConverter(Date.class, new DateConverter("MM-dd-yyyy"));
+        ((PropertyConfiguration) configuration).setDeliminator(" ");
+        final List<Date> result = configuration.getList(Date.class, "dateList3");
+        Assert.assertFalse("result is empty", Preconditions.isEmpty(result));
+        Assert.assertTrue("incorrect size", result.size() == 4);
     }
 }

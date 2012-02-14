@@ -16,6 +16,8 @@
 
 package com.mansoor.uncommon.configuration.util;
 
+import java.util.Collection;
+
 /**
  * @author Muhammad Ashraf
  * @since 2/9/12
@@ -42,5 +44,9 @@ public final class Preconditions {
         if (ref == null || ref.equals("") || ref.equals(" ")) {
             throw new IllegalArgumentException(msg);
         }
+    }
+
+    public static boolean isEmpty(final Collection ref) {
+        return ref == null || ref.isEmpty();
     }
 }

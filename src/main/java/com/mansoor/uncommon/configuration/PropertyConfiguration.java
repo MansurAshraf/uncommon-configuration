@@ -114,7 +114,8 @@ public class PropertyConfiguration implements Configuration {
         }
 
         public E apply(final String input) {
-            return get(type, input);
+            final Converter<E> converter = converterRegistry.getConverter(type);
+            return converter.convert(input);
         }
     }
 }
