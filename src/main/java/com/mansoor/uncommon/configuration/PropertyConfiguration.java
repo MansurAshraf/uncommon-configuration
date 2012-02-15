@@ -180,14 +180,18 @@ public class PropertyConfiguration implements Configuration {
     }
 
     /**
-     * @return
+     * Returns the underlying Properties instance
+     *
+     * @return Properties
      */
     public Properties toProperties() {
         return properties;
     }
 
     /**
-     * @return
+     * Returns the underlying Converter Registry
+     *
+     * @return ConverterRegistry
      */
     public ConverterRegistry getConverterRegistry() {
         return converterRegistry;
@@ -206,6 +210,11 @@ public class PropertyConfiguration implements Configuration {
         return new Properties();
     }
 
+    /**
+     * Sets the deliminator character that will be used to split the values
+     *
+     * @param deliminator deliminator
+     */
     public void setDeliminator(final char deliminator) {
         this.deliminator = deliminator;
     }
