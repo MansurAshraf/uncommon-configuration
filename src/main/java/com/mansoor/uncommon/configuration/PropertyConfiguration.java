@@ -34,7 +34,10 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * @author mansoor
+ * This Class is a type safe wrapper over {@link Properties} class and provides convenient methods to easily
+ * manipulate Properties file
+ *
+ * @author Muhammad Ashraf
  * @since 2/9/12
  */
 public class PropertyConfiguration implements Configuration {
@@ -42,22 +45,51 @@ public class PropertyConfiguration implements Configuration {
     private final Properties properties;
     private char deliminator = ',';
 
+    /**
+     * Returns an instance of {@code PropertyConfiguration} that is configured to used
+     * {@link DefaultConverterRegistry}
+     */
     public PropertyConfiguration() {
         this.converterRegistry = new DefaultConverterRegistry();
         properties = loadPropertiesFile();
     }
 
+    /**
+     * Returns an instance of {@code PropertyConfiguration} configured with given Converter Registry
+     *
+     * @param converterRegistry registry that will be used by this PropertyConfiguration
+     */
     public PropertyConfiguration(final ConverterRegistry converterRegistry) {
         Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
         this.converterRegistry = converterRegistry;
         properties = loadPropertiesFile();
     }
 
+    /**
+     * Returns the value associated with the given key.
+     *
+     * @param type Type that the value will be converted too
+     * @param key  key that will be used to retrieve the value
+     * @param <E>  Type parameter
+     * @return value of type E
+     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
+     *          if no converter is configured for the given type
+     */
     public <E> E get(final Class<E> type, final String key) {
         final Converter<E> converter = converterRegistry.getConverter(type);
         return getAndConvert(converter, key);
     }
 
+    /**
+     * Retrieves the value associated with the given key and break it into list by using a predefined delimiter.
+     *
+     * @param type Type that the value will be converted to
+     * @param key  key the value is associated with
+     * @param <E>  Type parameter
+     * @return List of type E
+     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
+     *          if no converter is configured for the given type
+     */
     public <E> List<E> getList(final Class<E> type, final String key) {
         final String property = properties.getProperty(key);
         List<E> result = null;
@@ -68,14 +100,32 @@ public class PropertyConfiguration implements Configuration {
         return result;
     }
 
-    public <E> void set(final Class<E> type, final String key, final E input) {
-        final Converter<E> converter = converterRegistry.getConverter(type);
-        properties.setProperty(key, converter.toString(input));
+    /**
+     * Sets the key and value
+     *
+     * @param key   key
+     * @param input value
+     * @param <E>   type of value
+     */
+    @SuppressWarnings(value = "unchecked")
+    public <E> void set(final String key, final E input) {
+        if (Preconditions.isNotNull(input)) {
+            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
+            properties.setProperty(key, converter.toString(input));
+        }
     }
 
-    public <E> void setList(final Class<E> type, final String key, final List<E> input) {
+    /**
+     * Creates a String representation of the given list and associate it with the given key
+     *
+     * @param key   key
+     * @param input list of value
+     * @param <E>   Type of list
+     */
+    @SuppressWarnings(value = "unchecked")
+    public <E> void setList(final String key, final List<E> input) {
         if (Preconditions.isNotEmpty(input)) {
-            final Converter<E> converter = converterRegistry.getConverter(type);
+            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.get(0).getClass());
             final StringBuffer stringBuffer = new FunctionalCollection<E>(input).foldLeft(new StringBuffer(), new BinaryFunction<E, StringBuffer>() {
                 public StringBuffer apply(final StringBuffer seed, final E input) {
                     seed.append(converter.toString(input)).append(deliminator);
@@ -87,13 +137,24 @@ public class PropertyConfiguration implements Configuration {
         }
     }
 
-    public <E> void setList(final Class<E> type, final String key, final E... input) {
+    /**
+     * Creates a String representation of the given list and associate it with the given key
+     *
+     * @param key   key
+     * @param input list of value
+     * @param <E>   Type of list
+     */
+    public <E> void setList(final String key, final E... input) {
         if (Preconditions.isNotNull(input)) {
-            setList(type, key, Arrays.asList(input));
+            setList(key, Arrays.asList(input));
         }
     }
 
-
+    /**
+     * Loads the given property file
+     *
+     * @param propertyFile property file
+     */
     public void load(final File propertyFile) {
         try {
             Preconditions.checkNull(propertyFile, "File is null");
@@ -104,6 +165,11 @@ public class PropertyConfiguration implements Configuration {
         }
     }
 
+    /**
+     * Loads the property file associated with the given input stream
+     *
+     * @param inputStream input stream
+     */
     public void load(final InputStream inputStream) {
         try {
             Preconditions.checkNull(inputStream, "InputStream is null");
@@ -113,7 +179,16 @@ public class PropertyConfiguration implements Configuration {
         }
     }
 
+    /**
+     * @return
+     */
+    public Properties toProperties() {
+        return properties;
+    }
 
+    /**
+     * @return
+     */
     public ConverterRegistry getConverterRegistry() {
         return converterRegistry;
     }

@@ -46,7 +46,7 @@ public class URIConverterTest {
     @Test
     public void testSetUri() throws Exception {
         final URI expected = URI.create("www.yahoo.com");
-        configuration.set(URI.class, "uri2", expected);
+        configuration.set("uri2", expected);
         final URI result = configuration.get(URI.class, "uri2");
         Assert.assertEquals("results did not match", expected, result);
 

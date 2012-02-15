@@ -97,7 +97,7 @@ public class DateConverterTest {
     public void testSetDate() throws Exception {
         final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         final Date expectedDate = dateFormat.parse("02/23/2012");
-        configuration.set(Date.class, "date4", expectedDate);
+        configuration.set("date4", expectedDate);
         final Date actualDate = configuration.get(Date.class, "date4");
         assertEquals("dates did not match", actualDate, expectedDate);
 

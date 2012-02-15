@@ -31,16 +31,15 @@ public interface Configuration {
 
     <E> List<E> getList(Class<E> type, String key);
 
-    <E> void set(Class<E> type, String key, E input);
+    <E> void set(String key, E input);
 
-    <E> void setList(Class<E> type, String key, List<E> input);
+    <E> void setList(String key, List<E> input);
 
-    <E> void setList(final Class<E> type, final String key, final E... input);
+    <E> void setList(final String key, final E... input);
 
     void load(File file);
 
     void load(InputStream inputStream);
-
 
     ConverterRegistry getConverterRegistry();
 }
