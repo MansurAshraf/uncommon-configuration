@@ -28,10 +28,12 @@ import com.mansoor.uncommon.configuration.util.Preconditions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * This Class is a type safe wrapper over {@link Properties} class and provides convenient methods to easily
@@ -44,6 +46,11 @@ public class PropertyConfiguration implements Configuration {
     private final ConverterRegistry converterRegistry;
     private final Properties properties;
     private char deliminator = ',';
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final Lock readLock = lock.readLock();
+    private final Lock writeLock = lock.writeLock();
+    private File propertyFile;
+
 
     /**
      * Returns an instance of {@code PropertyConfiguration} that is configured to used
@@ -156,6 +163,7 @@ public class PropertyConfiguration implements Configuration {
      * @param propertyFile property file
      */
     public void load(final File propertyFile) {
+        this.propertyFile = propertyFile;
         try {
             Preconditions.checkNull(propertyFile, "File is null");
             properties.load(new FileInputStream(propertyFile));
@@ -168,15 +176,12 @@ public class PropertyConfiguration implements Configuration {
     /**
      * Loads the property file associated with the given input stream
      *
-     * @param inputStream input stream
+     * @param path file path
      */
-    public void load(final InputStream inputStream) {
-        try {
-            Preconditions.checkNull(inputStream, "InputStream is null");
-            properties.load(inputStream);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+    public void load(final String path) {
+        Preconditions.checkNull(path, "InputStream is null");
+        final File file = new File(this.getClass().getResource(path).getPath());
+        load(file);
     }
 
     /**
@@ -195,6 +200,21 @@ public class PropertyConfiguration implements Configuration {
      */
     public ConverterRegistry getConverterRegistry() {
         return converterRegistry;
+    }
+
+    public void reload() {
+        writeLock.lock();
+        readLock.lock();
+        try {
+            properties.clear();
+            properties.load(new FileInputStream(propertyFile));
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to reload file " + propertyFile, e);
+        } finally {
+            readLock.unlock();
+            writeLock.unlock();
+        }
+
     }
 
     private <E> E getAndConvert(final Converter<E> converter, final String key) {

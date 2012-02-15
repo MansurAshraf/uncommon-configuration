@@ -27,7 +27,7 @@ public final class TestUtil {
 
     public static Configuration getPropertyConfiguration(final String location) {
         final PropertyConfiguration configuration = new PropertyConfiguration();
-        configuration.load(TestUtil.class.getResourceAsStream(location));
+        configuration.load("/testProp.properties");
         return configuration;
     }
 }

@@ -36,7 +36,7 @@ public class PropertyConfigurationTest {
     @Before
     public void setUp() throws Exception {
         configuration = new PropertyConfiguration();
-        configuration.load(this.getClass().getResourceAsStream("/testProp.properties"));
+        configuration.load(("/testProp.properties"));
     }
 
     @org.junit.Test(expected = ConverterNotFoundException.class)
