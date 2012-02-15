@@ -31,9 +31,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This Class is a type safe wrapper over {@link Properties} class and provides convenient methods to easily
@@ -46,9 +44,7 @@ public class PropertyConfiguration implements Configuration {
     private final ConverterRegistry converterRegistry;
     private final Properties properties;
     private char deliminator = ',';
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock readLock = lock.readLock();
-    private final Lock writeLock = lock.writeLock();
+    private final ReentrantLock lock = new ReentrantLock();
     private File propertyFile;
 
 
@@ -118,7 +114,12 @@ public class PropertyConfiguration implements Configuration {
     public <E> void set(final String key, final E input) {
         if (Preconditions.isNotNull(input)) {
             final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
-            properties.setProperty(key, converter.toString(input));
+            lock.lock();
+            try {
+                properties.setProperty(key, converter.toString(input));
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
@@ -140,7 +141,12 @@ public class PropertyConfiguration implements Configuration {
                 }
             });
             final String value = stringBuffer.substring(0, stringBuffer.lastIndexOf(String.valueOf(deliminator)));
-            properties.setProperty(key, value);
+            lock.lock();
+            try {
+                properties.setProperty(key, value);
+            } finally {
+                lock.unlock();
+            }
         }
     }
 
@@ -163,6 +169,7 @@ public class PropertyConfiguration implements Configuration {
      * @param propertyFile property file
      */
     public void load(final File propertyFile) {
+        lock.lock();
         this.propertyFile = propertyFile;
         try {
             Preconditions.checkNull(propertyFile, "File is null");
@@ -170,6 +177,8 @@ public class PropertyConfiguration implements Configuration {
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load file " + propertyFile, e);
 
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -203,16 +212,14 @@ public class PropertyConfiguration implements Configuration {
     }
 
     public void reload() {
-        writeLock.lock();
-        readLock.lock();
+        lock.lock();
         try {
             properties.clear();
             properties.load(new FileInputStream(propertyFile));
         } catch (Exception e) {
             throw new IllegalStateException("Unable to reload file " + propertyFile, e);
         } finally {
-            readLock.unlock();
-            writeLock.unlock();
+            lock.unlock();
         }
 
     }
