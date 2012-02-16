@@ -24,6 +24,8 @@ import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,7 +52,7 @@ public class PropertyConfiguration implements Configuration {
     private File propertyFile;
     private final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
     private Long lastModified;
-
+    private static final Logger log = LoggerFactory.getLogger(PropertyConfiguration.class);
 
     /**
      * Returns an instance of {@code PropertyConfiguration} that is configured to used
@@ -72,12 +74,13 @@ public class PropertyConfiguration implements Configuration {
         properties = loadPropertiesFile();
     }
 
-    public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate) {
+    public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
+        Preconditions.checkNull(timeUnit, "No Time Unit Specified");
         this.converterRegistry = converterRegistry;
         properties = loadPropertiesFile();
-        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, TimeUnit.MINUTES);
+        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
 
@@ -127,12 +130,7 @@ public class PropertyConfiguration implements Configuration {
     public <E> void set(final String key, final E input) {
         if (Preconditions.isNotNull(input)) {
             final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
-            lock.lock();
-            try {
-                properties.setProperty(key, converter.toString(input));
-            } finally {
-                lock.unlock();
-            }
+            setProperty(key, converter.toString(input));
         }
     }
 
@@ -154,12 +152,16 @@ public class PropertyConfiguration implements Configuration {
                 }
             });
             final String value = stringBuffer.substring(0, stringBuffer.lastIndexOf(String.valueOf(deliminator)));
-            lock.lock();
-            try {
-                properties.setProperty(key, value);
-            } finally {
-                lock.unlock();
-            }
+            setProperty(key, value);
+        }
+    }
+
+    private void setProperty(final String key, final String value) {
+        lock.lock();
+        try {
+            properties.setProperty(key, value);
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -228,8 +230,12 @@ public class PropertyConfiguration implements Configuration {
     public void reload() {
         lock.lock();
         try {
-            properties.clear();
-            properties.load(new FileInputStream(propertyFile));
+            if (propertyFile != null) {
+                log.info("Reloading properties file " + propertyFile.getAbsolutePath());
+                properties.clear();
+                properties.load(new FileInputStream(propertyFile));
+                log.info("Reloading done");
+            }
         } catch (Exception e) {
             throw new IllegalStateException("Unable to reload file " + propertyFile, e);
         } finally {
@@ -238,6 +244,9 @@ public class PropertyConfiguration implements Configuration {
 
     }
 
+    /**
+     * Stops file polling
+     */
     public void stopPolling() {
         if (!executorService.isShutdown()) {
             executorService.shutdown();
@@ -287,8 +296,10 @@ public class PropertyConfiguration implements Configuration {
 
     class FilePoller implements Runnable {
         public void run() {
+            log.info("Polling File");
             if (propertyFile.exists() && propertyFile.lastModified() > lastModified) {
                 lastModified = propertyFile.lastModified();
+                log.info("Reload Required");
                 reload();
             }
         }
