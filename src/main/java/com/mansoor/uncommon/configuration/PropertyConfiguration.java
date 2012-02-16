@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -46,6 +48,8 @@ public class PropertyConfiguration implements Configuration {
     private char deliminator = ',';
     private final ReentrantLock lock = new ReentrantLock();
     private File propertyFile;
+    private final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
+    private Long lastModified;
 
 
     /**
@@ -67,6 +71,15 @@ public class PropertyConfiguration implements Configuration {
         this.converterRegistry = converterRegistry;
         properties = loadPropertiesFile();
     }
+
+    public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate) {
+        Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
+        Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
+        this.converterRegistry = converterRegistry;
+        properties = loadPropertiesFile();
+        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, TimeUnit.MINUTES);
+    }
+
 
     /**
      * Returns the value associated with the given key.
@@ -170,10 +183,11 @@ public class PropertyConfiguration implements Configuration {
      */
     public void load(final File propertyFile) {
         lock.lock();
-        this.propertyFile = propertyFile;
         try {
             Preconditions.checkNull(propertyFile, "File is null");
+            this.propertyFile = propertyFile;
             properties.load(new FileInputStream(propertyFile));
+            lastModified = propertyFile.lastModified();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load file " + propertyFile, e);
 
@@ -224,6 +238,12 @@ public class PropertyConfiguration implements Configuration {
 
     }
 
+    public void stopPolling() {
+        if (!executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+    }
+
     private <E> E getAndConvert(final Converter<E> converter, final String key) {
         try {
             return converter.convert(properties.getProperty(key));
@@ -246,7 +266,12 @@ public class PropertyConfiguration implements Configuration {
         this.deliminator = deliminator;
     }
 
-    private class PropertyTransformer<E> implements UnaryFunction<String, E> {
+    /**
+     * Transformer class used to transform a STring to a given type
+     *
+     * @param <E>
+     */
+    class PropertyTransformer<E> implements UnaryFunction<String, E> {
         private final Class<E> type;
 
         public PropertyTransformer(final Class<E> type) {
@@ -256,6 +281,16 @@ public class PropertyConfiguration implements Configuration {
         public E apply(final String input) {
             final Converter<E> converter = converterRegistry.getConverter(type);
             return converter.convert(input);
+        }
+    }
+
+
+    class FilePoller implements Runnable {
+        public void run() {
+            if (propertyFile.exists() && propertyFile.lastModified() > lastModified) {
+                lastModified = propertyFile.lastModified();
+                reload();
+            }
         }
     }
 }

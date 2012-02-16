@@ -43,4 +43,6 @@ public interface Configuration {
     ConverterRegistry getConverterRegistry();
 
     void reload();
+
+    public void stopPolling();
 }

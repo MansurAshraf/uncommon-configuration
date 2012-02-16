@@ -40,6 +40,12 @@ public final class Preconditions {
         }
     }
 
+    public static void checkArgument(final boolean condition, final String msg) {
+        if (!condition) {
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
     public static void checkBlank(final String ref, final String msg) {
         if (ref == null || ref.equals("") || ref.equals(" ")) {
             throw new IllegalArgumentException(msg);
