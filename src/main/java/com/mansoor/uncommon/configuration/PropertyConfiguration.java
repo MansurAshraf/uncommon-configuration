@@ -21,7 +21,7 @@ import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
-import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
+import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
 import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
@@ -137,22 +137,21 @@ public class PropertyConfiguration implements Configuration {
     /**
      * Creates a String representation of the given list and associate it with the given key
      *
-     * @param key   key
-     * @param input list of value
-     * @param <E>   Type of list
+     * @param key    key
+     * @param values list of value
+     * @param <E>    Type of list
      */
     @SuppressWarnings(value = "unchecked")
-    public <E> void setList(final String key, final List<E> input) {
-        if (Preconditions.isNotEmpty(input)) {
-            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.get(0).getClass());
-            final StringBuffer stringBuffer = new FunctionalCollection<E>(input).foldLeft(new StringBuffer(), new BinaryFunction<E, StringBuffer>() {
-                public StringBuffer apply(final StringBuffer seed, final E input) {
-                    seed.append(converter.toString(input)).append(deliminator);
+    public <E> void setList(final String key, final List<E> values) {
+        if (Preconditions.isNotEmpty(values)) {
+            final Converter<E> converter = converterRegistry.getConverter((Class<E>) values.get(0).getClass());
+            final StringBuffer stringBuffer = new FunctionalCollection<E>(values).foldLeft(new StringBuffer(), new IndexedBinaryFunction<E, StringBuffer>() {
+                public StringBuffer apply(final StringBuffer seed, final E input, final Integer index) {
+                    seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
                     return seed;
                 }
             });
-            final String value = stringBuffer.substring(0, stringBuffer.lastIndexOf(String.valueOf(deliminator)));
-            setProperty(key, value);
+            setProperty(key, stringBuffer.toString());
         }
     }
 

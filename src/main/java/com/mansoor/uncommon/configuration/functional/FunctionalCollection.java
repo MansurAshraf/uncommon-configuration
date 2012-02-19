@@ -17,10 +17,7 @@
 package com.mansoor.uncommon.configuration.functional;
 
 
-import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
-import com.mansoor.uncommon.configuration.functional.functions.Function;
-import com.mansoor.uncommon.configuration.functional.functions.Predicate;
-import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
+import com.mansoor.uncommon.configuration.functional.functions.*;
 
 import java.util.*;
 
@@ -151,6 +148,18 @@ public class FunctionalCollection<T> implements Collection<T> {
         if (function != null) {
             for (final T t : collection) {
                 result = function.apply(result, t);
+            }
+        }
+        return result;
+    }
+
+    public <B> B foldLeft(final B seed, final IndexedBinaryFunction<T, B> function) {
+        B result = seed;
+        if (function != null) {
+            Integer index = 0;
+            for (final T t : collection) {
+                result = function.apply(result, t, index);
+                index++;
             }
         }
         return result;
