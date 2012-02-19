@@ -47,9 +47,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PropertyConfiguration implements Configuration {
     private final ConverterRegistry converterRegistry;
-    private final Properties properties;
+    protected final Properties properties;
     private char deliminator = ',';
-    private final ReentrantLock lock = new ReentrantLock();
+    protected final ReentrantLock lock = new ReentrantLock();
     private File propertyFile;
     private final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
     private Long lastModified;
