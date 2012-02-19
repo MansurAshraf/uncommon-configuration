@@ -23,7 +23,7 @@ import org.junit.Test;
 import java.io.File;
 import java.net.URL;
 
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 /**
  * @author mansoor
@@ -54,5 +54,14 @@ public class PropertyConfigurationTest {
     @Test(expected = IllegalStateException.class)
     public void testLoadFile() throws Exception {
         configuration.load(new File(""));
+    }
+
+    @Test
+    public void testReload() throws Exception {
+        configuration.set("abc", new File("abc"));
+        assertNotNull(configuration.get(File.class, "abc"));
+        configuration.reload();
+        assertNull(configuration.get(File.class, "abc"));
+
     }
 }

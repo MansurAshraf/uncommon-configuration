@@ -47,11 +47,16 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.4</version>
         </dependency>
+        <dependency>
+            <groupId>junitperf</groupId>
+            <artifactId>junitperf</artifactId>
+            <version>1.8</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <properties>
         <JDK>1.5</JDK>
     </properties>
-
     <build>
         <pluginManagement>
             <plugins>

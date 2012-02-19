@@ -83,6 +83,14 @@ public class PropertyConfiguration implements Configuration {
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
+    public PropertyConfiguration(final long pollingRate, final TimeUnit timeUnit) {
+        Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
+        Preconditions.checkNull(timeUnit, "No Time Unit Specified");
+        this.converterRegistry = new DefaultConverterRegistry();
+        properties = loadPropertiesFile();
+        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
+    }
+
 
     /**
      * Returns the value associated with the given key.
@@ -209,15 +217,6 @@ public class PropertyConfiguration implements Configuration {
     }
 
     /**
-     * Returns the underlying Properties instance
-     *
-     * @return Properties
-     */
-    public Properties toProperties() {
-        return properties;
-    }
-
-    /**
      * Returns the underlying Converter Registry
      *
      * @return ConverterRegistry
@@ -296,8 +295,9 @@ public class PropertyConfiguration implements Configuration {
     class FilePoller implements Runnable {
         public void run() {
             log.info("Polling File");
-            if (propertyFile.exists() && propertyFile.lastModified() > lastModified) {
-                lastModified = propertyFile.lastModified();
+            final File temp = new File(propertyFile.getAbsolutePath());
+            if (temp.exists() && temp.lastModified() > lastModified) {
+                lastModified = temp.lastModified();
                 log.info("Reload Required");
                 reload();
             }
