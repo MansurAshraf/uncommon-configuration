@@ -64,4 +64,19 @@ public class PropertyConfigurationTest {
         assertNull(configuration.get(File.class, "abc"));
 
     }
+
+    @Test
+    public void testSave() throws Exception {
+        configuration.set("abc", new File("abc"));
+        assertNotNull(configuration.get(File.class, "abc"));
+        final String tempLocation = System.getProperty("java.io.tmpdir");
+        final File prop = configuration.save(tempLocation + File.separator + "newprop.properties");
+        assertNotNull(prop);
+        assertTrue(prop.exists());
+        final PropertyConfiguration newConfig = new PropertyConfiguration();
+        newConfig.load(prop);
+        final String value = newConfig.get(String.class, "abc");
+        assertEquals("abc", value);
+
+    }
 }

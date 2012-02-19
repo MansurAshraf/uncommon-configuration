@@ -44,5 +44,14 @@ public interface Configuration {
 
     void reload();
 
-    public void stopPolling();
+    void stopPolling();
+
+    /**
+     * Saves the configuration to the given path
+     *
+     * @param path path where the file will be saved
+     * @return file where the config is saved
+     */
+    File save(String path);
+
 }

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -251,6 +252,26 @@ public class PropertyConfiguration implements Configuration {
         }
     }
 
+    /**
+     * Saves the configuration to the given path
+     *
+     * @param path path where the file will be saved
+     * @return file where the config is saved
+     */
+    public File save(final String path) {
+        Preconditions.checkBlank(path, "path is null or empty");
+        final File file = new File(path);
+        lock.lock();
+        try {
+            properties.store(new FileOutputStream(file), "");
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to save file", e);
+        } finally {
+            lock.unlock();
+        }
+        return file;
+    }
+
     private <E> E getAndConvert(final Converter<E> converter, final String key) {
         try {
             return converter.convert(properties.getProperty(key));
@@ -300,6 +321,8 @@ public class PropertyConfiguration implements Configuration {
                 lastModified = temp.lastModified();
                 log.info("Reload Required");
                 reload();
+            } else {
+                log.info("Not reloading file as no change has been detected since last load");
             }
         }
     }
