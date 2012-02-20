@@ -67,8 +67,8 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
         lock.lock();
         try {
             properties.clear();
-            final Properties properties1 = System.getProperties();
-            properties.putAll(properties1);
+            final Properties p = System.getProperties();
+            properties.putAll(p);
         } finally {
             lock.unlock();
         }

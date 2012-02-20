@@ -283,6 +283,17 @@ public class PropertyConfiguration implements Configuration {
 
     }
 
+    public Properties toProperties() {
+        lock.lock();
+        try {
+            final Properties p = new Properties();
+            p.putAll(properties);
+            return p;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     private <E> E getAndConvert(final Converter<E> converter, final String key) {
         try {
             return converter.convert(properties.getProperty(key));
