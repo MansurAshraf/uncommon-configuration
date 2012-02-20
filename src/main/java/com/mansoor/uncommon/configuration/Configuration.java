@@ -54,4 +54,6 @@ public interface Configuration {
      */
     File save(String path);
 
+    void clear();
+
 }

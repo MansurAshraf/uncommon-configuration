@@ -272,6 +272,16 @@ public class PropertyConfiguration implements Configuration {
         return file;
     }
 
+    public void clear() {
+        lock.lock();
+        try {
+            properties.clear();
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
     private <E> E getAndConvert(final Converter<E> converter, final String key) {
         try {
             return converter.convert(properties.getProperty(key));
