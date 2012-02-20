@@ -61,8 +61,9 @@ public class PropertyConfiguration implements Configuration {
      */
     public PropertyConfiguration() {
         this.converterRegistry = new DefaultConverterRegistry();
-        properties = loadPropertiesFile();
+        properties = createProperties();
     }
+
 
     /**
      * Returns an instance of {@code PropertyConfiguration} configured with given Converter Registry
@@ -72,7 +73,7 @@ public class PropertyConfiguration implements Configuration {
     public PropertyConfiguration(final ConverterRegistry converterRegistry) {
         Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
         this.converterRegistry = converterRegistry;
-        properties = loadPropertiesFile();
+        properties = createProperties();
     }
 
     public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
@@ -80,7 +81,7 @@ public class PropertyConfiguration implements Configuration {
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
         Preconditions.checkNull(timeUnit, "No Time Unit Specified");
         this.converterRegistry = converterRegistry;
-        properties = loadPropertiesFile();
+        properties = createProperties();
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
@@ -88,7 +89,7 @@ public class PropertyConfiguration implements Configuration {
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
         Preconditions.checkNull(timeUnit, "No Time Unit Specified");
         this.converterRegistry = new DefaultConverterRegistry();
-        properties = loadPropertiesFile();
+        properties = createProperties();
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
@@ -291,7 +292,7 @@ public class PropertyConfiguration implements Configuration {
 
     }
 
-    Properties loadPropertiesFile() {
+    Properties createProperties() {
         return new Properties();
     }
 

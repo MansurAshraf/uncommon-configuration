@@ -64,7 +64,14 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
 
 
     public void reload() {
-        throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
+        lock.lock();
+        try {
+            properties.clear();
+            final Properties properties1 = System.getProperties();
+            properties.putAll(properties1);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -74,7 +81,9 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
         throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
     }
 
-    Properties loadPropertiesFile() {
-        return System.getProperties();
+    Properties createProperties() {
+        final Properties p = new Properties();
+        p.putAll(System.getProperties());
+        return p;
     }
 }
