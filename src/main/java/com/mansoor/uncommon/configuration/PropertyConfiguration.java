@@ -22,7 +22,6 @@ import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
-import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,12 +114,7 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
      */
     public <E> List<E> getList(final Class<E> type, final String key) {
         final String property = properties.getProperty(key);
-        List<E> result = null;
-        if (Preconditions.isNotNull(property)) {
-            result = new FunctionalCollection<String>(property.split(new String(new char[]{deliminator}))).map(new PropertyTransformer<E>(type)).asList();
-        }
-
-        return result;
+        return super.getList(type, property);
     }
 
     /**
@@ -187,12 +181,13 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
      * @param propertyFile property file
      */
     public void load(final File propertyFile) {
+        Preconditions.checkNull(propertyFile, "File is null");
+        this.config = propertyFile;
+        lastModified = propertyFile.lastModified();
+
         lock.lock();
         try {
-            Preconditions.checkNull(propertyFile, "File is null");
-            this.config = propertyFile;
             properties.load(new FileInputStream(propertyFile));
-            lastModified = propertyFile.lastModified();
         } catch (IOException e) {
             throw new IllegalStateException("Unable to load file " + propertyFile, e);
 
@@ -295,33 +290,6 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
             throw new PropertyConversionException("conversion failed", e);
         }
 
-    }
-
-    /**
-     * Sets the deliminator character that will be used to split the values
-     *
-     * @param deliminator deliminator
-     */
-    public void setDeliminator(final char deliminator) {
-        this.deliminator = deliminator;
-    }
-
-    /**
-     * Transformer class used to transform a STring to a given type
-     *
-     * @param <E>
-     */
-    class PropertyTransformer<E> implements UnaryFunction<String, E> {
-        private final Class<E> type;
-
-        public PropertyTransformer(final Class<E> type) {
-            this.type = type;
-        }
-
-        public E apply(final String input) {
-            final Converter<E> converter = converterRegistry.getConverter(type);
-            return converter.convert(input);
-        }
     }
 
 

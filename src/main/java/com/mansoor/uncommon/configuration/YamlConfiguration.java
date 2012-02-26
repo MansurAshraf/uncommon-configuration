@@ -16,8 +16,10 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
+import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +68,36 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
     }
 
     public <E> E get(final Class<E> type, final String key) {
-        return null;
+        final Converter<E> converter = converterRegistry.getConverter(type);
+        return getAndConvert(converter, key);
+    }
+
+    private <E> E getAndConvert(final Converter<E> converter, final String key) {
+        try {
+            return converter.convert(getValueAsString(properties.get(key)));
+        } catch (Exception e) {
+            throw new PropertyConversionException("conversion failed", e);
+        }
+    }
+
+    private String getValueAsString(final Object value) {
+        String result = null;
+        if (Preconditions.isNotNull(value)) {
+            if (String.class.isAssignableFrom(value.getClass())) {
+                result = (String) value;
+            } else {
+                result = value.toString();
+            }
+        }
+        return result;
+
     }
 
     public <E> List<E> getList(final Class<E> type, final String key) {
-        return null;
+        final String property = getValueAsString(properties.get(key));
+        return super.getList(type, property);
     }
+
 
     public <E> void set(final String key, final E input) {
 
@@ -89,6 +115,8 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
     public void load(final File file) {
         Preconditions.checkNull(file, "File is null");
         final Yaml yaml = new Yaml();
+        config = file;
+        lastModified = file.lastModified();
         lock.lock();
         try {
             final Object data = yaml.load(new FileInputStream(file));
@@ -102,11 +130,12 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
     }
 
     public void load(final String path) {
-
+        Preconditions.checkBlank(path, "file path is null or empty");
+        load(new File(path));
     }
 
     public ConverterRegistry getConverterRegistry() {
-        return null;
+        return converterRegistry;
     }
 
     public void reload() {

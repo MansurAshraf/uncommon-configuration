@@ -17,8 +17,8 @@
 package com.mansoor.uncommon.configuration.Convertors;
 
 import com.mansoor.uncommon.configuration.Configuration;
-import com.mansoor.uncommon.configuration.PropertyConfiguration;
 import com.mansoor.uncommon.configuration.TestUtil;
+import com.mansoor.uncommon.configuration.YamlConfiguration;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.junit.Before;
@@ -33,14 +33,15 @@ import static org.junit.Assert.*;
 
 /**
  * @author Muhammad Ashraf
- * @since 2/12/12
+ * @since 2/25/12
  */
-public class DateConverterTest {
+public class YamlDateConverterTest {
+
     private Configuration configuration;
 
     @Before
     public void setUp() throws Exception {
-        configuration = TestUtil.getPropertyConfiguration("/testProp.properties");
+        configuration = TestUtil.getYamlConfiguration(this.getClass().getResource("/test.yaml").getPath());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class DateConverterTest {
 
     @Test
     public void testGetDateListWithCustomSeparator() throws Exception {
-        ((PropertyConfiguration) configuration).setDeliminator(' ');
+        ((YamlConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList2");
         assertFalse("result is empty", Preconditions.isEmpty(result));
         assertTrue("incorrect size", result.size() == 4);
@@ -87,7 +88,7 @@ public class DateConverterTest {
     @Test
     public void testGetDateListWithCustomSeparatorAndCustomFormat() throws Exception {
         configuration.getConverterRegistry().addConverter(Date.class, new DateConverter("MM-dd-yyyy"));
-        ((PropertyConfiguration) configuration).setDeliminator(' ');
+        ((YamlConfiguration) configuration).setDeliminator(' ');
         final List<Date> result = configuration.getList(Date.class, "dateList3");
         assertFalse("result is empty", Preconditions.isEmpty(result));
         assertTrue("incorrect size", result.size() == 4);
@@ -99,7 +100,11 @@ public class DateConverterTest {
         final Date expectedDate = dateFormat.parse("02/23/2012");
         configuration.set("date4", expectedDate);
         final Date actualDate = configuration.get(Date.class, "date4");
-        assertEquals("dates did not match", actualDate, expectedDate);
+        assertEquals("dates did not match", expectedDate, actualDate);
+    }
 
+    @Test(expected = PropertyConversionException.class)
+    public void testNestedConversionException() throws Exception {
+        configuration.getList(Date.class, "development");
     }
 }

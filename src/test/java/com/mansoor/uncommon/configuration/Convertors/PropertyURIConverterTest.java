@@ -28,7 +28,7 @@ import java.net.URI;
  * @author Muhammad Ashraf
  * @since 2/14/12
  */
-public class URIConverterTest {
+public class PropertyURIConverterTest {
     private Configuration configuration;
 
     @Before

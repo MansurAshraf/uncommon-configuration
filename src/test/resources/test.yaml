@@ -1,7 +1,19 @@
 #String Test
+hello: world
+
+#nested test
 development:
     adapter: mysql
     database: project_development
     username: root
     password:
-    socket: /tmp/mysql.sock
+      socket: /tmp/mysql.sock
+      web: 1
+
+#date test
+dateOne: 02/23/2012
+dateTwo: 02-12-2012
+invalidDate: 123
+dateList: 02/12/2012,02/13/2012,02/14/2012,02/15/2012
+dateList2: 02/12/2012 02/13/2012 02/14/2012 02/15/2012
+dateList3: 02-12-2012 02-13-2012 02-14-2012 02-15-2012

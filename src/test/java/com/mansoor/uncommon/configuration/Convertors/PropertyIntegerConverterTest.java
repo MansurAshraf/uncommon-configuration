@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
  * @author Muhammad Ashraf
  * @since 2/11/12
  */
-public class IntegerConverterTest {
+public class PropertyIntegerConverterTest {
 
     private Configuration configuration;
 

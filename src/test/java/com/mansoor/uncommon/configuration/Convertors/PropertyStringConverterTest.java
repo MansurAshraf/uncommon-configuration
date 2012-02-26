@@ -26,7 +26,7 @@ import org.junit.Test;
  * @author Muhammad Ashraf
  * @since 2/12/12
  */
-public class StringConverterTest {
+public class PropertyStringConverterTest {
 
     private Configuration configuration;
 

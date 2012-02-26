@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
  * @author Muhammad Ashraf
  * @since 2/14/12
  */
-public class FileConverterTest {
+public class PropertyFileConverterTest {
     private Configuration configuration;
 
     @Before

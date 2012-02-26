@@ -21,6 +21,9 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Muhammad Ashraf
  * @since 2/25/12
@@ -36,6 +39,8 @@ public class YamlConfigurationTest {
 
     @Test
     public void testGet() throws Exception {
-        configuration.get(String.class, "hello");
+        final String value = configuration.get(String.class, "hello");
+        assertNotNull("value is null", value);
+        assertEquals("value did not match the expected value", "world", value);
     }
 }
