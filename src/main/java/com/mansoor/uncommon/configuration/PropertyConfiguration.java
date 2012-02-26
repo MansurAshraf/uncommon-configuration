@@ -16,12 +16,8 @@
 
 package com.mansoor.uncommon.configuration;
 
-import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
-import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
-import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
-import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +26,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
-public class PropertyConfiguration extends BaseConfiguration implements Configuration {
+public class PropertyConfiguration extends BaseConfiguration {
     protected final Properties properties;
     private static final Logger log = LoggerFactory.getLogger(PropertyConfiguration.class);
 
@@ -86,74 +80,11 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         return new Properties();
     }
 
-
-    /**
-     * Returns the value associated with the given key.
-     *
-     * @param type Type that the value will be converted too
-     * @param key  key that will be used to retrieve the value
-     * @param <E>  Type parameter
-     * @return value of type E
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *          if no converter is configured for the given type
-     */
-    public <E> E get(final Class<E> type, final String key) {
-        final Converter<E> converter = converterRegistry.getConverter(type);
-        return getAndConvert(converter, key);
+    protected String getProperty(final String key) {
+        return properties.getProperty(key);
     }
 
-    /**
-     * Retrieves the value associated with the given key and break it into list by using a predefined delimiter.
-     *
-     * @param type Type that the value will be converted to
-     * @param key  key the value is associated with
-     * @param <E>  Type parameter
-     * @return List of type E
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *          if no converter is configured for the given type
-     */
-    public <E> List<E> getList(final Class<E> type, final String key) {
-        final String property = properties.getProperty(key);
-        return super.getList(type, property);
-    }
-
-    /**
-     * Sets the key and value
-     *
-     * @param key   key
-     * @param input value
-     * @param <E>   type of value
-     */
-    @SuppressWarnings(value = "unchecked")
-    public <E> void set(final String key, final E input) {
-        if (Preconditions.isNotNull(input)) {
-            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
-            setProperty(key, converter.toString(input));
-        }
-    }
-
-    /**
-     * Creates a String representation of the given list and associate it with the given key
-     *
-     * @param key    key
-     * @param values list of value
-     * @param <E>    Type of list
-     */
-    @SuppressWarnings(value = "unchecked")
-    public <E> void setList(final String key, final List<E> values) {
-        if (Preconditions.isNotEmpty(values)) {
-            final Converter<E> converter = converterRegistry.getConverter((Class<E>) values.get(0).getClass());
-            final StringBuffer stringBuffer = new FunctionalCollection<E>(values).foldLeft(new StringBuffer(), new IndexedBinaryFunction<E, StringBuffer>() {
-                public StringBuffer apply(final StringBuffer seed, final E input, final Integer index) {
-                    seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
-                    return seed;
-                }
-            });
-            setProperty(key, stringBuffer.toString());
-        }
-    }
-
-    private void setProperty(final String key, final String value) {
+    protected void setProperty(final String key, final String value) {
         lock.lock();
         try {
             properties.setProperty(key, value);
@@ -162,115 +93,20 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         }
     }
 
-    /**
-     * Creates a String representation of the given list and associate it with the given key
-     *
-     * @param key   key
-     * @param input list of value
-     * @param <E>   Type of list
-     */
-    public <E> void setList(final String key, final E... input) {
-        if (Preconditions.isNotNull(input)) {
-            setList(key, Arrays.asList(input));
-        }
+
+    protected void loadConfig(final File propertyFile) throws IOException {
+        properties.load(new FileInputStream(propertyFile));
     }
 
-    /**
-     * Loads the given property file
-     *
-     * @param propertyFile property file
-     */
-    public void load(final File propertyFile) {
-        Preconditions.checkNull(propertyFile, "File is null");
-        this.config = propertyFile;
-        lastModified = propertyFile.lastModified();
-
-        lock.lock();
-        try {
-            properties.load(new FileInputStream(propertyFile));
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to load file " + propertyFile, e);
-
-        } finally {
-            lock.unlock();
-        }
+    protected void clearConfig() {
+        properties.clear();
     }
 
-    /**
-     * Loads the property file associated with the given input stream
-     *
-     * @param path file path
-     */
-    public void load(final String path) {
-        Preconditions.checkNull(path, "InputStream is null");
-        final File file = new File(this.getClass().getResource(path).getPath());
-        load(file);
+
+    protected void storeConfiguration(final File file) throws IOException {
+        properties.store(new FileOutputStream(file), "");
     }
 
-    /**
-     * Returns the underlying Converter Registry
-     *
-     * @return ConverterRegistry
-     */
-    public ConverterRegistry getConverterRegistry() {
-        return converterRegistry;
-    }
-
-    public void reload() {
-        lock.lock();
-        try {
-            if (config != null) {
-                log.info("Reloading properties file " + config.getAbsolutePath());
-                properties.clear();
-                properties.load(new FileInputStream(config));
-                log.info("Reloading done");
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException("Unable to reload file " + config, e);
-        } finally {
-            lock.unlock();
-        }
-
-    }
-
-    /**
-     * Stops file polling
-     */
-    public void stopPolling() {
-        if (!executorService.isShutdown()) {
-            executorService.shutdown();
-        }
-    }
-
-    /**
-     * Saves the configuration to the given path
-     *
-     * @param path path where the file will be saved
-     * @return file where the config is saved
-     */
-    public File save(final String path) {
-        Preconditions.checkBlank(path, "path is null or empty");
-        final File file = new File(path);
-        lock.lock();
-        try {
-            properties.store(new FileOutputStream(file), "");
-        } catch (IOException e) {
-            throw new IllegalStateException("Unable to save file", e);
-        } finally {
-            lock.unlock();
-        }
-        return file;
-    }
-
-    public void clear() {
-        lock.lock();
-        try {
-            properties.clear();
-        } finally {
-            lock.unlock();
-        }
-
-    }
 
     public Properties toProperties() {
         lock.lock();
@@ -281,15 +117,6 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         } finally {
             lock.unlock();
         }
-    }
-
-    private <E> E getAndConvert(final Converter<E> converter, final String key) {
-        try {
-            return converter.convert(properties.getProperty(key));
-        } catch (Exception e) {
-            throw new PropertyConversionException("conversion failed", e);
-        }
-
     }
 
 

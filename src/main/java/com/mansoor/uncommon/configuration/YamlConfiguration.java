@@ -16,10 +16,8 @@
 
 package com.mansoor.uncommon.configuration;
 
-import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
-import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +25,8 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * @author Muhammad Ashraf
  * @since 2/25/12
  */
-public class YamlConfiguration extends BaseConfiguration implements Configuration {
+public class YamlConfiguration extends BaseConfiguration {
     private final Map<String, Object> properties;
     private static final Logger log = LoggerFactory.getLogger(YamlConfiguration.class);
 
@@ -67,47 +64,7 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
-    public <E> E get(final Class<E> type, final String key) {
-        final Converter<E> converter = converterRegistry.getConverter(type);
-        return getAndConvert(converter, key);
-    }
-
-    private <E> E getAndConvert(final Converter<E> converter, final String key) {
-        try {
-            return converter.convert(getValueAsString(properties.get(key)));
-        } catch (Exception e) {
-            throw new PropertyConversionException("conversion failed", e);
-        }
-    }
-
-    private String getValueAsString(final Object value) {
-        String result = null;
-        if (Preconditions.isNotNull(value)) {
-            if (String.class.isAssignableFrom(value.getClass())) {
-                result = (String) value;
-            } else {
-                result = value.toString();
-            }
-        }
-        return result;
-
-    }
-
-    public <E> List<E> getList(final Class<E> type, final String key) {
-        final String property = getValueAsString(properties.get(key));
-        return super.getList(type, property);
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public <E> void set(final String key, final E input) {
-        if (Preconditions.isNotNull(input)) {
-            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
-            setProperty(key, converter.toString(input));
-        }
-    }
-
-    private void setProperty(final String key, final String value) {
+    protected void setProperty(final String key, final String value) {
         lock.lock();
         try {
             properties.put(key, value);
@@ -116,57 +73,34 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
         }
     }
 
-    public <E> void setList(final String key, final List<E> input) {
 
+    protected String getProperty(final String key) {
+        String result = null;
+        final Object value = properties.get(key);
+        if (Preconditions.isNotNull(value)) {
+            if (String.class.isAssignableFrom(value.getClass())) {
+                result = (String) value;
+            } else {
+                result = value.toString();
+            }
+        }
+        return result;
     }
 
-    public <E> void setList(final String key, final E... input) {
-
-    }
 
     @SuppressWarnings("unchecked")
-    public void load(final File file) {
-        Preconditions.checkNull(file, "File is null");
+    protected void loadConfig(final File propertyFile) throws IOException {
         final Yaml yaml = new Yaml();
-        config = file;
-        lastModified = file.lastModified();
-        lock.lock();
-        try {
-            final Object data = yaml.load(new FileInputStream(file));
-            properties.putAll((Map<String, Object>) data);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        } finally {
-            lock.unlock();
-        }
-
+        final Object data = yaml.load(new FileInputStream(propertyFile));
+        properties.putAll((Map<String, Object>) data);
     }
 
-    public void load(final String path) {
-        Preconditions.checkBlank(path, "file path is null or empty");
-        load(new File(path));
+    protected void clearConfig() {
+        properties.clear();
     }
 
-    public ConverterRegistry getConverterRegistry() {
-        return converterRegistry;
-    }
+    protected void storeConfiguration(final File file) throws IOException {
 
-    public void reload() {
-
-    }
-
-    public void stopPolling() {
-
-    }
-
-    /**
-     * Saves the configuration to the given path
-     *
-     * @param path path where the file will be saved
-     * @return file where the config is saved
-     */
-    public File save(final String path) {
-        return null;
     }
 
     public void clear() {

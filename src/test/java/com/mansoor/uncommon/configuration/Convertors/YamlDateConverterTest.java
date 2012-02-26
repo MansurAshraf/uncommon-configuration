@@ -41,7 +41,7 @@ public class YamlDateConverterTest {
 
     @Before
     public void setUp() throws Exception {
-        configuration = TestUtil.getYamlConfiguration(this.getClass().getResource("/test.yaml").getPath());
+        configuration = TestUtil.getYamlConfiguration("/test.yaml");
     }
 
     @Test
