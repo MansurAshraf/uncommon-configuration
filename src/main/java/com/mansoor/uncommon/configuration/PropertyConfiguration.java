@@ -97,6 +97,10 @@ public class PropertyConfiguration extends BaseConfiguration {
         properties.clear();
     }
 
+    protected String getNestedValue(String key) {
+        return properties.getProperty(key);
+    }
+
 
     protected void storeConfiguration(final File file) throws IOException {
         properties.store(new FileOutputStream(file), "");

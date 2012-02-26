@@ -18,6 +18,8 @@ package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
+import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
+import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +27,11 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -70,8 +75,12 @@ public class YamlConfiguration extends BaseConfiguration {
 
 
     protected String getProperty(final String key) {
-        String result = null;
         final Object value = properties.get(key);
+        return convertValueToString(value);
+    }
+
+    private String convertValueToString(final Object value) {
+        String result = null;
         if (Preconditions.isNotNull(value)) {
             if (String.class.isAssignableFrom(value.getClass())) {
                 result = (String) value;
@@ -94,8 +103,27 @@ public class YamlConfiguration extends BaseConfiguration {
         properties.clear();
     }
 
-    protected void storeConfiguration(final File file) throws IOException {
 
+    protected String getNestedValue(final String key) {
+        Preconditions.checkBlank(key, "Key is null or blank");
+        final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
+
+        final Object value = new FunctionalCollection<String>(keys).foldLeft(new Object(), new BinaryFunction<String, Object>() {
+            public Object apply(final Object seed, final String input) {
+                Object result = seed;
+                if (HashMap.class.isAssignableFrom(seed.getClass())) {
+                    result = ((HashMap) seed).get(input);
+                }
+                return result;
+            }
+        });
+
+        return convertValueToString(value);
+    }
+
+    protected void storeConfiguration(final File file) throws IOException {
+        final Yaml yaml = new Yaml();
+        yaml.dump(properties, new FileWriter(file));
     }
 
     class FilePoller implements Runnable {

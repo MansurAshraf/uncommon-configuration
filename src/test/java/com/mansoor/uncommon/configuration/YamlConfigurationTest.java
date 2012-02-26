@@ -16,11 +16,16 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URL;
 
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -38,9 +43,38 @@ public class YamlConfigurationTest {
     }
 
     @Test
-    public void testGet() throws Exception {
+    public void testGetString() throws Exception {
         final String value = configuration.get(String.class, "hello");
         assertNotNull("value is null", value);
         assertEquals("value did not match the expected value", "world", value);
+    }
+
+    @org.junit.Test(expected = ConverterNotFoundException.class)
+    public void testConverterNotFoundException() throws Exception {
+        configuration.get(URL.class, "name");
+    }
+
+    @Test
+    public void testReload() throws Exception {
+        configuration.set("abc", new File("abc"));
+        Assert.assertNotNull(configuration.get(File.class, "abc"));
+        configuration.reload();
+        assertNull(configuration.get(File.class, "abc"));
+
+    }
+
+    @Test
+    public void testSave() throws Exception {
+        configuration.set("abc", new File("abc"));
+        Assert.assertNotNull(configuration.get(File.class, "abc"));
+        final String tempLocation = System.getProperty("java.io.tmpdir");
+        final File prop = configuration.save(tempLocation + File.separator + "newprop.yaml");
+        Assert.assertNotNull(prop);
+        assertTrue(prop.exists());
+        final PropertyConfiguration newConfig = new PropertyConfiguration();
+        newConfig.load(prop);
+        final String value = newConfig.get(String.class, "abc");
+        Assert.assertEquals("abc", value);
+
     }
 }

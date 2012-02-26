@@ -45,6 +45,7 @@ public abstract class BaseConfiguration implements Configuration {
     protected File config;
     protected final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
     protected Long lastModified;
+    public static final String NESTED_SEPARATOR = ".";
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);
 
     protected BaseConfiguration(final ConverterRegistry converterRegistry) {
@@ -125,6 +126,16 @@ public abstract class BaseConfiguration implements Configuration {
 
     }
 
+    public <E> E getNested(final Class<E> type, final String key) {
+
+        final String value = getNestedValue(key);
+        final Converter<E> converter = converterRegistry.getConverter(type);
+        try {
+            return converter.convert(value);
+        } catch (Exception e) {
+            throw new PropertyConversionException("conversion failed", e);
+        }
+    }
 
     /**
      * Creates a String representation of the given list and associate it with the given key
@@ -138,7 +149,6 @@ public abstract class BaseConfiguration implements Configuration {
             setList(key, Arrays.asList(input));
         }
     }
-
 
     /**
      * Loads the given property file
@@ -161,6 +171,7 @@ public abstract class BaseConfiguration implements Configuration {
         }
     }
 
+
     /**
      * Loads the property file associated with the given input stream
      *
@@ -173,7 +184,6 @@ public abstract class BaseConfiguration implements Configuration {
         final File file = new File(resource.getPath());
         load(file);
     }
-
 
     public void reload() {
         lock.lock();
@@ -191,6 +201,7 @@ public abstract class BaseConfiguration implements Configuration {
         }
 
     }
+
 
     /**
      * Returns the underlying Converter Registry
@@ -249,4 +260,6 @@ public abstract class BaseConfiguration implements Configuration {
     protected abstract void loadConfig(final File propertyFile) throws IOException;
 
     protected abstract void clearConfig();
+
+    protected abstract String getNestedValue(final String key);
 }
