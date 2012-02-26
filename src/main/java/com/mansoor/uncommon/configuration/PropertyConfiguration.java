@@ -56,7 +56,6 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         properties = createProperties();
     }
 
-
     /**
      * Returns an instance of {@code PropertyConfiguration} configured with given Converter Registry
      *
@@ -66,6 +65,7 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         super(converterRegistry);
         properties = createProperties();
     }
+
 
     public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         super(converterRegistry);
@@ -81,6 +81,10 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
         Preconditions.checkNull(timeUnit, "No Time Unit Specified");
         properties = createProperties();
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
+    }
+
+    protected Properties createProperties() {
+        return new Properties();
     }
 
 
@@ -291,10 +295,6 @@ public class PropertyConfiguration extends BaseConfiguration implements Configur
             throw new PropertyConversionException("conversion failed", e);
         }
 
-    }
-
-    Properties createProperties() {
-        return new Properties();
     }
 
     /**

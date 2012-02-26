@@ -33,6 +33,7 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
      */
     public SystemPropertyConfiguration() {
         super();
+
     }
 
     /**
@@ -81,7 +82,7 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
         throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
     }
 
-    Properties createProperties() {
+    protected Properties createProperties() {
         final Properties p = new Properties();
         p.putAll(System.getProperties());
         return p;
