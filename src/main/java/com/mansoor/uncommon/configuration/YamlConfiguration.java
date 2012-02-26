@@ -65,12 +65,7 @@ public class YamlConfiguration extends BaseConfiguration {
     }
 
     protected void setProperty(final String key, final String value) {
-        lock.lock();
-        try {
-            properties.put(key, value);
-        } finally {
-            lock.unlock();
-        }
+        properties.put(key, value);
     }
 
 
@@ -100,10 +95,6 @@ public class YamlConfiguration extends BaseConfiguration {
     }
 
     protected void storeConfiguration(final File file) throws IOException {
-
-    }
-
-    public void clear() {
 
     }
 

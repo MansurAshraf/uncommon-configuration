@@ -85,12 +85,7 @@ public class PropertyConfiguration extends BaseConfiguration {
     }
 
     protected void setProperty(final String key, final String value) {
-        lock.lock();
-        try {
-            properties.setProperty(key, value);
-        } finally {
-            lock.unlock();
-        }
+        properties.setProperty(key, value);
     }
 
 
