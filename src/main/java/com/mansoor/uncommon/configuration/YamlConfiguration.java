@@ -99,8 +99,21 @@ public class YamlConfiguration extends BaseConfiguration implements Configuratio
     }
 
 
+    @SuppressWarnings("unchecked")
     public <E> void set(final String key, final E input) {
+        if (Preconditions.isNotNull(input)) {
+            final Converter<E> converter = converterRegistry.getConverter((Class<E>) input.getClass());
+            setProperty(key, converter.toString(input));
+        }
+    }
 
+    private void setProperty(final String key, final String value) {
+        lock.lock();
+        try {
+            properties.put(key, value);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public <E> void setList(final String key, final List<E> input) {
