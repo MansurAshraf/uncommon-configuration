@@ -34,9 +34,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This Class is a type safe wrapper over {@link Properties} class and provides convenient methods to easily
@@ -45,14 +43,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
-public class PropertyConfiguration implements Configuration {
-    private final ConverterRegistry converterRegistry;
+public class PropertyConfiguration extends BaseConfiguration implements Configuration {
     protected final Properties properties;
-    private char deliminator = ',';
-    protected final ReentrantLock lock = new ReentrantLock();
-    private File propertyFile;
-    private final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
-    private Long lastModified;
     private static final Logger log = LoggerFactory.getLogger(PropertyConfiguration.class);
 
     /**
@@ -60,7 +52,7 @@ public class PropertyConfiguration implements Configuration {
      * {@link DefaultConverterRegistry}
      */
     public PropertyConfiguration() {
-        this.converterRegistry = new DefaultConverterRegistry();
+        super(new DefaultConverterRegistry());
         properties = createProperties();
     }
 
@@ -71,24 +63,22 @@ public class PropertyConfiguration implements Configuration {
      * @param converterRegistry registry that will be used by this PropertyConfiguration
      */
     public PropertyConfiguration(final ConverterRegistry converterRegistry) {
-        Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
-        this.converterRegistry = converterRegistry;
+        super(converterRegistry);
         properties = createProperties();
     }
 
     public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
-        Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
+        super(converterRegistry);
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
         Preconditions.checkNull(timeUnit, "No Time Unit Specified");
-        this.converterRegistry = converterRegistry;
         properties = createProperties();
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
     public PropertyConfiguration(final long pollingRate, final TimeUnit timeUnit) {
+        super(new DefaultConverterRegistry());
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
         Preconditions.checkNull(timeUnit, "No Time Unit Specified");
-        this.converterRegistry = new DefaultConverterRegistry();
         properties = createProperties();
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
@@ -196,7 +186,7 @@ public class PropertyConfiguration implements Configuration {
         lock.lock();
         try {
             Preconditions.checkNull(propertyFile, "File is null");
-            this.propertyFile = propertyFile;
+            this.config = propertyFile;
             properties.load(new FileInputStream(propertyFile));
             lastModified = propertyFile.lastModified();
         } catch (IOException e) {
@@ -230,14 +220,14 @@ public class PropertyConfiguration implements Configuration {
     public void reload() {
         lock.lock();
         try {
-            if (propertyFile != null) {
-                log.info("Reloading properties file " + propertyFile.getAbsolutePath());
+            if (config != null) {
+                log.info("Reloading properties file " + config.getAbsolutePath());
                 properties.clear();
-                properties.load(new FileInputStream(propertyFile));
+                properties.load(new FileInputStream(config));
                 log.info("Reloading done");
             }
         } catch (Exception e) {
-            throw new IllegalStateException("Unable to reload file " + propertyFile, e);
+            throw new IllegalStateException("Unable to reload file " + config, e);
         } finally {
             lock.unlock();
         }
@@ -338,7 +328,7 @@ public class PropertyConfiguration implements Configuration {
     class FilePoller implements Runnable {
         public void run() {
             log.info("Polling File");
-            final File temp = new File(propertyFile.getAbsolutePath());
+            final File temp = new File(config.getAbsolutePath());
             if (temp.exists() && temp.lastModified() > lastModified) {
                 lastModified = temp.lastModified();
                 log.info("Reload Required");
