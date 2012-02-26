@@ -48,6 +48,13 @@
             <version>1.6.4</version>
         </dependency>
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.10</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junitperf</groupId>
             <artifactId>junitperf</artifactId>
             <version>1.8</version>
