@@ -75,6 +75,31 @@ public class YamlConfigurationTest {
         newConfig.load(prop);
         final String value = newConfig.get(String.class, "abc");
         Assert.assertEquals("abc", value);
+    }
+
+    @Test
+    public void testGetNestedValue() throws Exception {
+        final String value = configuration.getNested(String.class, "development.adapter");
+        assertNotNull(value);
+        assertEquals("Values did not match", "mysql", value);
+    }
+
+    @Test
+    public void testGetMapAsNestedValue() throws Exception {
+        final String value = configuration.getNested(String.class, "development.password");
+        assertNotNull(value);
+    }
+
+    @Test
+    public void testGetInvalidNestedValue() throws Exception {
+        final String value = configuration.getNested(String.class, "development.password.invalid");
+        assertNull(value);
+    }
+
+    @Test
+    public void testSingleValueAsNested() throws Exception {
+        final String value = configuration.getNested(String.class, "dateOne");
+        Assert.assertEquals("incorrect value", "02/23/2012", value);
 
     }
 }

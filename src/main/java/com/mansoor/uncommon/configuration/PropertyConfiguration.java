@@ -97,7 +97,7 @@ public class PropertyConfiguration extends BaseConfiguration {
         properties.clear();
     }
 
-    protected String getNestedValue(String key) {
+    protected String getNestedValue(final String key) {
         return properties.getProperty(key);
     }
 

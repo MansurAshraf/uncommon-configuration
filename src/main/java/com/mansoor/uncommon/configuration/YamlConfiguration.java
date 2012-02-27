@@ -107,11 +107,10 @@ public class YamlConfiguration extends BaseConfiguration {
     protected String getNestedValue(final String key) {
         Preconditions.checkBlank(key, "Key is null or blank");
         final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
-
-        final Object value = new FunctionalCollection<String>(keys).foldLeft(new Object(), new BinaryFunction<String, Object>() {
+        final Object value = new FunctionalCollection<String>(keys).foldLeft(properties, new BinaryFunction<String, Object>() {
             public Object apply(final Object seed, final String input) {
                 Object result = seed;
-                if (HashMap.class.isAssignableFrom(seed.getClass())) {
+                if (Preconditions.isNotNull(seed) && seed instanceof HashMap) {
                     result = ((HashMap) seed).get(input);
                 }
                 return result;

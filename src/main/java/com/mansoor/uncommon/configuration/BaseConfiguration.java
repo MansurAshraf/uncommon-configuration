@@ -45,7 +45,7 @@ public abstract class BaseConfiguration implements Configuration {
     protected File config;
     protected final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
     protected Long lastModified;
-    public static final String NESTED_SEPARATOR = ".";
+    public static final String NESTED_SEPARATOR = "(\\.)";
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);
 
     protected BaseConfiguration(final ConverterRegistry converterRegistry) {
