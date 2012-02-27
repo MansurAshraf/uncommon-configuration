@@ -120,6 +120,7 @@ public class YamlConfiguration extends BaseConfiguration {
         return convertValueToString(value);
     }
 
+
     protected void storeConfiguration(final File file) throws IOException {
         final Yaml yaml = new Yaml();
         yaml.dump(properties, new FileWriter(file));

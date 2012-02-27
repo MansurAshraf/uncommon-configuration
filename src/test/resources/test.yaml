@@ -7,7 +7,7 @@ development:
     database: project_development
     username: root
     password:
-      socket: /tmp/mysql.sock
+      socket: /tmp/mysql.sock,/tmp/postgresql.sock
       web: 1
 
 #date test

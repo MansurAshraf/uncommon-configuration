@@ -32,6 +32,8 @@ public interface Configuration {
 
     <E> E getNested(Class<E> type, String key);
 
+    <E> List<E> getNestedAsList(Class<E> type, String key);
+
     <E> void set(String key, E input);
 
     <E> void setList(String key, List<E> input);

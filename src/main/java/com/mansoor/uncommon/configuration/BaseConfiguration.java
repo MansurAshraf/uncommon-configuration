@@ -63,8 +63,12 @@ public abstract class BaseConfiguration implements Configuration {
     }
 
     public <E> List<E> getList(final Class<E> type, final String key) {
-        List<E> result = null;
         final String property = getProperty(key);
+        return splitAndConvert(type, property);
+    }
+
+    protected <E> List<E> splitAndConvert(final Class<E> type, final String property) {
+        List<E> result = null;
         if (Preconditions.isNotNull(property)) {
             result = new FunctionalCollection<String>(property.split(new String(new char[]{deliminator}))).map(new PropertyTransformer<E>(type, converterRegistry)).asList();
         }
@@ -135,6 +139,11 @@ public abstract class BaseConfiguration implements Configuration {
         } catch (Exception e) {
             throw new PropertyConversionException("conversion failed", e);
         }
+    }
+
+    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
+        final String value = getNestedValue(key);
+        return splitAndConvert(type, value);
     }
 
     /**

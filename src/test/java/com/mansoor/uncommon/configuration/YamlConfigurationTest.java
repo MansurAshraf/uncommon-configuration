@@ -17,15 +17,16 @@
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException;
+import com.mansoor.uncommon.configuration.util.Preconditions;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -49,7 +50,7 @@ public class YamlConfigurationTest {
         assertEquals("value did not match the expected value", "world", value);
     }
 
-    @org.junit.Test(expected = ConverterNotFoundException.class)
+    @Test(expected = ConverterNotFoundException.class)
     public void testConverterNotFoundException() throws Exception {
         configuration.get(URL.class, "name");
     }
@@ -99,7 +100,14 @@ public class YamlConfigurationTest {
     @Test
     public void testSingleValueAsNested() throws Exception {
         final String value = configuration.getNested(String.class, "dateOne");
-        Assert.assertEquals("incorrect value", "02/23/2012", value);
+        assertEquals("incorrect value", "02/23/2012", value);
 
+    }
+
+    @Test
+    public void testGetNestedAsList() throws Exception {
+        final List<File> files = configuration.getNestedAsList(File.class, "development.password.socket");
+        assertFalse(Preconditions.isEmpty(files));
+        assertTrue(files.size() == 2);
     }
 }
