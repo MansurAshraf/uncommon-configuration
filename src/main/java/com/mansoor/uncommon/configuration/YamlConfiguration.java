@@ -16,6 +16,7 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
@@ -124,6 +125,47 @@ public class YamlConfiguration extends BaseConfiguration {
     protected void storeConfiguration(final File file) throws IOException {
         final Yaml yaml = new Yaml();
         yaml.dump(properties, new FileWriter(file));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E> void setNested(String key, E input) {
+        Preconditions.checkBlank(key, "Key is null or blank");
+        final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
+
+        if (keys.size() == 1) {
+            lock.lock();
+            try {
+                properties.put(key, input);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.getClass());
+            final Map<String, Object> map = new FunctionalCollection<String>(keys.subList(0, keys.size() - 2)).foldLeft(properties, new BinaryFunction<String, Map<String, Object>>() {
+                public Map<String, Object> apply(Map<String, Object> seed, String input) {
+                    Map<String, Object> result;
+                    if (seed.containsKey(input)) {
+                        result = (Map<String, Object>) seed.get(input);
+                    } else {
+                        result = new HashMap<String, Object>();
+                        lock.lock();
+                        try {
+                            seed.put(input, result);
+                        } finally {
+                            lock.unlock();
+                        }
+                    }
+                    return result;
+                }
+            });
+            lock.lock();
+            try {
+                map.put(keys.get(keys.size() - 1), converter.toString(input));
+            } finally {
+                lock.unlock();
+            }
+        }
+
     }
 
     class FilePoller implements Runnable {

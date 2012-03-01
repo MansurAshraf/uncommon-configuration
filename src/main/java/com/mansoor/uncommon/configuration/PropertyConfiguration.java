@@ -118,6 +118,10 @@ public class PropertyConfiguration extends BaseConfiguration {
         }
     }
 
+    public <E> void setNested(String key, E input) {
+        set(key, input);
+    }
+
 
     class FilePoller implements Runnable {
         public void run() {
