@@ -79,4 +79,10 @@ public class PropertyConfigurationTest {
         assertEquals("abc", value);
 
     }
+
+    @Test
+    public void testGetNested() throws Exception {
+        final String actual = configuration.getNested(String.class, "a.b.c");
+        assertEquals("abc", actual);
+    }
 }

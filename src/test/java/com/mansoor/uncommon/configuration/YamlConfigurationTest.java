@@ -110,4 +110,20 @@ public class YamlConfigurationTest {
         assertFalse(Preconditions.isEmpty(files));
         assertTrue(files.size() == 2);
     }
+
+    @Test
+    public void testSetNested() throws Exception {
+        configuration.setNested("production.database.admin.password", "12345");
+        configuration.setNested("production.database.admin.userid", "admin");
+        final Integer password = configuration.getNested(Integer.class, "production.database.admin.password");
+        final String userId = configuration.getNested(String.class, "production.database.admin.userid");
+        final String expectedUserId = "admin";
+        final Integer expectedPassword = 12345;
+        assertEquals("userid did not match", expectedUserId, userId);
+        assertEquals("password did not match", expectedPassword, password);
+        final String tempLocation = System.getProperty("java.io.tmpdir");
+        final File prop = configuration.save(tempLocation + File.separator + "newprop.yaml");
+        assertTrue("file did not save", prop.exists());
+
+    }
 }

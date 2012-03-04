@@ -128,7 +128,7 @@ public class YamlConfiguration extends BaseConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    public <E> void setNested(String key, E input) {
+    public <E> void setNested(final String key, final E input) {
         Preconditions.checkBlank(key, "Key is null or blank");
         final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
 
@@ -141,9 +141,9 @@ public class YamlConfiguration extends BaseConfiguration {
             }
         } else {
             final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.getClass());
-            final Map<String, Object> map = new FunctionalCollection<String>(keys.subList(0, keys.size() - 2)).foldLeft(properties, new BinaryFunction<String, Map<String, Object>>() {
-                public Map<String, Object> apply(Map<String, Object> seed, String input) {
-                    Map<String, Object> result;
+            final Map<String, Object> map = new FunctionalCollection<String>(keys.subList(0, keys.size() - 1)).foldLeft(properties, new BinaryFunction<String, Map<String, Object>>() {
+                public Map<String, Object> apply(final Map<String, Object> seed, final String input) {
+                    final Map<String, Object> result;
                     if (seed.containsKey(input)) {
                         result = (Map<String, Object>) seed.get(input);
                     } else {
