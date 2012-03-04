@@ -127,46 +127,55 @@ public class YamlConfiguration extends BaseConfiguration {
         yaml.dump(properties, new FileWriter(file));
     }
 
+
     @SuppressWarnings("unchecked")
     public <E> void setNested(final String key, final E input) {
+        Preconditions.checkNull(input, "input is null");
+        final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.getClass());
+        final String value = converter.toString(input);
+        setNestedStringValue(key, value);
+
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public <E> void setNestedAsList(final String key, final List<E> input) {
+        if (Preconditions.isNotEmpty(input)) {
+            final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.get(0).getClass());
+            final String value = convertListToStringBuilder(input, converter).toString();
+            setNestedStringValue(key, value);
+
+        }
+    }
+
+    public <E> void setNestedAsList(final String key, final E... input) {
+        Preconditions.checkArgument(input != null && input.length > 0, "input is empty");
+        setNestedAsList(key, Arrays.asList(input));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E> void setNestedStringValue(final String key, final String value) {
         Preconditions.checkBlank(key, "Key is null or blank");
         final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
 
         if (keys.size() == 1) {
             lock.lock();
             try {
-                properties.put(key, input);
+                properties.put(key, value);
             } finally {
                 lock.unlock();
             }
         } else {
-            final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.getClass());
-            final Map<String, Object> map = new FunctionalCollection<String>(keys.subList(0, keys.size() - 1)).foldLeft(properties, new BinaryFunction<String, Map<String, Object>>() {
-                public Map<String, Object> apply(final Map<String, Object> seed, final String input) {
-                    final Map<String, Object> result;
-                    if (seed.containsKey(input)) {
-                        result = (Map<String, Object>) seed.get(input);
-                    } else {
-                        result = new HashMap<String, Object>();
-                        lock.lock();
-                        try {
-                            seed.put(input, result);
-                        } finally {
-                            lock.unlock();
-                        }
-                    }
-                    return result;
-                }
-            });
+            final Map<String, Object> map = getInnerMap(properties, keys);
             lock.lock();
             try {
-                map.put(keys.get(keys.size() - 1), converter.toString(input));
+                map.put(keys.get(keys.size() - 1), value);
             } finally {
                 lock.unlock();
             }
         }
-
     }
+
 
     class FilePoller implements Runnable {
         public void run() {

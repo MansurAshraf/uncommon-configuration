@@ -24,12 +24,15 @@ import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Muhammad Ashraf
@@ -106,5 +109,19 @@ public class YamlDateConverterTest {
     @Test(expected = PropertyConversionException.class)
     public void testNestedConversionException() throws Exception {
         configuration.getList(Date.class, "development");
+    }
+
+    @Test
+    public void testSetNestedAsListWithCustomSeparator() throws Exception {
+        ((YamlConfiguration) configuration).setDeliminator(' ');
+        configuration.setNestedAsList("test.unit.files", new File("/tmp/testFile1"), new File("/tmp/testFile2"));
+        final List<File> files = configuration.getNestedAsList(File.class, "test.unit.files");
+        assertFalse("result is empty", Preconditions.isEmpty(files));
+        assertTrue("incorrect size", files.size() == 2);
+        assertTrue(files.contains(new File("/tmp/testFile1")));
+        assertTrue(files.contains(new File("/tmp/testFile2")));
+        final String tempLocation = System.getProperty("java.io.tmpdir");
+        final File prop = configuration.save(tempLocation + File.separator + "nested.yaml");
+        assertTrue("file did not save", prop.exists());
     }
 }

@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -118,8 +119,16 @@ public class PropertyConfiguration extends BaseConfiguration {
         }
     }
 
-    public <E> void setNested(String key, E input) {
+    public <E> void setNested(final String key, final E input) {
         set(key, input);
+    }
+
+    public <E> void setNestedAsList(final String key, final List<E> input) {
+        setList(key, input);
+    }
+
+    public <E> void setNestedAsList(final String key, final E... input) {
+        setList(key, input);
     }
 
 

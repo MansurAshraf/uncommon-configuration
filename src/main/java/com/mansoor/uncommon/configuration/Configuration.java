@@ -42,6 +42,10 @@ public interface Configuration {
 
     <E> void setNested(String key, E input);
 
+    <E> void setNestedAsList(String key, List<E> input);
+
+    <E> void setNestedAsList(final String key, final E... input);
+
     void load(File file);
 
     void load(String path);

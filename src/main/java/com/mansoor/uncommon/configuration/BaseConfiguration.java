@@ -20,6 +20,7 @@ import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
+import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
 import com.mansoor.uncommon.configuration.transformers.PropertyTransformer;
 import com.mansoor.uncommon.configuration.util.Preconditions;
@@ -30,7 +31,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -86,14 +89,18 @@ public abstract class BaseConfiguration implements Configuration {
     public <E> void setList(final String key, final List<E> values) {
         if (Preconditions.isNotEmpty(values)) {
             final Converter<E> converter = converterRegistry.getConverter((Class<E>) values.get(0).getClass());
-            final StringBuffer stringBuffer = new FunctionalCollection<E>(values).foldLeft(new StringBuffer(), new IndexedBinaryFunction<E, StringBuffer>() {
-                public StringBuffer apply(final StringBuffer seed, final E input, final Integer index) {
-                    seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
-                    return seed;
-                }
-            });
-            setProperty(key, stringBuffer.toString());
+            final StringBuilder stringBuilder = convertListToStringBuilder(values, converter);
+            setProperty(key, stringBuilder.toString());
         }
+    }
+
+    protected <E> StringBuilder convertListToStringBuilder(final List<E> values, final Converter<E> converter) {
+        return new FunctionalCollection<E>(values).foldLeft(new StringBuilder(), new IndexedBinaryFunction<E, StringBuilder>() {
+            public StringBuilder apply(final StringBuilder seed, final E input, final Integer index) {
+                seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
+                return seed;
+            }
+        });
     }
 
 
@@ -259,6 +266,28 @@ public abstract class BaseConfiguration implements Configuration {
         }
         return file;
     }
+
+    @SuppressWarnings("unchecked")
+    protected Map<String, Object> getInnerMap(final Map<String, Object> map, final List<String> keys) {
+        return new FunctionalCollection<String>(keys.subList(0, keys.size() - 1)).foldLeft(map, new BinaryFunction<String, Map<String, Object>>() {
+            public Map<String, Object> apply(final Map<String, Object> seed, final String input) {
+                final Map<String, Object> result;
+                if (seed.containsKey(input)) {
+                    result = (Map<String, Object>) seed.get(input);
+                } else {
+                    result = new HashMap<String, Object>();
+                    lock.lock();
+                    try {
+                        seed.put(input, result);
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+                return result;
+            }
+        });
+    }
+
 
     protected abstract void storeConfiguration(File file) throws IOException;
 
