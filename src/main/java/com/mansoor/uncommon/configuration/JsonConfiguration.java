@@ -19,15 +19,11 @@ package com.mansoor.uncommon.configuration;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.util.Preconditions;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -64,9 +60,10 @@ public class JsonConfiguration extends MapBasedConfiguration {
     }
 
 
+    @SuppressWarnings("unchecked")
     protected void storeConfiguration(final File file) throws IOException {
-        final JSONObject obj = (JSONObject) properties;
-        obj.writeJSONString(new FileWriter(obj.toString()));
+        final String value = JSONValue.toJSONString(properties);
+        saveFile(file, value);
     }
 
 
@@ -90,4 +87,16 @@ public class JsonConfiguration extends MapBasedConfiguration {
             }
         }
     }
+
+    private void saveFile(final File file, final String json) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(file));
+            out.write(json);
+            out.close();
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to save file", e);
+        }
+    }
+
 }
+
