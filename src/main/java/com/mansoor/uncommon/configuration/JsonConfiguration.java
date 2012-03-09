@@ -17,69 +17,77 @@
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
+import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
+import com.mansoor.uncommon.configuration.util.Preconditions;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Muhammad Ashraf
  * @since 3/4/12
  */
-public class JsonConfiguration extends BaseConfiguration {
-    protected JsonConfiguration(final ConverterRegistry converterRegistry) {
-        super(converterRegistry);
+public class JsonConfiguration extends MapBasedConfiguration {
+    private static final Logger log = LoggerFactory.getLogger(JsonConfiguration.class);
+
+    public JsonConfiguration(final ConverterRegistry converterRegistry) {
+        super(converterRegistry, new HashMap<String, Object>());
     }
+
+    public JsonConfiguration() {
+        super(new DefaultConverterRegistry(), new HashMap<String, Object>());
+    }
+
+
+    public JsonConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
+        super(converterRegistry, new HashMap<String, Object>());
+        Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
+        Preconditions.checkNull(timeUnit, "No Time Unit Specified");
+        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
+
+    }
+
+    public JsonConfiguration(final long pollingRate, final TimeUnit timeUnit) {
+        super(new DefaultConverterRegistry(), new HashMap<String, Object>());
+        Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
+        Preconditions.checkNull(timeUnit, "No Time Unit Specified");
+        executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
+    }
+
 
     protected void storeConfiguration(final File file) throws IOException {
-
+        final JSONObject obj = (JSONObject) properties;
+        obj.writeJSONString(new FileWriter(obj.toString()));
     }
 
-    protected void setProperty(final String key, final Object value) {
 
-    }
-
-    protected String getProperty(final String key) {
-        return null;
-    }
-
+    @SuppressWarnings("unchecked")
     protected void loadConfig(final File propertyFile) throws IOException {
-
+        final Map<String, Object> map = (Map<String, Object>) JSONValue.parse(new FileReader(propertyFile));
+        properties.putAll(map);
     }
 
-    protected void clearConfig() {
 
-    }
-
-    protected String getNestedValue(final String key) {
-        return null;
-    }
-
-    public <E> List<E> getList(Class<E> type, String key) {
-        return null;
-    }
-
-    public <E> List<E> getNestedList(Class<E> type, String key) {
-        return null;
-    }
-
-    public <E> void setList(String key, List<E> input) {
-
-    }
-
-    public <E> void setList(String key, E... input) {
-
-    }
-
-    public <E> void setNested(final String key, final E input) {
-
-    }
-
-    public <E> void setNestedList(final String key, final List<E> input) {
-
-    }
-
-    public <E> void setNestedList(final String key, final E... input) {
-
+    class FilePoller implements Runnable {
+        public void run() {
+            log.info("Polling File");
+            final File temp = new File(config.getAbsolutePath());
+            if (temp.exists() && temp.lastModified() > lastModified) {
+                lastModified = temp.lastModified();
+                log.info("Reload Required");
+                reload();
+            } else {
+                log.info("Not reloading file as no change has been detected since last load");
+            }
+        }
     }
 }

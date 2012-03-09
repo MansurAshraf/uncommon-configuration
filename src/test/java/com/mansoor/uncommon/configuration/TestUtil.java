@@ -36,4 +36,10 @@ public final class TestUtil {
         configuration.load(location);
         return configuration;
     }
+
+    public static Configuration getJsonConfiguration(final String location) {
+        final Configuration configuration = new JsonConfiguration();
+        configuration.load(location);
+        return configuration;
+    }
 }
