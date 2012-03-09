@@ -7,13 +7,17 @@ development:
     database: project_development
     username: root
     password:
-      socket: /tmp/mysql.sock,/tmp/postgresql.sock
+      socket: [/tmp/mysql.sock,/tmp/postgresql.sock]
       web: 1
 
 #date test
 dateOne: 02/23/2012
 dateTwo: 02-12-2012
 invalidDate: 123
-dateList: 02/12/2012,02/13/2012,02/14/2012,02/15/2012
-dateList2: 02/12/2012 02/13/2012 02/14/2012 02/15/2012
-dateList3: 02-12-2012 02-13-2012 02-14-2012 02-15-2012
+dateList: [02/12/2012,02/13/2012,02/14/2012,02/15/2012]
+
+#exception test
+ex: [abc]
+
+#list test
+list: [milk, pumpkin pie, eggs, juice]

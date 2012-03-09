@@ -80,22 +80,6 @@ public class YamlDateConverterTest {
 
     }
 
-    @Test
-    public void testGetDateListWithCustomSeparator() throws Exception {
-        ((YamlConfiguration) configuration).setDeliminator(' ');
-        final List<Date> result = configuration.getList(Date.class, "dateList2");
-        assertFalse("result is empty", Preconditions.isEmpty(result));
-        assertTrue("incorrect size", result.size() == 4);
-    }
-
-    @Test
-    public void testGetDateListWithCustomSeparatorAndCustomFormat() throws Exception {
-        configuration.getConverterRegistry().addConverter(Date.class, new DateConverter("MM-dd-yyyy"));
-        ((YamlConfiguration) configuration).setDeliminator(' ');
-        final List<Date> result = configuration.getList(Date.class, "dateList3");
-        assertFalse("result is empty", Preconditions.isEmpty(result));
-        assertTrue("incorrect size", result.size() == 4);
-    }
 
     @Test
     public void testSetDate() throws Exception {
@@ -108,7 +92,7 @@ public class YamlDateConverterTest {
 
     @Test(expected = PropertyConversionException.class)
     public void testNestedConversionException() throws Exception {
-        configuration.getList(Date.class, "development");
+        configuration.getList(Date.class, "ex");
     }
 
     @Test

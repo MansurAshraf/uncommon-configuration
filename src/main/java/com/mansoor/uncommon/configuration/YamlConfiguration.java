@@ -21,6 +21,7 @@ import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
+import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,10 +106,11 @@ public class YamlConfiguration extends BaseConfiguration {
     }
 
 
-    protected String getNestedValue(final String key) {
+    protected Object getNestedValue(final String key) {
         Preconditions.checkBlank(key, "Key is null or blank");
         final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
-        final Object value = new FunctionalCollection<String>(keys).foldLeft(properties, new BinaryFunction<String, Object>() {
+
+        return new FunctionalCollection<String>(keys).foldLeft(properties, new BinaryFunction<String, Object>() {
             public Object apply(final Object seed, final String input) {
                 Object result = seed;
                 if (Preconditions.isNotNull(seed) && seed instanceof HashMap) {
@@ -117,8 +119,6 @@ public class YamlConfiguration extends BaseConfiguration {
                 return result;
             }
         });
-
-        return convertValueToString(value);
     }
 
 
@@ -127,6 +127,56 @@ public class YamlConfiguration extends BaseConfiguration {
         yaml.dump(properties, new FileWriter(file));
     }
 
+
+    public <E> List<E> getList(final Class<E> type, final String key) {
+        final Object value = properties.get(key);
+        return transformList(type, value);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E> List<E> transformList(final Class<E> type, final Object value) {
+        List<E> result = null;
+        if (Preconditions.isNotNull(value)) {
+            Preconditions.checkArgument(List.class.isAssignableFrom(value.getClass()), "Expecting a List but found " + value);
+            final List<String> unconvertedList = (List<String>) value;
+            final Converter<E> converter = converterRegistry.getConverter(type);
+            result = new FunctionalCollection<String>(unconvertedList).map(new UnaryFunction<String, E>() {
+                public E apply(final String input) {
+                    return converter.convert(input);
+                }
+            }).asList();
+        }
+        return result;
+    }
+
+
+    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
+        final Object nestedValue = getNestedValue(key);
+        return transformList(type, nestedValue);
+    }
+
+
+    public <E> void setList(final String key, final List<E> input) {
+        Preconditions.checkArgument(Preconditions.isNotNull(key), "key is null");
+        Preconditions.checkArgument(Preconditions.isNotEmpty(input), "input is empty");
+        final List<String> result = transformList(input);
+        properties.put(key, result);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E> List<String> transformList(final List<E> input) {
+        final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.get(0).getClass());
+        return new FunctionalCollection<E>(input).map(new UnaryFunction<E, String>() {
+            public String apply(final E input) {
+                return converter.toString(input);
+            }
+        }).asList();
+    }
+
+    public <E> void setList(final String key, final E... input) {
+        setList(key, Arrays.asList(input));
+    }
 
     @SuppressWarnings("unchecked")
     public <E> void setNested(final String key, final E input) {
@@ -140,12 +190,9 @@ public class YamlConfiguration extends BaseConfiguration {
 
     @SuppressWarnings("unchecked")
     public <E> void setNestedAsList(final String key, final List<E> input) {
-        if (Preconditions.isNotEmpty(input)) {
-            final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.get(0).getClass());
-            final String value = convertListToStringBuilder(input, converter).toString();
-            setNestedStringValue(key, value);
+        Preconditions.checkNull(key, "key is null");
 
-        }
+
     }
 
     public <E> void setNestedAsList(final String key, final E... input) {

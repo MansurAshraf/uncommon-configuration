@@ -16,8 +16,12 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
+import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
+import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
+import com.mansoor.uncommon.configuration.transformers.PropertyTransformer;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +86,64 @@ public class PropertyConfiguration extends BaseConfiguration {
         return new Properties();
     }
 
+    public <E> List<E> getList(final Class<E> type, final String key) {
+        final String property = getProperty(key);
+        return splitAndConvert(type, property);
+    }
+
+    protected <E> List<E> splitAndConvert(final Class<E> type, final String property) {
+        List<E> result = null;
+        if (Preconditions.isNotNull(property)) {
+            result = new FunctionalCollection<String>(property.split(new String(new char[]{deliminator}))).map(new PropertyTransformer<E>(type, converterRegistry)).asList();
+        }
+        return result;
+    }
+
+
+    /**
+     * Creates a String representation of the given list and associate it with the given key
+     *
+     * @param key    key
+     * @param values list of value
+     * @param <E>    Type of list
+     */
+    @SuppressWarnings(value = "unchecked")
+    public <E> void setList(final String key, final List<E> values) {
+        if (Preconditions.isNotEmpty(values)) {
+            final Converter<E> converter = converterRegistry.getConverter((Class<E>) values.get(0).getClass());
+            final StringBuilder stringBuilder = convertListToStringBuilder(values, converter);
+            setProperty(key, stringBuilder.toString());
+        }
+    }
+
+    protected <E> StringBuilder convertListToStringBuilder(final List<E> values, final Converter<E> converter) {
+        return new FunctionalCollection<E>(values).foldLeft(new StringBuilder(), new IndexedBinaryFunction<E, StringBuilder>() {
+            public StringBuilder apply(final StringBuilder seed, final E input, final Integer index) {
+                seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
+                return seed;
+            }
+        });
+    }
+
+    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
+        final Object nestedValue = getNestedValue(key);
+        return splitAndConvert(type, nestedValue != null ? nestedValue.toString() : null);
+
+    }
+
+    /**
+     * Creates a String representation of the given list and associate it with the given key
+     *
+     * @param key   key
+     * @param input list of value
+     * @param <E>   Type of list
+     */
+    public <E> void setList(final String key, final E... input) {
+        if (Preconditions.isNotNull(input)) {
+            setList(key, Arrays.asList(input));
+        }
+    }
+
     protected String getProperty(final String key) {
         return properties.getProperty(key);
     }
@@ -98,7 +161,7 @@ public class PropertyConfiguration extends BaseConfiguration {
         properties.clear();
     }
 
-    protected String getNestedValue(final String key) {
+    protected Object getNestedValue(final String key) {
         return properties.getProperty(key);
     }
 

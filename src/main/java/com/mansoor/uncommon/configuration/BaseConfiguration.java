@@ -21,8 +21,6 @@ import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
 import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
-import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
-import com.mansoor.uncommon.configuration.transformers.PropertyTransformer;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,45 +61,6 @@ public abstract class BaseConfiguration implements Configuration {
     public void setDeliminator(final char deliminator) {
         this.deliminator = deliminator;
     }
-
-    public <E> List<E> getList(final Class<E> type, final String key) {
-        final String property = getProperty(key);
-        return splitAndConvert(type, property);
-    }
-
-    protected <E> List<E> splitAndConvert(final Class<E> type, final String property) {
-        List<E> result = null;
-        if (Preconditions.isNotNull(property)) {
-            result = new FunctionalCollection<String>(property.split(new String(new char[]{deliminator}))).map(new PropertyTransformer<E>(type, converterRegistry)).asList();
-        }
-        return result;
-    }
-
-    /**
-     * Creates a String representation of the given list and associate it with the given key
-     *
-     * @param key    key
-     * @param values list of value
-     * @param <E>    Type of list
-     */
-    @SuppressWarnings(value = "unchecked")
-    public <E> void setList(final String key, final List<E> values) {
-        if (Preconditions.isNotEmpty(values)) {
-            final Converter<E> converter = converterRegistry.getConverter((Class<E>) values.get(0).getClass());
-            final StringBuilder stringBuilder = convertListToStringBuilder(values, converter);
-            setProperty(key, stringBuilder.toString());
-        }
-    }
-
-    protected <E> StringBuilder convertListToStringBuilder(final List<E> values, final Converter<E> converter) {
-        return new FunctionalCollection<E>(values).foldLeft(new StringBuilder(), new IndexedBinaryFunction<E, StringBuilder>() {
-            public StringBuilder apply(final StringBuilder seed, final E input, final Integer index) {
-                seed.append(converter.toString(input)).append(index < values.size() - 1 ? deliminator : "");
-                return seed;
-            }
-        });
-    }
-
 
     @SuppressWarnings("unchecked")
     public <E> void set(final String key, final E input) {
@@ -139,31 +97,17 @@ public abstract class BaseConfiguration implements Configuration {
 
     public <E> E getNested(final Class<E> type, final String key) {
 
-        final String value = getNestedValue(key);
-        final Converter<E> converter = converterRegistry.getConverter(type);
-        try {
-            return converter.convert(value);
-        } catch (Exception e) {
-            throw new PropertyConversionException("conversion failed", e);
+        final Object value = getNestedValue(key);
+        E result = null;
+        if (Preconditions.isNotNull(value)) {
+            final Converter<E> converter = converterRegistry.getConverter(type);
+            try {
+                result = converter.convert(String.class.isAssignableFrom(value.getClass()) ? (String) value : value.toString());
+            } catch (Exception e) {
+                throw new PropertyConversionException("conversion failed", e);
+            }
         }
-    }
-
-    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
-        final String value = getNestedValue(key);
-        return splitAndConvert(type, value);
-    }
-
-    /**
-     * Creates a String representation of the given list and associate it with the given key
-     *
-     * @param key   key
-     * @param input list of value
-     * @param <E>   Type of list
-     */
-    public <E> void setList(final String key, final E... input) {
-        if (Preconditions.isNotNull(input)) {
-            setList(key, Arrays.asList(input));
-        }
+        return result;
     }
 
     /**
@@ -291,7 +235,7 @@ public abstract class BaseConfiguration implements Configuration {
 
     protected abstract void storeConfiguration(File file) throws IOException;
 
-    protected abstract void setProperty(String key, String s);
+    protected abstract void setProperty(final String key, String s);
 
     protected abstract String getProperty(String key);
 
@@ -299,5 +243,5 @@ public abstract class BaseConfiguration implements Configuration {
 
     protected abstract void clearConfig();
 
-    protected abstract String getNestedValue(final String key);
+    protected abstract Object getNestedValue(final String key);
 }

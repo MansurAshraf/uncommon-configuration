@@ -124,6 +124,11 @@ public class YamlConfigurationTest {
         final String tempLocation = System.getProperty("java.io.tmpdir");
         final File prop = configuration.save(tempLocation + File.separator + "newprop.yaml");
         assertTrue("file did not save", prop.exists());
+    }
 
+    @Test
+    public void testGetYamlList() throws Exception {
+        final String list = configuration.get(String.class, "list");
+        assertNotNull(list);
     }
 }
