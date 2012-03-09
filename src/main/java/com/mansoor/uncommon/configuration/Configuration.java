@@ -32,7 +32,7 @@ public interface Configuration {
 
     <E> E getNested(Class<E> type, String key);
 
-    <E> List<E> getNestedAsList(Class<E> type, String key);
+    <E> List<E> getNestedList(Class<E> type, String key);
 
     <E> void set(String key, E input);
 
@@ -42,9 +42,9 @@ public interface Configuration {
 
     <E> void setNested(String key, E input);
 
-    <E> void setNestedAsList(String key, List<E> input);
+    <E> void setNestedList(String key, List<E> input);
 
-    <E> void setNestedAsList(final String key, final E... input);
+    <E> void setNestedList(final String key, final E... input);
 
     void load(File file);
 

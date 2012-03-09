@@ -71,7 +71,7 @@ public class YamlConfiguration extends BaseConfiguration {
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
-    protected void setProperty(final String key, final String value) {
+    protected void setProperty(final String key, final Object value) {
         properties.put(key, value);
     }
 
@@ -80,6 +80,14 @@ public class YamlConfiguration extends BaseConfiguration {
         final Object value = properties.get(key);
         return convertValueToString(value);
     }
+
+    @SuppressWarnings("unchecked")
+    protected void loadConfig(final File propertyFile) throws IOException {
+        final Yaml yaml = new Yaml();
+        final Object data = yaml.load(new FileInputStream(propertyFile));
+        properties.putAll((Map<String, Object>) data);
+    }
+
 
     private String convertValueToString(final Object value) {
         String result = null;
@@ -91,14 +99,6 @@ public class YamlConfiguration extends BaseConfiguration {
             }
         }
         return result;
-    }
-
-
-    @SuppressWarnings("unchecked")
-    protected void loadConfig(final File propertyFile) throws IOException {
-        final Yaml yaml = new Yaml();
-        final Object data = yaml.load(new FileInputStream(propertyFile));
-        properties.putAll((Map<String, Object>) data);
     }
 
     protected void clearConfig() {
@@ -133,6 +133,26 @@ public class YamlConfiguration extends BaseConfiguration {
         return transformList(type, value);
     }
 
+
+    public <E> List<E> getNestedList(final Class<E> type, final String key) {
+        final Object nestedValue = getNestedValue(key);
+        return transformList(type, nestedValue);
+    }
+
+
+    public <E> void setList(final String key, final List<E> input) {
+        Preconditions.checkArgument(Preconditions.isNotNull(key), "key is null");
+        Preconditions.checkArgument(Preconditions.isNotEmpty(input), "input is empty");
+        final List<String> result = transformList(input);
+        lock.lock();
+        try {
+            setProperty(key, result);
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
     @SuppressWarnings("unchecked")
     private <E> List<E> transformList(final Class<E> type, final Object value) {
         List<E> result = null;
@@ -147,21 +167,6 @@ public class YamlConfiguration extends BaseConfiguration {
             }).asList();
         }
         return result;
-    }
-
-
-    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
-        final Object nestedValue = getNestedValue(key);
-        return transformList(type, nestedValue);
-    }
-
-
-    public <E> void setList(final String key, final List<E> input) {
-        Preconditions.checkArgument(Preconditions.isNotNull(key), "key is null");
-        Preconditions.checkArgument(Preconditions.isNotEmpty(input), "input is empty");
-        final List<String> result = transformList(input);
-        properties.put(key, result);
-
     }
 
     @SuppressWarnings("unchecked")
@@ -189,15 +194,29 @@ public class YamlConfiguration extends BaseConfiguration {
 
 
     @SuppressWarnings("unchecked")
-    public <E> void setNestedAsList(final String key, final List<E> input) {
+    public <E> void setNestedList(final String key, final List<E> input) {
         Preconditions.checkNull(key, "key is null");
+        Preconditions.checkArgument(Preconditions.isNotEmpty(input), "List is null or empty");
+        final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
+        final List<String> value = transformList(input);
+        if (keys.size() == 1) {
+            setProperty(keys.get(0), value);
+        } else {
+            final Map<String, Object> innerMap = getInnerMap(properties, keys);
+            lock.lock();
+            try {
+                innerMap.put(keys.get(keys.size() - 1), value);
+            } finally {
+                lock.unlock();
+            }
+        }
 
 
     }
 
-    public <E> void setNestedAsList(final String key, final E... input) {
+    public <E> void setNestedList(final String key, final E... input) {
         Preconditions.checkArgument(input != null && input.length > 0, "input is empty");
-        setNestedAsList(key, Arrays.asList(input));
+        setNestedList(key, Arrays.asList(input));
     }
 
     @SuppressWarnings("unchecked")
@@ -208,7 +227,7 @@ public class YamlConfiguration extends BaseConfiguration {
         if (keys.size() == 1) {
             lock.lock();
             try {
-                properties.put(key, value);
+                setProperty(key, value);
             } finally {
                 lock.unlock();
             }

@@ -98,8 +98,8 @@ public class YamlDateConverterTest {
     @Test
     public void testSetNestedAsListWithCustomSeparator() throws Exception {
         ((YamlConfiguration) configuration).setDeliminator(' ');
-        configuration.setNestedAsList("test.unit.files", new File("/tmp/testFile1"), new File("/tmp/testFile2"));
-        final List<File> files = configuration.getNestedAsList(File.class, "test.unit.files");
+        configuration.setNestedList("test.unit.files", new File("/tmp/testFile1"), new File("/tmp/testFile2"));
+        final List<File> files = configuration.getNestedList(File.class, "test.unit.files");
         assertFalse("result is empty", Preconditions.isEmpty(files));
         assertTrue("incorrect size", files.size() == 2);
         assertTrue(files.contains(new File("/tmp/testFile1")));

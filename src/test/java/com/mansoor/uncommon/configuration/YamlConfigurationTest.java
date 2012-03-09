@@ -106,7 +106,7 @@ public class YamlConfigurationTest {
 
     @Test
     public void testGetNestedAsList() throws Exception {
-        final List<File> files = configuration.getNestedAsList(File.class, "development.password.socket");
+        final List<File> files = configuration.getNestedList(File.class, "development.password.socket");
         assertFalse(Preconditions.isEmpty(files));
         assertTrue(files.size() == 2);
     }

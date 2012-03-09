@@ -96,7 +96,6 @@ public abstract class BaseConfiguration implements Configuration {
     }
 
     public <E> E getNested(final Class<E> type, final String key) {
-
         final Object value = getNestedValue(key);
         E result = null;
         if (Preconditions.isNotNull(value)) {
@@ -235,7 +234,7 @@ public abstract class BaseConfiguration implements Configuration {
 
     protected abstract void storeConfiguration(File file) throws IOException;
 
-    protected abstract void setProperty(final String key, String s);
+    protected abstract void setProperty(final String key, Object value);
 
     protected abstract String getProperty(String key);
 

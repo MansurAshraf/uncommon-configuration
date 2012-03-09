@@ -35,7 +35,7 @@ public class JsonConfiguration extends BaseConfiguration {
 
     }
 
-    protected void setProperty(final String key, final String value) {
+    protected void setProperty(final String key, final Object value) {
 
     }
 
@@ -59,7 +59,7 @@ public class JsonConfiguration extends BaseConfiguration {
         return null;
     }
 
-    public <E> List<E> getNestedAsList(Class<E> type, String key) {
+    public <E> List<E> getNestedList(Class<E> type, String key) {
         return null;
     }
 
@@ -75,11 +75,11 @@ public class JsonConfiguration extends BaseConfiguration {
 
     }
 
-    public <E> void setNestedAsList(final String key, final List<E> input) {
+    public <E> void setNestedList(final String key, final List<E> input) {
 
     }
 
-    public <E> void setNestedAsList(final String key, final E... input) {
+    public <E> void setNestedList(final String key, final E... input) {
 
     }
 }

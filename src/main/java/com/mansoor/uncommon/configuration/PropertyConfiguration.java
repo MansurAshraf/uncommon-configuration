@@ -125,7 +125,7 @@ public class PropertyConfiguration extends BaseConfiguration {
         });
     }
 
-    public <E> List<E> getNestedAsList(final Class<E> type, final String key) {
+    public <E> List<E> getNestedList(final Class<E> type, final String key) {
         final Object nestedValue = getNestedValue(key);
         return splitAndConvert(type, nestedValue != null ? nestedValue.toString() : null);
 
@@ -148,8 +148,8 @@ public class PropertyConfiguration extends BaseConfiguration {
         return properties.getProperty(key);
     }
 
-    protected void setProperty(final String key, final String value) {
-        properties.setProperty(key, value);
+    protected void setProperty(final String key, final Object value) {
+        properties.setProperty(key, value.toString());
     }
 
 
@@ -186,11 +186,11 @@ public class PropertyConfiguration extends BaseConfiguration {
         set(key, input);
     }
 
-    public <E> void setNestedAsList(final String key, final List<E> input) {
+    public <E> void setNestedList(final String key, final List<E> input) {
         setList(key, input);
     }
 
-    public <E> void setNestedAsList(final String key, final E... input) {
+    public <E> void setNestedList(final String key, final E... input) {
         setList(key, input);
     }
 
