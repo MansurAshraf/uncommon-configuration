@@ -128,4 +128,11 @@ public class JsonConfigurationTest {
         Assert.assertNotNull(prop);
         assertTrue(prop.exists());
     }
+
+    @Test
+    public void testSetValueInAnExistingKey() throws Exception {
+        configuration.setNested("glossary.newtitle", "New Title");
+        final String value = configuration.getNested(String.class, "glossary.newtitle");
+        assertThat(value, is(equalTo("New Title")));
+    }
 }
