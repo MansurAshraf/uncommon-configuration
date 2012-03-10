@@ -42,7 +42,7 @@ public abstract class BaseConfiguration implements Configuration {
     protected final ConverterRegistry converterRegistry;
     protected char deliminator = ',';
     protected final ReentrantLock lock = new ReentrantLock();
-    protected File config;
+    private File config;
     protected final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
     protected Long lastModified;
     public static final String NESTED_SEPARATOR = "(\\.)";

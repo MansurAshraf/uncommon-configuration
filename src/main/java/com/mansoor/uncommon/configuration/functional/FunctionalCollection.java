@@ -26,7 +26,7 @@ import java.util.*;
  * @since 2/7/12
  */
 public class FunctionalCollection<T> implements Collection<T> {
-    final Collection<T> collection;
+    private final Collection<T> collection;
 
     public FunctionalCollection() {
         collection = new ArrayList<T>();

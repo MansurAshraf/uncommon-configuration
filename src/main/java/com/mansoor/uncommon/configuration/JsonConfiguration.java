@@ -20,8 +20,6 @@ import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.Convertors.DefaultConverterRegistry;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.json.simple.JSONValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.HashMap;
@@ -33,7 +31,6 @@ import java.util.concurrent.TimeUnit;
  * @since 3/4/12
  */
 public class JsonConfiguration extends MapBasedConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(JsonConfiguration.class);
 
     public JsonConfiguration(final ConverterRegistry converterRegistry) {
         super(converterRegistry, new HashMap<String, Object>());

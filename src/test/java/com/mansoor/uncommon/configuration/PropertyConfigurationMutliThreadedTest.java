@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PropertyConfigurationMutliThreadedTest {
     private Configuration configuration;
-    File file;
+    private File file;
 
     @Before
     public void setUp() throws Exception {

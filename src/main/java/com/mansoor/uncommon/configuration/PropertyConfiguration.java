@@ -23,8 +23,6 @@ import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.IndexedBinaryFunction;
 import com.mansoor.uncommon.configuration.transformers.PropertyTransformer;
 import com.mansoor.uncommon.configuration.util.Preconditions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +42,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class PropertyConfiguration extends BaseConfiguration {
     protected final Properties properties;
-    private static final Logger log = LoggerFactory.getLogger(PropertyConfiguration.class);
 
     /**
      * Returns an instance of {@code PropertyConfiguration} that is configured to used
