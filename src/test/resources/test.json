@@ -1,5 +1,6 @@
 {
     "test":"test String",
+    "testList":["a","b"]
     "glossary":{
         "title":"example glossary",
         "GlossDiv":{

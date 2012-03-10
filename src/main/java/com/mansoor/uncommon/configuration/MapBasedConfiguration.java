@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012. Muhammad M. Ashraf
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
@@ -6,6 +22,8 @@ import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
 import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,25 +36,28 @@ import java.util.Map;
  */
 public abstract class MapBasedConfiguration extends BaseConfiguration {
     protected final Map<String, Object> properties;
+    private final static Logger log = LoggerFactory.getLogger(MapBasedConfiguration.class);
 
-
-    protected MapBasedConfiguration(final ConverterRegistry converterRegistry, Map<String, Object> properties) {
+    protected MapBasedConfiguration(final ConverterRegistry converterRegistry, final Map<String, Object> properties) {
         super(converterRegistry);
         this.properties = properties;
     }
 
     protected void setProperty(final String key, final Object value) {
+        log.debug("Storing Key ['()'] with value ['()']", key, value);
         properties.put(key, value);
     }
 
 
     protected String getProperty(final String key) {
         final Object value = properties.get(key);
+        log.debug("Returning Key ['()'] with value ['()']", key, value);
         return convertValueToString(value);
     }
 
 
     protected void clearConfig() {
+        log.debug("clearing config");
         properties.clear();
     }
 

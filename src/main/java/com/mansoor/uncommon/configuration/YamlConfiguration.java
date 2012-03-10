@@ -63,28 +63,16 @@ public class YamlConfiguration extends MapBasedConfiguration {
 
     @SuppressWarnings("unchecked")
     protected void loadConfig(final File propertyFile) throws IOException {
+        log.debug("loading file '()'" + propertyFile.getPath());
         final Yaml yaml = new Yaml();
         final Object data = yaml.load(new FileInputStream(propertyFile));
         properties.putAll((Map<String, Object>) data);
+        log.debug("File loaded");
     }
 
 
     protected void storeConfiguration(final File file) throws IOException {
         final Yaml yaml = new Yaml();
         yaml.dump(properties, new FileWriter(file));
-    }
-
-    class FilePoller implements Runnable {
-        public void run() {
-            log.info("Polling File");
-            final File temp = new File(config.getAbsolutePath());
-            if (temp.exists() && temp.lastModified() > lastModified) {
-                lastModified = temp.lastModified();
-                log.info("Reload Required");
-                reload();
-            } else {
-                log.info("Not reloading file as no change has been detected since last load");
-            }
-        }
     }
 }

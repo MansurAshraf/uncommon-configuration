@@ -74,23 +74,9 @@ public class JsonConfiguration extends MapBasedConfiguration {
     }
 
 
-    class FilePoller implements Runnable {
-        public void run() {
-            log.info("Polling File");
-            final File temp = new File(config.getAbsolutePath());
-            if (temp.exists() && temp.lastModified() > lastModified) {
-                lastModified = temp.lastModified();
-                log.info("Reload Required");
-                reload();
-            } else {
-                log.info("Not reloading file as no change has been detected since last load");
-            }
-        }
-    }
-
     private void saveFile(final File file, final String json) {
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(file));
+            final BufferedWriter out = new BufferedWriter(new FileWriter(file));
             out.write(json);
             out.close();
         } catch (Exception e) {
@@ -99,4 +85,5 @@ public class JsonConfiguration extends MapBasedConfiguration {
     }
 
 }
+
 

@@ -194,18 +194,4 @@ public class PropertyConfiguration extends BaseConfiguration {
         setList(key, input);
     }
 
-
-    class FilePoller implements Runnable {
-        public void run() {
-            log.info("Polling File");
-            final File temp = new File(config.getAbsolutePath());
-            if (temp.exists() && temp.lastModified() > lastModified) {
-                lastModified = temp.lastModified();
-                log.info("Reload Required");
-                reload();
-            } else {
-                log.info("Not reloading file as no change has been detected since last load");
-            }
-        }
-    }
 }
