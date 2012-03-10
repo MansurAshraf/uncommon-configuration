@@ -46,24 +46,26 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
     }
 
     /**
-     * Loads the given property file
+     * Operation not supported
      *
      * @param propertyFile property file
+     * @throws UnsupportedOperationException
      */
     public void load(final File propertyFile) {
         throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
     }
 
     /**
-     * Loads the property file associated with the given input stream
+     * Operation not supported
      *
      * @param path file path
+     * @throws UnsupportedOperationException
      */
     public void load(final String path) {
         throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
     }
 
-
+    /**{@inheritDoc}*/
     public void reload() {
         lock.lock();
         try {
@@ -82,6 +84,7 @@ public class SystemPropertyConfiguration extends PropertyConfiguration {
         throw new UnsupportedOperationException("Operation not supported on SystemPropertyConfiguration");
     }
 
+    /**{@inheritDoc}*/
     protected Properties createProperties() {
         final Properties p = new Properties();
         p.putAll(System.getProperties());

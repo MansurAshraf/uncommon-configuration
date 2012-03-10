@@ -27,20 +27,33 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This class is responsible for accessing and manipulating <code>JSON</code> configuration.
  * @author Muhammad Ashraf
  * @since 3/4/12
  */
 public class JsonConfiguration extends MapBasedConfiguration {
-
+    /**
+     * Creates an instance that is configured to use given <code>ConverterRegistry</code>
+     * @param converterRegistry converterRegistry
+     */
     public JsonConfiguration(final ConverterRegistry converterRegistry) {
         super(converterRegistry, new HashMap<String, Object>());
     }
 
+    /**
+     * Creates an instance that is configured to use  {@link DefaultConverterRegistry}
+     */
     public JsonConfiguration() {
         super(new DefaultConverterRegistry(), new HashMap<String, Object>());
     }
 
 
+    /**
+     * Returns an instance of {@code JsonConfiguration} that is configured to poll configuration file for change
+     * @param converterRegistry registry that will be used by this PropertyConfiguration
+     * @param pollingRate  polling rate
+     * @param timeUnit time unit (eg: seconds, minute etc)
+     */
     public JsonConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         super(converterRegistry, new HashMap<String, Object>());
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
@@ -49,6 +62,11 @@ public class JsonConfiguration extends MapBasedConfiguration {
 
     }
 
+    /**
+     * Creates an instance of {@code JsonConfiguration} that is configured to poll configuration file for change
+     * @param pollingRate  polling rate
+     * @param timeUnit time unit (eg: seconds, minute etc)
+     */
     public JsonConfiguration(final long pollingRate, final TimeUnit timeUnit) {
         super(new DefaultConverterRegistry(), new HashMap<String, Object>());
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
@@ -56,7 +74,7 @@ public class JsonConfiguration extends MapBasedConfiguration {
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
-
+    /**{@inheritDoc}*/
     @SuppressWarnings("unchecked")
     protected void storeConfiguration(final File file) throws IOException {
         final String value = JSONValue.toJSONString(properties);
@@ -64,13 +82,18 @@ public class JsonConfiguration extends MapBasedConfiguration {
     }
 
 
+    /**{@inheritDoc}*/
     @SuppressWarnings("unchecked")
     protected void loadConfig(final File propertyFile) throws IOException {
         final Map<String, Object> map = (Map<String, Object>) JSONValue.parse(new FileReader(propertyFile));
         properties.putAll(map);
     }
 
-
+    /**
+     * Save the json configuration to the given file.
+     * @param file file where the config will be sasved
+     * @param json json String.
+     */
     private void saveFile(final File file, final String json) {
         try {
             final BufferedWriter out = new BufferedWriter(new FileWriter(file));

@@ -44,7 +44,7 @@ public class PropertyConfiguration extends BaseConfiguration {
     protected final Properties properties;
 
     /**
-     * Returns an instance of {@code PropertyConfiguration} that is configured to used
+     * Returns an instance of {@code PropertyConfiguration} that is configured to use
      * {@link DefaultConverterRegistry}
      */
     public PropertyConfiguration() {
@@ -62,7 +62,12 @@ public class PropertyConfiguration extends BaseConfiguration {
         properties = createProperties();
     }
 
-
+    /**
+     * Returns an instance of {@code PropertyConfiguration} that is configured to poll configuration file for change
+     * @param converterRegistry registry that will be used by this PropertyConfiguration
+     * @param pollingRate  polling rate
+     * @param timeUnit time unit (eg: seconds, minute etc)
+     */
     public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         super(converterRegistry);
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
@@ -71,6 +76,11 @@ public class PropertyConfiguration extends BaseConfiguration {
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
+    /**
+     * Returns an instance of {@code PropertyConfiguration} that is configured to poll configuration file for change
+     * @param pollingRate  polling rate
+     * @param timeUnit time unit (eg: seconds, minute etc)
+     */
     public PropertyConfiguration(final long pollingRate, final TimeUnit timeUnit) {
         super(new DefaultConverterRegistry());
         Preconditions.checkArgument(pollingRate > 0, "Polling rate must be greater than 0");
@@ -79,15 +89,27 @@ public class PropertyConfiguration extends BaseConfiguration {
         executorService.scheduleAtFixedRate(new FilePoller(), pollingRate, pollingRate, timeUnit);
     }
 
+    /**
+     * Creates an instance of {@link Properties}
+     * @return properties object
+     */
     protected Properties createProperties() {
         return new Properties();
     }
 
+    /**{@inheritDoc}*/
     public <E> List<E> getList(final Class<E> type, final String key) {
         final String property = getProperty(key);
         return splitAndConvert(type, property);
     }
 
+    /**
+     * Splits the given property using deliminator and converts all the value to type <code>E</code>
+     * @param type type this property will be converted to
+     * @param property property that will be split and converted
+     * @param <E> generic type
+     * @return List of E
+     */
     protected <E> List<E> splitAndConvert(final Class<E> type, final String property) {
         List<E> result = null;
         if (Preconditions.isNotNull(property)) {
@@ -113,6 +135,13 @@ public class PropertyConfiguration extends BaseConfiguration {
         }
     }
 
+    /**
+     * Concatenate all the values in the given list, using deliminator, and return them as <code>StringBuilder</code>
+     * @param values List that will be converted to StringBuilder
+     * @param converter converter that will convert the values.
+     * @param <E> generic type E
+     * @return StringBuilder containing all the values in the list
+     */
     protected <E> StringBuilder convertListToStringBuilder(final List<E> values, final Converter<E> converter) {
         return new FunctionalCollection<E>(values).foldLeft(new StringBuilder(), new IndexedBinaryFunction<E, StringBuilder>() {
             public StringBuilder apply(final StringBuilder seed, final E input, final Integer index) {
@@ -122,6 +151,7 @@ public class PropertyConfiguration extends BaseConfiguration {
         });
     }
 
+    /**{@inheritDoc}*/
     public <E> List<E> getNestedList(final Class<E> type, final String key) {
         final Object nestedValue = getNestedValue(key);
         return splitAndConvert(type, nestedValue != null ? nestedValue.toString() : null);

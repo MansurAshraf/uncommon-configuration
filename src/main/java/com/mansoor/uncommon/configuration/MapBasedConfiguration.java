@@ -31,36 +31,47 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Abstract class containing methods used by map based configurations such as {@link YamlConfiguration} and {@link JsonConfiguration}
  * @author Muhammad Ashraf
  * @since 3/9/12
  */
 public abstract class MapBasedConfiguration extends BaseConfiguration {
+    /**
+     * Properties map.
+     */
     protected final Map<String, Object> properties;
     private final static Logger log = LoggerFactory.getLogger(MapBasedConfiguration.class);
 
+    /**
+     * Creates an instance using given converterRegistry and properties map
+     * @param converterRegistry instance of converterRegistry that this instance will use.
+     * @param properties  properties map.
+     */
     protected MapBasedConfiguration(final ConverterRegistry converterRegistry, final Map<String, Object> properties) {
         super(converterRegistry);
         this.properties = properties;
     }
 
+    /**{@inheritDoc}*/
     protected void setProperty(final String key, final Object value) {
         log.debug("Storing Key ['()'] with value ['()']", key, value);
         properties.put(key, value);
     }
 
-
+    /**{@inheritDoc}*/
     protected String getProperty(final String key) {
         final Object value = properties.get(key);
         log.debug("Returning Key ['()'] with value ['()']", key, value);
         return convertValueToString(value);
     }
 
-
+    /**{@inheritDoc}*/
     protected void clearConfig() {
         log.debug("clearing config");
         properties.clear();
     }
 
+    /**{@inheritDoc}*/
     protected Object getNestedValue(final String key) {
         Preconditions.checkBlank(key, "Key is null or blank");
         final List<String> keys = Arrays.asList(key.split(NESTED_SEPARATOR));
@@ -76,17 +87,19 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
         });
     }
 
+    /**{@inheritDoc}*/
     public <E> List<E> getList(final Class<E> type, final String key) {
         final Object value = properties.get(key);
         return transformList(type, value);
     }
 
-
+    /**{@inheritDoc}*/
     public <E> List<E> getNestedList(final Class<E> type, final String key) {
         final Object nestedValue = getNestedValue(key);
         return transformList(type, nestedValue);
     }
 
+    /**{@inheritDoc}*/
     public <E> void setList(final String key, final List<E> input) {
         Preconditions.checkArgument(Preconditions.isNotNull(key), "key is null");
         Preconditions.checkArgument(Preconditions.isNotEmpty(input), "input is empty");
@@ -100,6 +113,13 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
 
     }
 
+    /**
+     * Transforms the given value to the <code>List of E</code>
+     * @param type type of list given object will be converted to.
+     * @param value value that is converted.
+     * @param <E>  generic type E
+     * @return List of E
+     */
     @SuppressWarnings("unchecked")
     private <E> List<E> transformList(final Class<E> type, final Object value) {
         List<E> result = null;
@@ -116,6 +136,12 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
         return result;
     }
 
+    /**
+     * Transform given List to a List of String.
+     * @param input List that is converted.
+     * @param <E> generic type E
+     * @return List of String.
+     */
     @SuppressWarnings("unchecked")
     private <E> List<String> transformList(final List<E> input) {
         final Converter<E> converter = (Converter<E>) converterRegistry.getConverter(input.get(0).getClass());
@@ -125,11 +151,11 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
             }
         }).asList();
     }
-
+    /**{@inheritDoc}*/
     public <E> void setList(final String key, final E... input) {
         setList(key, Arrays.asList(input));
     }
-
+    /**{@inheritDoc}*/
     @SuppressWarnings("unchecked")
     public <E> void setNested(final String key, final E input) {
         Preconditions.checkNull(input, "input is null");
@@ -139,7 +165,7 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
 
     }
 
-
+    /**{@inheritDoc}*/
     @SuppressWarnings("unchecked")
     public <E> void setNestedList(final String key, final List<E> input) {
         Preconditions.checkNull(key, "key is null");
@@ -161,11 +187,17 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
 
     }
 
+    /**{@inheritDoc}*/
     public <E> void setNestedList(final String key, final E... input) {
         Preconditions.checkArgument(input != null && input.length > 0, "input is empty");
         setNestedList(key, Arrays.asList(input));
     }
 
+    /**
+     * Sets the given value using the nested key
+     * @param key nested key
+     * @param value value to be set
+     */
     @SuppressWarnings("unchecked")
     private void setNestedStringValue(final String key, final String value) {
         Preconditions.checkBlank(key, "Key is null or blank");
@@ -188,7 +220,11 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
         }
     }
 
-
+    /**
+     * Converts the value to String.
+     * @param value value to be converted.
+     * @return  String representation of the given value
+     */
     protected String convertValueToString(final Object value) {
         String result = null;
         if (Preconditions.isNotNull(value)) {
@@ -199,6 +235,33 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the inner most map associated with the given nested key.
+     * @param map properties map.
+     * @param keys nested keys
+     * @return inner most map tied to the given keys.
+     */
+    @SuppressWarnings("unchecked")
+    protected Map<String, Object> getInnerMap(final Map<String, Object> map, final List<String> keys) {
+        return new FunctionalCollection<String>(keys.subList(0, keys.size() - 1)).foldLeft(map, new BinaryFunction<String, Map<String, Object>>() {
+            public Map<String, Object> apply(final Map<String, Object> seed, final String input) {
+                final Map<String, Object> result;
+                if (seed.containsKey(input)) {
+                    result = (Map<String, Object>) seed.get(input);
+                } else {
+                    result = new HashMap<String, Object>();
+                    lock.lock();
+                    try {
+                        seed.put(input, result);
+                    } finally {
+                        lock.unlock();
+                    }
+                }
+                return result;
+            }
+        });
     }
 
 }

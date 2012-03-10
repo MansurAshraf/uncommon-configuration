@@ -35,19 +35,46 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
+ * This abstract class provides a partial implementation of {@link Configuration} that is suitable for most implementation.
+ * It is recommended to subclass this class instead of implementing {@link Configuration} directly
  * @author Muhammad Ashraf
  * @since 2/25/12
  */
 public abstract class BaseConfiguration implements Configuration {
+    /**
+     * Configuration registry used to retrieve property converters.
+     */
     protected final ConverterRegistry converterRegistry;
+    /**
+     * Property deliminator character.
+     */
     protected char deliminator = ',';
+    /**
+     * Lock that is used to block thread during destructive operations
+     */
     protected final ReentrantLock lock = new ReentrantLock();
+    /**
+     * Configuration file being used.
+     */
     private File config;
+    /**
+     * Scheduler used to schedule reload
+     */
     protected final ScheduledThreadPoolExecutor executorService = new ScheduledThreadPoolExecutor(1);
+    /**
+     * Last modified time stamp of the configuration file.
+     */
     protected Long lastModified;
+    /**
+     * Separator used to split nested keys.
+     */
     public static final String NESTED_SEPARATOR = "(\\.)";
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);
 
+    /**
+     * Creates an instances of using given <code>ConverterRegistry</code>
+     * @param converterRegistry converterRegistry that will be used by this instance.
+     */
     protected BaseConfiguration(final ConverterRegistry converterRegistry) {
         Preconditions.checkNull(converterRegistry, "ConverterRegistry is null");
         this.converterRegistry = converterRegistry;
@@ -62,6 +89,9 @@ public abstract class BaseConfiguration implements Configuration {
         this.deliminator = deliminator;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     public <E> void set(final String key, final E input) {
         Preconditions.checkNull(input, "input is null");
@@ -75,14 +105,7 @@ public abstract class BaseConfiguration implements Configuration {
     }
 
     /**
-     * Returns the value associated with the given key.
-     *
-     * @param type Type that the value will be converted too
-     * @param key  key that will be used to retrieve the value
-     * @param <E>  Type parameter
-     * @return value of type E
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *          if no converter is configured for the given type
+     * {@inheritDoc}
      */
     public <E> E get(final Class<E> type, final String key) {
         final Converter<E> converter = converterRegistry.getConverter(type);
@@ -94,6 +117,9 @@ public abstract class BaseConfiguration implements Configuration {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public <E> E getNested(final Class<E> type, final String key) {
         final Object value = getNestedValue(key);
         E result = null;
@@ -109,9 +135,7 @@ public abstract class BaseConfiguration implements Configuration {
     }
 
     /**
-     * Loads the given property file
-     *
-     * @param propertyFile property file
+     * {@inheritDoc}
      */
     public void load(final File propertyFile) {
         Preconditions.checkNull(propertyFile, "File is null");
@@ -131,9 +155,7 @@ public abstract class BaseConfiguration implements Configuration {
 
 
     /**
-     * Loads the property file associated with the given input stream
-     *
-     * @param path file path
+     * {@inheritDoc}
      */
     public void load(final String path) {
         Preconditions.checkNull(path, "path is null");
@@ -143,6 +165,9 @@ public abstract class BaseConfiguration implements Configuration {
         load(file);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void reload() {
         lock.lock();
         try {
@@ -160,11 +185,8 @@ public abstract class BaseConfiguration implements Configuration {
 
     }
 
-
     /**
-     * Returns the underlying Converter Registry
-     *
-     * @return ConverterRegistry
+     * {@inheritDoc}
      */
     public ConverterRegistry getConverterRegistry() {
         return converterRegistry;
@@ -178,7 +200,9 @@ public abstract class BaseConfiguration implements Configuration {
             executorService.shutdown();
         }
     }
-
+    /**
+     * {@inheritDoc}
+     */
     public void clear() {
         lock.lock();
         try {
@@ -190,10 +214,7 @@ public abstract class BaseConfiguration implements Configuration {
     }
 
     /**
-     * Saves the configuration to the given path
-     *
-     * @param path path where the file will be saved
-     * @return file where the config is saved
+     * {@inheritDoc}
      */
     public File save(final String path) {
         Preconditions.checkBlank(path, "path is null or empty");
@@ -209,28 +230,10 @@ public abstract class BaseConfiguration implements Configuration {
         return file;
     }
 
-    @SuppressWarnings("unchecked")
-    protected Map<String, Object> getInnerMap(final Map<String, Object> map, final List<String> keys) {
-        return new FunctionalCollection<String>(keys.subList(0, keys.size() - 1)).foldLeft(map, new BinaryFunction<String, Map<String, Object>>() {
-            public Map<String, Object> apply(final Map<String, Object> seed, final String input) {
-                final Map<String, Object> result;
-                if (seed.containsKey(input)) {
-                    result = (Map<String, Object>) seed.get(input);
-                } else {
-                    result = new HashMap<String, Object>();
-                    lock.lock();
-                    try {
-                        seed.put(input, result);
-                    } finally {
-                        lock.unlock();
-                    }
-                }
-                return result;
-            }
-        });
-    }
 
-
+    /**
+     * Runnable used to poll configuration for changes.
+     */
     class FilePoller implements Runnable {
         public void run() {
             log.info("Polling File");
@@ -245,15 +248,43 @@ public abstract class BaseConfiguration implements Configuration {
         }
     }
 
+    /**
+     * Store configuration to the given file
+     * @param file file where configuration will be saved.
+     * @throws IOException if saving fails.
+     */
     protected abstract void storeConfiguration(File file) throws IOException;
 
+    /**
+     * Sets the key and value in the configuration.
+     * @param key key that will be use to set the property
+     * @param value value to set
+     */
     protected abstract void setProperty(final String key, Object value);
 
+    /**
+     * Returns the property mapped to the given key
+     * @param key key to retrieve the value
+     * @return value mapped to the given key
+     */
     protected abstract String getProperty(String key);
 
+    /**
+     * Loads the configuration in the given file.
+     * @param propertyFile configuration file
+     * @throws IOException if loading fails
+     */
     protected abstract void loadConfig(final File propertyFile) throws IOException;
 
+    /**
+     * Clears the configuration
+     */
     protected abstract void clearConfig();
 
+    /**
+     * Returns the value using the nested key
+     * @param key nested key
+     * @return vlaue mapped to nested key
+     */
     protected abstract Object getNestedValue(final String key);
 }
