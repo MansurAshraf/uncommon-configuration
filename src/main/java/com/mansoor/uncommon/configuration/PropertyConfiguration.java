@@ -170,34 +170,37 @@ public class PropertyConfiguration extends BaseConfiguration {
             setList(key, Arrays.asList(input));
         }
     }
-
+    /**{@inheritDoc}*/
     protected String getProperty(final String key) {
         return properties.getProperty(key);
     }
-
+    /**{@inheritDoc}*/
     protected void setProperty(final String key, final Object value) {
         properties.setProperty(key, value.toString());
     }
 
-
+    /**{@inheritDoc}*/
     protected void loadConfig(final File propertyFile) throws IOException {
         properties.load(new FileInputStream(propertyFile));
     }
-
+    /**{@inheritDoc}*/
     protected void clearConfig() {
         properties.clear();
     }
-
+    /**{@inheritDoc}*/
     protected Object getNestedValue(final String key) {
         return properties.getProperty(key);
     }
 
-
+    /**{@inheritDoc}*/
     protected void storeConfiguration(final File file) throws IOException {
         properties.store(new FileOutputStream(file), "");
     }
 
-
+    /**
+     * Returns the configuration as an instance of {@link Properties}
+     * @return properties
+     */
     public Properties toProperties() {
         lock.lock();
         try {
@@ -208,15 +211,15 @@ public class PropertyConfiguration extends BaseConfiguration {
             lock.unlock();
         }
     }
-
+    /**{@inheritDoc}*/
     public <E> void setNested(final String key, final E input) {
         set(key, input);
     }
-
+    /**{@inheritDoc}*/
     public <E> void setNestedList(final String key, final List<E> input) {
         setList(key, input);
     }
-
+    /**{@inheritDoc}*/
     public <E> void setNestedList(final String key, final E... input) {
         setList(key, input);
     }
