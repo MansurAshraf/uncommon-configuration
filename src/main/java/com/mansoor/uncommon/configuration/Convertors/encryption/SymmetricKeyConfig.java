@@ -18,6 +18,8 @@ package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
+import java.security.KeyStore;
+
 /**
  * @author Muhammad Ashraf
  * @since 3/10/12
@@ -28,13 +30,15 @@ public class SymmetricKeyConfig {
     private final String keyStoreType;
     private final String keyAlias;
     private final char[] keyPassword;
+    private final KeyStore keyStore;
 
-    private SymmetricKeyConfig(final String keyStorePath, final char[] keyStorePassword, final String keyStoreType, final String keyAlias, final char[] keyPassword) {
+    private SymmetricKeyConfig(final String keyStorePath, final char[] keyStorePassword, final String keyStoreType, final String keyAlias, final char[] keyPassword, final KeyStore keyStore) {
         this.keyStorePath = keyStorePath;
         this.keyStorePassword = keyStorePassword;
         this.keyStoreType = keyStoreType;
         this.keyAlias = keyAlias;
         this.keyPassword = keyPassword;
+        this.keyStore = keyStore;
     }
 
     public String getKeyStorePath() {
@@ -57,49 +61,58 @@ public class SymmetricKeyConfig {
         return keyPassword;
     }
 
-    public static class SymmetricKeyConfigBuilder {
+    public KeyStore getKeyStore() {
+        return keyStore;
+    }
+
+    public static class Builder {
         private String keyStorePath;
         private char[] keyStorePassword;
         private String keyStoreType;
         private String keyAlias;
         private char[] keyPassword;
+        private KeyStore keyStore;
 
-        public SymmetricKeyConfigBuilder keyStorePath(final String keyStorePath) {
+        public Builder keyStorePath(final String keyStorePath) {
             this.keyStorePath = keyStorePath;
             return this;
         }
 
-        public SymmetricKeyConfigBuilder keyStorePassword(final char[] keyStorePassword) {
+        public Builder keyStorePassword(final char[] keyStorePassword) {
             this.keyStorePassword = keyStorePassword;
             return this;
         }
 
-        public SymmetricKeyConfigBuilder keyStoreType(final String keyStoreType) {
+        public Builder keyStoreType(final String keyStoreType) {
             this.keyStoreType = keyStoreType;
             return this;
         }
 
-        public SymmetricKeyConfigBuilder keyAlias(final String keyAlias) {
+        public Builder keyAlias(final String keyAlias) {
             this.keyAlias = keyAlias;
             return this;
         }
 
-        public SymmetricKeyConfigBuilder keyPassword(final char[] keyPassword) {
+        public Builder keyPassword(final char[] keyPassword) {
             this.keyPassword = keyPassword;
+            return this;
+        }
+
+        public Builder keyStore(final KeyStore keyStore) {
+            this.keyStore = keyStore;
             return this;
         }
 
         public SymmetricKeyConfig createSymmetricKeyCofig() {
             validate();
-            return new SymmetricKeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword);
+            return new SymmetricKeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword, keyStore);
         }
 
         void validate() {
             Preconditions.checkBlank(keyAlias, "keyAlias is null");
             Preconditions.checkNull(keyPassword, "KeyPassword is null");
-            Preconditions.checkBlank(keyStorePath, "path is null");
-            Preconditions.checkBlank(keyStoreType, "key store type is null");
-            Preconditions.checkNull(keyStorePassword, "key store password is null");
+            Preconditions.checkArgument(keyStore != null || (keyStorePath != null && keyStoreType != null && keyPassword != null), "Either provide a KeyStore instance, or  key Store location, key store password and key store type ");
+
         }
     }
 }

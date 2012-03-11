@@ -18,10 +18,13 @@ package com.mansoor.uncommon.configuration.util;
 
 import org.junit.Test;
 
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
 import java.io.File;
 import java.security.KeyStore;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -32,9 +35,15 @@ public class EncryptionUtilTest {
 
 
     @Test
+    public void testCreateKey() throws Exception {
+        final SecretKey key = EncryptionUtil.createSecretKey(128, "DES");
+        assertThat(key, is(notNullValue()));
+    }
+
+    @Test
     public void testStoreKeyStore() throws Exception {
         final KeyStore keyStore = EncryptionUtil.createKeyStore(EncryptionUtil.JCEKS);
-        final SecretKeySpec key = EncryptionUtil.createSecretAESKey();
+        final SecretKey key = EncryptionUtil.createSecretAESKey();
         EncryptionUtil.storeSecretKey(keyStore, key, "123456789".toCharArray(), "secret");
         assertTrue(keyStore.containsAlias("secret"));
         final String tempLocation = System.getProperty("java.io.tmpdir");

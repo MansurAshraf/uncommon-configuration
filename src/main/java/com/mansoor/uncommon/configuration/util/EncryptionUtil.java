@@ -16,14 +16,15 @@
 
 package com.mansoor.uncommon.configuration.util;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.security.Key;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.SecureRandom;
+import java.security.*;
 
 /**
  * @author Muhammad Ashraf
@@ -34,17 +35,36 @@ public class EncryptionUtil {
     public static final String AES = "AES";
     public static final String JCEKS = "JCEKS";
     public static final String BC = "BC";
+    public static final String AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS7Padding";
+
+    static {
+        loadProvider();
+    }
 
     private EncryptionUtil() {
 
     }
 
-    public static SecretKeySpec createSecretAESKey() {
-        return new SecretKeySpec(SecureRandom.getSeed(256), AES);
+    public static SecretKey createSecretAESKey() {
+        final KeyGenerator generator;
+        try {
+            generator = KeyGenerator.getInstance(EncryptionUtil.AES, EncryptionUtil.BC);
+            generator.init(256, new SecureRandom());
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to generate key", e);
+        }
+        return generator.generateKey();
     }
 
-    public static SecretKeySpec createSecretKey(final byte[] bytes, final String algorithm) {
-        return new SecretKeySpec(bytes, algorithm);
+    public static SecretKey createSecretKey(final int keySize, final String algorithm) {
+        final KeyGenerator generator;
+        try {
+            generator = KeyGenerator.getInstance(algorithm, EncryptionUtil.BC);
+            generator.init(keySize, new SecureRandom());
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to generate key", e);
+        }
+        return generator.generateKey();
     }
 
     public static KeyStore createKeyStore(final String storeType) {
@@ -59,7 +79,7 @@ public class EncryptionUtil {
         return store;
     }
 
-    public static void storeSecretKey(final KeyStore store, final SecretKeySpec key, final char[] keyPassword, final String keyAlias) {
+    public static void storeSecretKey(final KeyStore store, final SecretKey key, final char[] keyPassword, final String keyAlias) {
         Preconditions.checkNull(store, "store is null");
         Preconditions.checkNull(key, "key is null");
         Preconditions.checkNull(keyPassword, "password is null");
@@ -109,5 +129,9 @@ public class EncryptionUtil {
         return (SecretKeySpec) key;
     }
 
-
+    private static void loadProvider() {
+        if (Security.getProvider(EncryptionUtil.BC) == null) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
 }

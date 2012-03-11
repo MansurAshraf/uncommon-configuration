@@ -30,4 +30,9 @@ public class SymmetricDecryptedString {
     public String getDecryptedText() {
         return decryptedText;
     }
+
+    @Override
+    public String toString() {
+        return decryptedText;
+    }
 }

@@ -20,13 +20,12 @@ import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.util.EncryptionUtil;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import com.mansoor.uncommon.configuration.util.Throwables;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.KeyStore;
-import java.security.Security;
 
 /**
  * @author Muhammad Ashraf
@@ -37,18 +36,11 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
     private final SecretKeySpec keySpec;
 
     public SymmetricKeyEncryptionConverter(final SymmetricKeyConfig config) throws Exception {
-        loadProvider();
         Preconditions.checkNull(config, "config is null");
         final KeyStore keyStore = EncryptionUtil.loadKeyStore(config.getKeyStorePath(), config.getKeyStoreType(), config.getKeyStorePassword());
         this.keySpec = EncryptionUtil.getSecretKey(keyStore, config.getKeyAlias(), config.getKeyPassword());
-        cipher = Cipher.getInstance("AES/ECB/NoPadding", EncryptionUtil.BC);
+        cipher = Cipher.getInstance(EncryptionUtil.AES_CBC_PKCS7_PADDING, EncryptionUtil.BC);
 
-    }
-
-    private void loadProvider() {
-        if (Security.getProvider(EncryptionUtil.BC) == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
     }
 
     /**
@@ -58,17 +50,19 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
      * @return converted value
      */
     public SymmetricDecryptedString convert(final String input) {
-        byte[] cipherText = null;
+
+        SymmetricDecryptedString symmetricDecryptedString = null;
         try {
-            cipher.init(Cipher.DECRYPT_MODE, keySpec);
+            final IvParameterSpec ips = new IvParameterSpec(new byte[16]);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ips);
             final byte[] bytes = Base64.decode(input.getBytes());
-            cipherText = new byte[bytes.length];
-            int ctLength = cipher.update(bytes, 0, bytes.length, cipherText, 0);
-            ctLength += cipher.doFinal(cipherText, ctLength);
+            final byte[] cipherText = cipher.doFinal(bytes);
+            symmetricDecryptedString = new SymmetricDecryptedString(new String(cipherText));
+            System.out.println("symmetricDecryptedString = " + symmetricDecryptedString);
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
-        return new SymmetricDecryptedString(new String(cipherText));
+        return symmetricDecryptedString;
     }
 
     /**
@@ -78,16 +72,17 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
      * @return String
      */
     public String toString(final SymmetricDecryptedString input) {
-        byte[] cipherText = null;
+        String enc = null;
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            final IvParameterSpec ips = new IvParameterSpec(new byte[16]);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ips);
             final byte[] bytes = input.getDecryptedText().getBytes();
-            cipherText = new byte[bytes.length];
-            int ctLength = cipher.update(bytes, 0, bytes.length, cipherText, 0);
-            ctLength += cipher.doFinal(cipherText, ctLength);
+            final byte[] cipherText = cipher.doFinal(bytes);
+            enc = new String(Base64.encode(cipherText));
+            System.out.println("enc = " + enc);
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
-        return new String(Base64.encode(cipherText));
+        return enc;
     }
 }
