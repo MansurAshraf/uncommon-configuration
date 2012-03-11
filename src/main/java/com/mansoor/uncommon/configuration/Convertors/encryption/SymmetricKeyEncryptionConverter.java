@@ -58,7 +58,6 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
             final byte[] bytes = Base64.decode(input.getBytes());
             final byte[] cipherText = cipher.doFinal(bytes);
             symmetricDecryptedString = new SymmetricDecryptedString(new String(cipherText));
-            System.out.println("symmetricDecryptedString = " + symmetricDecryptedString);
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
@@ -79,7 +78,6 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
             final byte[] bytes = input.getDecryptedText().getBytes();
             final byte[] cipherText = cipher.doFinal(bytes);
             enc = new String(Base64.encode(cipherText));
-            System.out.println("enc = " + enc);
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
