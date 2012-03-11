@@ -37,10 +37,14 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
 
     public SymmetricKeyEncryptionConverter(final SymmetricKeyConfig config) throws Exception {
         Preconditions.checkNull(config, "config is null");
-        final KeyStore keyStore = EncryptionUtil.loadKeyStore(config.getKeyStorePath(), config.getKeyStoreType(), config.getKeyStorePassword());
+        final KeyStore keyStore = getKeyStore(config);
         this.keySpec = EncryptionUtil.getSecretKey(keyStore, config.getKeyAlias(), config.getKeyPassword());
         cipher = Cipher.getInstance(EncryptionUtil.AES_CBC_PKCS7_PADDING, EncryptionUtil.BC);
 
+    }
+
+    private KeyStore getKeyStore(final SymmetricKeyConfig config) {
+        return config.getKeyStore() == null ? EncryptionUtil.loadKeyStore(config.getKeyStorePath(), config.getKeyStoreType(), config.getKeyStorePassword()) : config.getKeyStore();
     }
 
     /**
