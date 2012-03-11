@@ -32,7 +32,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class is responsible for accessing and manipulating <code>YAML</code> configuration.
+ * This class is responsible for accessing and manipulating {@code YAML} configuration.
+ *
  * @author Muhammad Ashraf
  * @since 3/4/12
  */
@@ -47,6 +48,7 @@ public class YamlConfiguration extends MapBasedConfiguration {
     protected YamlConfiguration(final ConverterRegistry converterRegistry) {
         super(converterRegistry, new HashMap<String, Object>());
     }
+
     /**
      * Returns an instance of {@code YamlConfiguration} that is configured to use
      * {@link DefaultConverterRegistry}
@@ -57,9 +59,10 @@ public class YamlConfiguration extends MapBasedConfiguration {
 
     /**
      * Returns an instance of {@code YamlConfiguration} that is configured to poll configuration file for change
+     *
      * @param converterRegistry registry that will be used by this PropertyConfiguration
-     * @param pollingRate  polling rate
-     * @param timeUnit time unit (eg: seconds, minute etc)
+     * @param pollingRate       polling rate
+     * @param timeUnit          time unit (eg: seconds, minute etc)
      */
     public YamlConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         super(converterRegistry, new HashMap<String, Object>());
@@ -70,8 +73,9 @@ public class YamlConfiguration extends MapBasedConfiguration {
 
     /**
      * Returns an instance of {@code YamlConfiguration} that is configured to poll configuration file for change
-     * @param pollingRate  polling rate
-     * @param timeUnit time unit (eg: seconds, minute etc)
+     *
+     * @param pollingRate polling rate
+     * @param timeUnit    time unit (eg: seconds, minute etc)
      */
     public YamlConfiguration(final long pollingRate, final TimeUnit timeUnit) {
         super(new DefaultConverterRegistry(), new HashMap<String, Object>());
@@ -81,7 +85,9 @@ public class YamlConfiguration extends MapBasedConfiguration {
     }
 
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     protected void loadConfig(final File propertyFile) throws IOException {
         log.debug("loading file '()'" + propertyFile.getPath());
@@ -91,7 +97,9 @@ public class YamlConfiguration extends MapBasedConfiguration {
         log.debug("File loaded");
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     protected void storeConfiguration(final File file) throws IOException {
         final Yaml yaml = new Yaml();
         yaml.dump(properties, new FileWriter(file));

@@ -19,8 +19,6 @@ package com.mansoor.uncommon.configuration;
 import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.ConverterRegistry;
 import com.mansoor.uncommon.configuration.exceptions.PropertyConversionException;
-import com.mansoor.uncommon.configuration.functional.FunctionalCollection;
-import com.mansoor.uncommon.configuration.functional.functions.BinaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +26,17 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This abstract class provides a partial implementation of {@link Configuration} that is suitable for most implementation.
  * It is recommended to subclass this class instead of implementing {@link Configuration} directly
+ *
  * @author Muhammad Ashraf
  * @since 2/25/12
  */
-public abstract class BaseConfiguration implements Configuration {
+public abstract class BaseConfiguration extends Configuration {
     /**
      * Configuration registry used to retrieve property converters.
      */
@@ -72,7 +68,8 @@ public abstract class BaseConfiguration implements Configuration {
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);
 
     /**
-     * Creates an instances of using given <code>ConverterRegistry</code>
+     * Creates an instances of using given {@code ConverterRegistry}
+     *
      * @param converterRegistry converterRegistry that will be used by this instance.
      */
     protected BaseConfiguration(final ConverterRegistry converterRegistry) {
@@ -200,6 +197,7 @@ public abstract class BaseConfiguration implements Configuration {
             executorService.shutdown();
         }
     }
+
     /**
      * {@inheritDoc}
      */
@@ -250,6 +248,7 @@ public abstract class BaseConfiguration implements Configuration {
 
     /**
      * Store configuration to the given file
+     *
      * @param file file where configuration will be saved.
      * @throws IOException if saving fails.
      */
@@ -257,13 +256,15 @@ public abstract class BaseConfiguration implements Configuration {
 
     /**
      * Sets the key and value in the configuration.
-     * @param key key that will be use to set the property
+     *
+     * @param key   key that will be use to set the property
      * @param value value to set
      */
     protected abstract void setProperty(final String key, Object value);
 
     /**
      * Returns the property mapped to the given key
+     *
      * @param key key to retrieve the value
      * @return value mapped to the given key
      */
@@ -271,6 +272,7 @@ public abstract class BaseConfiguration implements Configuration {
 
     /**
      * Loads the configuration in the given file.
+     *
      * @param propertyFile configuration file
      * @throws IOException if loading fails
      */
@@ -283,6 +285,7 @@ public abstract class BaseConfiguration implements Configuration {
 
     /**
      * Returns the value using the nested key
+     *
      * @param key nested key
      * @return vlaue mapped to nested key
      */

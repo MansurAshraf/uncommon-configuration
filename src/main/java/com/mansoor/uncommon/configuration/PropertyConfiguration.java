@@ -64,9 +64,10 @@ public class PropertyConfiguration extends BaseConfiguration {
 
     /**
      * Returns an instance of {@code PropertyConfiguration} that is configured to poll configuration file for change
+     *
      * @param converterRegistry registry that will be used by this PropertyConfiguration
-     * @param pollingRate  polling rate
-     * @param timeUnit time unit (eg: seconds, minute etc)
+     * @param pollingRate       polling rate
+     * @param timeUnit          time unit (eg: seconds, minute etc)
      */
     public PropertyConfiguration(final ConverterRegistry converterRegistry, final long pollingRate, final TimeUnit timeUnit) {
         super(converterRegistry);
@@ -78,8 +79,9 @@ public class PropertyConfiguration extends BaseConfiguration {
 
     /**
      * Returns an instance of {@code PropertyConfiguration} that is configured to poll configuration file for change
-     * @param pollingRate  polling rate
-     * @param timeUnit time unit (eg: seconds, minute etc)
+     *
+     * @param pollingRate polling rate
+     * @param timeUnit    time unit (eg: seconds, minute etc)
      */
     public PropertyConfiguration(final long pollingRate, final TimeUnit timeUnit) {
         super(new DefaultConverterRegistry());
@@ -91,23 +93,27 @@ public class PropertyConfiguration extends BaseConfiguration {
 
     /**
      * Creates an instance of {@link Properties}
+     *
      * @return properties object
      */
     protected Properties createProperties() {
         return new Properties();
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     public <E> List<E> getList(final Class<E> type, final String key) {
         final String property = getProperty(key);
         return splitAndConvert(type, property);
     }
 
     /**
-     * Splits the given property using deliminator and converts all the value to type <code>E</code>
-     * @param type type this property will be converted to
+     * Splits the given property using deliminator and converts all the value to type {@code E}
+     *
+     * @param type     type this property will be converted to
      * @param property property that will be split and converted
-     * @param <E> generic type
+     * @param <E>      generic type
      * @return List of E
      */
     protected <E> List<E> splitAndConvert(final Class<E> type, final String property) {
@@ -136,10 +142,11 @@ public class PropertyConfiguration extends BaseConfiguration {
     }
 
     /**
-     * Concatenate all the values in the given list, using deliminator, and return them as <code>StringBuilder</code>
-     * @param values List that will be converted to StringBuilder
+     * Concatenate all the values in the given list, using deliminator, and return them as {@code StringBuilder}
+     *
+     * @param values    List that will be converted to StringBuilder
      * @param converter converter that will convert the values.
-     * @param <E> generic type E
+     * @param <E>       generic type E
      * @return StringBuilder containing all the values in the list
      */
     protected <E> StringBuilder convertListToStringBuilder(final List<E> values, final Converter<E> converter) {
@@ -151,7 +158,9 @@ public class PropertyConfiguration extends BaseConfiguration {
         });
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     public <E> List<E> getNestedList(final Class<E> type, final String key) {
         final Object nestedValue = getNestedValue(key);
         return splitAndConvert(type, nestedValue != null ? nestedValue.toString() : null);
@@ -170,35 +179,52 @@ public class PropertyConfiguration extends BaseConfiguration {
             setList(key, Arrays.asList(input));
         }
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     protected String getProperty(final String key) {
         return properties.getProperty(key);
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     protected void setProperty(final String key, final Object value) {
         properties.setProperty(key, value.toString());
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     protected void loadConfig(final File propertyFile) throws IOException {
         properties.load(new FileInputStream(propertyFile));
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     protected void clearConfig() {
         properties.clear();
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     protected Object getNestedValue(final String key) {
         return properties.getProperty(key);
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     protected void storeConfiguration(final File file) throws IOException {
         properties.store(new FileOutputStream(file), "");
     }
 
     /**
      * Returns the configuration as an instance of {@link Properties}
+     *
      * @return properties
      */
     public Properties toProperties() {
@@ -211,15 +237,24 @@ public class PropertyConfiguration extends BaseConfiguration {
             lock.unlock();
         }
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     public <E> void setNested(final String key, final E input) {
         set(key, input);
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     public <E> void setNestedList(final String key, final List<E> input) {
         setList(key, input);
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * {@inheritDoc}
+     */
     public <E> void setNestedList(final String key, final E... input) {
         setList(key, input);
     }
