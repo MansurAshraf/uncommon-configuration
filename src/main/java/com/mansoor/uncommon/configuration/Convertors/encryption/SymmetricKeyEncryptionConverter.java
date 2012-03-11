@@ -31,20 +31,16 @@ import java.security.KeyStore;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyEncryptionConverter implements Converter<SDecryptString> {
+public class SymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<SDecryptString> {
     private final Cipher cipher;
     private final SecretKeySpec keySpec;
 
-    public SymmetricKeyEncryptionConverter(final SymmetricKeyConfig config) throws Exception {
+    public SymmetricKeyEncryptionConverter(final KeyConfig config) {
         Preconditions.checkNull(config, "config is null");
         final KeyStore keyStore = getKeyStore(config);
-        this.keySpec = EncryptionUtil.getSecretKey(keyStore, config.getKeyAlias(), config.getKeyPassword());
-        cipher = Cipher.getInstance(EncryptionUtil.AES_CBC_PKCS7_PADDING, EncryptionUtil.BC);
+        this.keySpec = (SecretKeySpec) EncryptionUtil.getSecretKey(keyStore, config.getKeyAlias(), config.getKeyPassword());
+        cipher = getCipher(EncryptionUtil.AES_CBC_PKCS7_PADDING);
 
-    }
-
-    private KeyStore getKeyStore(final SymmetricKeyConfig config) {
-        return config.getKeyStore() == null ? EncryptionUtil.loadKeyStore(config.getKeyStorePath(), config.getKeyStoreType(), config.getKeyStorePassword()) : config.getKeyStore();
     }
 
     /**

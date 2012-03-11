@@ -46,7 +46,7 @@ public class SymmetricKeyEncryptionConverterTest {
         final String tempLocation = System.getProperty("java.io.tmpdir");
         final String path = tempLocation + File.separator + "keyStore.jceks";
         EncryptionUtil.saveKeyStore(keyStore, keyStorePassword, path);
-        final SymmetricKeyConfig config = new SymmetricKeyConfig.Builder()
+        final KeyConfig config = new KeyConfig.Builder()
                 .keyAlias("secret")
                 .keyPassword(keyPassword)
                 .keyStorePassword(keyStorePassword)

@@ -17,8 +17,8 @@
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
+import com.mansoor.uncommon.configuration.Convertors.encryption.KeyConfig;
 import com.mansoor.uncommon.configuration.Convertors.encryption.SDecryptString;
-import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyConfig;
 import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyEncryptionConverter;
 import com.mansoor.uncommon.configuration.util.EncryptionUtil;
 import junit.framework.Assert;
@@ -53,7 +53,7 @@ public class JsonConfigurationTest {
         final String tempLocation = System.getProperty("java.io.tmpdir");
         final String path = tempLocation + File.separator + "keyStore.jceks";
         EncryptionUtil.saveKeyStore(keyStore, keyStorePassword, path);
-        final SymmetricKeyConfig config = new SymmetricKeyConfig.Builder()
+        final KeyConfig config = new KeyConfig.Builder()
                 .keyAlias("secret")
                 .keyPassword(keyPassword)
                 .keyStorePassword(keyStorePassword)
@@ -175,7 +175,5 @@ public class JsonConfigurationTest {
         final File prop = configuration.save(tempLocation + File.separator + "encjson.json");
         assertThat(prop, is(notNullValue()));
         assertTrue(prop.exists());
-
-
     }
 }

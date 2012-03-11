@@ -24,7 +24,7 @@ import java.security.KeyStore;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyConfig {
+public class KeyConfig {
     private final String keyStorePath;
     private final char[] keyStorePassword;
     private final String keyStoreType;
@@ -32,7 +32,7 @@ public class SymmetricKeyConfig {
     private final char[] keyPassword;
     private final KeyStore keyStore;
 
-    private SymmetricKeyConfig(final String keyStorePath, final char[] keyStorePassword, final String keyStoreType, final String keyAlias, final char[] keyPassword, final KeyStore keyStore) {
+    private KeyConfig(final String keyStorePath, final char[] keyStorePassword, final String keyStoreType, final String keyAlias, final char[] keyPassword, final KeyStore keyStore) {
         this.keyStorePath = keyStorePath;
         this.keyStorePassword = keyStorePassword;
         this.keyStoreType = keyStoreType;
@@ -103,9 +103,9 @@ public class SymmetricKeyConfig {
             return this;
         }
 
-        public SymmetricKeyConfig createSymmetricKeyCofig() {
+        public KeyConfig createSymmetricKeyCofig() {
             validate();
-            return new SymmetricKeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword, keyStore);
+            return new KeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword, keyStore);
         }
 
         void validate() {

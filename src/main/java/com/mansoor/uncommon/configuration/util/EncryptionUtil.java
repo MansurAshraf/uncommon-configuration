@@ -20,11 +20,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.security.*;
+import java.security.cert.Certificate;
 
 /**
  * @author Muhammad Ashraf
@@ -36,6 +36,8 @@ public class EncryptionUtil {
     public static final String JCEKS = "JCEKS";
     public static final String BC = "BC";
     public static final String AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS7Padding";
+    public static final String RSA = "RSA";
+    public static final String RSA_NONE_NO_PADDING = "RSA/None/NoPadding";
 
     static {
         loadProvider();
@@ -46,14 +48,15 @@ public class EncryptionUtil {
     }
 
     public static SecretKey createSecretAESKey() {
-        final KeyGenerator generator;
+        final SecretKey secretKey;
         try {
-            generator = KeyGenerator.getInstance(EncryptionUtil.AES, EncryptionUtil.BC);
+            final KeyGenerator generator = KeyGenerator.getInstance(EncryptionUtil.AES, EncryptionUtil.BC);
             generator.init(256, new SecureRandom());
+            secretKey = generator.generateKey();
         } catch (Exception e) {
             throw new IllegalStateException("unable to generate key", e);
         }
-        return generator.generateKey();
+        return secretKey;
     }
 
     public static SecretKey createSecretKey(final int keySize, final String algorithm) {
@@ -66,6 +69,7 @@ public class EncryptionUtil {
         }
         return generator.generateKey();
     }
+
 
     public static KeyStore createKeyStore(final String storeType) {
         Preconditions.checkBlank(storeType, "Store type is null or empty");
@@ -111,12 +115,12 @@ public class EncryptionUtil {
             store = KeyStore.getInstance(keyStoreType);
             store.load(new FileInputStream(path), password);
         } catch (Exception e) {
-            throw new IllegalStateException("unable to create Store", e);
+            throw new IllegalStateException("unable to load Store", e);
         }
         return store;
     }
 
-    public static SecretKeySpec getSecretKey(final KeyStore store, final String keyAlias, final char[] keyPassword) {
+    public static SecretKey getSecretKey(final KeyStore store, final String keyAlias, final char[] keyPassword) {
         Preconditions.checkNull(store, "store is null");
         Preconditions.checkArgument(keyPassword != null && keyPassword.length > 0, "password is null or empty");
         Preconditions.checkBlank(keyAlias, "Alias is null or empty");
@@ -126,7 +130,34 @@ public class EncryptionUtil {
         } catch (Exception e) {
             throw new IllegalStateException("unable to create Store", e);
         }
-        return (SecretKeySpec) key;
+        return (SecretKey) key;
+    }
+
+    public static PublicKey getPublicKey(final KeyStore store, final String keyAlias) {
+        final PublicKey publicKey;
+        Preconditions.checkNull(store, "store is null");
+        Preconditions.checkBlank(keyAlias, "Alias is null or empty");
+        try {
+            final Certificate certificate = store.getCertificate(keyAlias);
+            publicKey = certificate.getPublicKey();
+            Preconditions.checkNull(certificate, "unable to find a cert with alias " + keyAlias);
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to retrieve public key", e);
+        }
+        return publicKey;
+    }
+
+    public static Key getPrivateKey(final KeyStore store, final String keyAlias, final char[] keyPassword) {
+        Preconditions.checkNull(store, "store is null");
+        Preconditions.checkArgument(keyPassword != null && keyPassword.length > 0, "password is null or empty");
+        Preconditions.checkBlank(keyAlias, "Alias is null or empty");
+        final Key key;
+        try {
+            key = store.getKey(keyAlias, keyPassword);
+        } catch (Exception e) {
+            throw new IllegalStateException("unable to create Store", e);
+        }
+        return key;
     }
 
     private static void loadProvider() {
