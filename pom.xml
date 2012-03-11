@@ -59,6 +59,11 @@
             <version>1.1</version>
         </dependency>
         <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>140</version>
+        </dependency>
+        <dependency>
             <groupId>junitperf</groupId>
             <artifactId>junitperf</artifactId>
             <version>1.8</version>

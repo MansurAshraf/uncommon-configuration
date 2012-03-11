@@ -27,7 +27,7 @@ import com.mansoor.uncommon.configuration.functional.functions.UnaryFunction;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
 /**
- * Transformer class used to transform a STring to a given type
+ * Transformer class used to transform a String to a given type
  *
  * @param <E>
  */
