@@ -31,7 +31,7 @@ import java.security.KeyStore;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecryptedString> {
+public class SymmetricKeyEncryptionConverter implements Converter<SDecryptString> {
     private final Cipher cipher;
     private final SecretKeySpec keySpec;
 
@@ -53,19 +53,19 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
      * @param input value to be converted
      * @return converted value
      */
-    public SymmetricDecryptedString convert(final String input) {
+    public SDecryptString convert(final String input) {
 
-        SymmetricDecryptedString symmetricDecryptedString = null;
+        SDecryptString SDecryptString = null;
         try {
             final IvParameterSpec ips = new IvParameterSpec(new byte[16]);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ips);
             final byte[] bytes = Base64.decode(input.getBytes());
             final byte[] cipherText = cipher.doFinal(bytes);
-            symmetricDecryptedString = new SymmetricDecryptedString(new String(cipherText));
+            SDecryptString = new SDecryptString(new String(cipherText));
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
-        return symmetricDecryptedString;
+        return SDecryptString;
     }
 
     /**
@@ -74,7 +74,7 @@ public class SymmetricKeyEncryptionConverter implements Converter<SymmetricDecry
      * @param input input to be converted
      * @return String
      */
-    public String toString(final SymmetricDecryptedString input) {
+    public String toString(final SDecryptString input) {
         String enc = null;
         try {
             final IvParameterSpec ips = new IvParameterSpec(new byte[16]);

@@ -36,7 +36,7 @@ public class SymmetricKeyEncryptionConverterTest {
 
     private final char[] keyPassword = "123456789".toCharArray();
     private final char[] keyStorePassword = "password".toCharArray();
-    private Converter<SymmetricDecryptedString> converter;
+    private Converter<SDecryptString> converter;
 
     @Before
     public void setUp() throws Exception {
@@ -59,9 +59,9 @@ public class SymmetricKeyEncryptionConverterTest {
     @Test
     public void testEncryption() throws Exception {
         final String plainText = "World Domination master plan";
-        final String encryptedString = converter.toString(new SymmetricDecryptedString(plainText));
+        final String encryptedString = converter.toString(new SDecryptString(plainText));
         assertThat(encryptedString, is(notNullValue()));
-        final SymmetricDecryptedString symmetricDecryptedString = converter.convert(encryptedString);
-        assertThat(symmetricDecryptedString.getDecryptedText(), is(equalTo(plainText)));
+        final SDecryptString SDecryptString = converter.convert(encryptedString);
+        assertThat(SDecryptString.getDecryptedText(), is(equalTo(plainText)));
     }
 }

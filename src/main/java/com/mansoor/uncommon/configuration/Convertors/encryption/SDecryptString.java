@@ -20,10 +20,10 @@ package com.mansoor.uncommon.configuration.Convertors.encryption;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricDecryptedString {
+public class SDecryptString {
     private final String decryptedText;
 
-    public SymmetricDecryptedString(final String encryptedText) {
+    public SDecryptString(final String encryptedText) {
         this.decryptedText = encryptedText;
     }
 

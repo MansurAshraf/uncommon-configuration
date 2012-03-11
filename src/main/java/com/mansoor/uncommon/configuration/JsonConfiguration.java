@@ -94,6 +94,7 @@ public class JsonConfiguration extends MapBasedConfiguration {
     @SuppressWarnings("unchecked")
     protected void loadConfig(final File propertyFile) throws IOException {
         final Map<String, Object> map = (Map<String, Object>) JSONValue.parse(new FileReader(propertyFile));
+        Preconditions.checkNull(map, "Unable to load Json");
         properties.putAll(map);
     }
 
