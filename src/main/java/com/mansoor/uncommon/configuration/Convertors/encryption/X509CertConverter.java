@@ -75,7 +75,7 @@ public class X509CertConverter extends EncryptionConverter implements Converter<
         final String enc;
         try {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            final byte[] cipherText = cipher.doFinal(input.getPalinText().getBytes());
+            final byte[] cipherText = cipher.doFinal(input.getPlainText().getBytes());
             enc = new String(Base64.encode(cipherText));
         } catch (Exception e) {
             throw new IllegalStateException("Encryption failed", e);

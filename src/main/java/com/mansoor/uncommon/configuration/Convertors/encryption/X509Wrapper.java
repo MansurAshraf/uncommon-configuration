@@ -21,17 +21,17 @@ package com.mansoor.uncommon.configuration.Convertors.encryption;
  * @since 3/11/12
  */
 public class X509Wrapper {
-    private final String palinText;
+    private final String plainText;
 
     public X509Wrapper(final String encryptedText) {
-        this.palinText = encryptedText;
+        this.plainText = encryptedText;
     }
 
-    public String getPalinText() {
-        return palinText;
+    public String getPlainText() {
+        return plainText;
     }
 
     public String toString() {
-        return palinText;
+        return plainText;
     }
 }

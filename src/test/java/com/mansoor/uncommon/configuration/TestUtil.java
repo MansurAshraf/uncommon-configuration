@@ -29,19 +29,19 @@ public final class TestUtil {
 
     public static Configuration getPropertyConfiguration(final String location) {
         final PropertyConfiguration configuration = new PropertyConfiguration();
-        configuration.load(location);
+        configuration.load(TestUtil.class.getResource(location).getPath());
         return configuration;
     }
 
     public static Configuration getYamlConfiguration(final String location) {
         final Configuration configuration = new YamlConfiguration();
-        configuration.load(location);
+        configuration.load(TestUtil.class.getResource(location).getPath());
         return configuration;
     }
 
     public static Configuration getJsonConfiguration(final String location) {
         final Configuration configuration = new JsonConfiguration();
-        configuration.load(location);
+        configuration.load(TestUtil.class.getResource(location).getPath());
         return configuration;
     }
 

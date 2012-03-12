@@ -44,7 +44,7 @@ public class X509CertConverterTest {
         final String plainTextPassword = "super secret password";
         final String encryptedPassword = converter.toString(new X509Wrapper(plainTextPassword));
         assertThat(encryptedPassword, is(not(equalTo(plainTextPassword))));
-        final String decryptedPassword = converter.convert(encryptedPassword).getPalinText();
+        final String decryptedPassword = converter.convert(encryptedPassword).getPlainText();
         assertThat(plainTextPassword, is(equalTo(decryptedPassword)));
 
     }

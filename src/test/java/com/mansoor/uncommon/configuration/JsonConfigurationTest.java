@@ -147,18 +147,51 @@ public class JsonConfigurationTest {
     }
 
     @Test
-    public void testEncryptedPassword() throws Exception {
+    public void testEncryptedPasswordUsingSymmetricKey() throws Exception {
         final String plainPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
         assertThat(plainPassword, is(equalTo("super secret password")));
         configuration.setNested("glossary.GlossDiv.GlossList.GlossEntry.Password", new SymmetricKeyWrapper(plainPassword));
         final String encryptedPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
         assertThat(encryptedPassword, is(not(equalTo(plainPassword))));
-        final SymmetricKeyWrapper decryptPassword = configuration.getNested(SymmetricKeyWrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
-        assertThat(decryptPassword.getPlainText(), is(equalTo(plainPassword)));
+        final SymmetricKeyWrapper decryptedPassword = configuration.getNested(SymmetricKeyWrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
+        assertThat(decryptedPassword.getPlainText(), is(equalTo(plainPassword)));
 
         final String tempLocation = System.getProperty("java.io.tmpdir");
-        final File prop = configuration.save(tempLocation + File.separator + "encryptedJson.json");
+        final File prop = configuration.save(tempLocation + File.separator + "symmEncrypted.json");
         assertThat(prop, is(notNullValue()));
         assertTrue(prop.exists());
+    }
+
+    @Test
+    public void testEncryptedPasswordUsingX509Cert() throws Exception {
+        final String plainPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.MasterPassword");
+        assertThat(plainPassword, is(equalTo("super secret master password")));
+        configuration.setNested("glossary.GlossDiv.GlossList.GlossEntry.MasterPassword", new X509Wrapper(plainPassword));
+        final String encryptedPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.MasterPassword");
+        assertThat(encryptedPassword, is(not(equalTo(plainPassword))));
+        final X509Wrapper decryptedPassword = configuration.getNested(X509Wrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.MasterPassword");
+        assertThat(decryptedPassword.getPlainText(), is(equalTo(plainPassword)));
+
+        final String tempLocation = System.getProperty("java.io.tmpdir");
+        final File prop = configuration.save(tempLocation + File.separator + "x509Encrypted.json");
+        assertThat(prop, is(notNullValue()));
+        assertTrue(prop.exists());
+    }
+
+    @Test
+    public void testGetX509EncryptedPasswordFromAFile() throws Exception {
+        configuration.load(this.getClass().getResource("/x509Encrypted.json").getPath());
+        final String plainPassword = "super secret master password";
+        final X509Wrapper decryptedPassword = configuration.getNested(X509Wrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.MasterPassword");
+        assertThat(decryptedPassword.getPlainText(), is(equalTo(plainPassword)));
+    }
+
+    @Test
+    public void testGetSymmetricEncryptedPassword() throws Exception {
+        configuration.load(this.getClass().getResource("/symmEncrypted.json").getPath());
+        final String plainPassword = "super secret password";
+        final SymmetricKeyWrapper decryptedPassword = configuration.getNested(SymmetricKeyWrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
+        assertThat(decryptedPassword.getPlainText(), is(equalTo(plainPassword)));
+
     }
 }

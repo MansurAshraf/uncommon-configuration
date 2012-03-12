@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -156,9 +155,7 @@ public abstract class BaseConfiguration extends Configuration {
      */
     public void load(final String path) {
         Preconditions.checkNull(path, "path is null");
-        final URL resource = BaseConfiguration.class.getResource(path);
-        Preconditions.checkNull(resource, "unable to load file with path " + path);
-        final File file = new File(resource.getPath());
+        final File file = new File(path);
         load(file);
     }
 
