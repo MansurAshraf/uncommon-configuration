@@ -16,12 +16,14 @@
 
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.encryption.KeyConfig;
+import com.mansoor.uncommon.configuration.util.EncryptionUtil;
+
 /**
  * @author Muhammad Ashraf
  * @since 2/12/12
  */
 public final class TestUtil {
-
     private TestUtil() {
     }
 
@@ -41,5 +43,26 @@ public final class TestUtil {
         final Configuration configuration = new JsonConfiguration();
         configuration.load(location);
         return configuration;
+    }
+
+    public static KeyConfig createSymmetricKeyConfig() {
+        return new KeyConfig.Builder()
+                .keyAlias("secret")
+                .keyPassword("123456789".toCharArray())
+                .keyStorePassword("password".toCharArray())
+                .keyStoreType(EncryptionUtil.JCEKS)
+                .keyStorePath(TestUtil.class.getResource("/symmetrickeyStore.jceks").getPath())
+                .createKeyCofig();
+    }
+
+    public static KeyConfig createX509KeyConfig() {
+        return new KeyConfig.Builder()
+                .keyAlias("uncommon-key")
+                .keyPassword("password".toCharArray())
+                .keyStorePassword("password".toCharArray())
+                .keyStorePath(TestUtil.class.getResource("/uncommon-config-keystore.keystore").getPath())
+                .keyStoreType(EncryptionUtil.JKS)
+                .createKeyCofig();
+
     }
 }

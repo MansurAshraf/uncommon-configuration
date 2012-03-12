@@ -17,6 +17,7 @@
 package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
+import com.mansoor.uncommon.configuration.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,20 +29,14 @@ import static org.hamcrest.Matchers.*;
  * @author Muhammad Ashraf
  * @since 3/11/12
  */
-public class AsymmetricKeyEncryptionConverterTest {
+public class X509CertConverterTest {
 
     private Converter<X509Wrapper> converter;
 
     @Before
     public void setUp() throws Exception {
-        final KeyConfig config = new KeyConfig.Builder()
-                .keyAlias("uncommon-key")
-                .keyPassword("password".toCharArray())
-                .keyStorePassword("password".toCharArray())
-                .keyStorePath(this.getClass().getResource("/uncommon-config-keystore.keystore").getPath())
-                .keyStoreType("JKS")
-                .createSymmetricKeyCofig();
-        converter = new AsymmetricKeyEncryptionConverter(config);
+        final KeyConfig config = TestUtil.createX509KeyConfig();
+        converter = new X509CertConverter(config);
     }
 
     @Test

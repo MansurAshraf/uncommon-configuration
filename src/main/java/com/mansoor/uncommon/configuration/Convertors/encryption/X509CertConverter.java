@@ -31,13 +31,13 @@ import java.security.PublicKey;
  */
 
 
-public class AsymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<X509Wrapper> {
+public class X509CertConverter extends EncryptionConverter implements Converter<X509Wrapper> {
 
     private final PublicKey publicKey;
     private final Key privateKey;
     private final Cipher cipher;
 
-    public AsymmetricKeyEncryptionConverter(final KeyConfig config) {
+    public X509CertConverter(final KeyConfig config) {
         final KeyStore keyStore = getKeyStore(config);
         publicKey = EncryptionUtil.getPublicKey(keyStore, config.getKeyAlias());
         privateKey = EncryptionUtil.getPrivateKey(keyStore, config.getKeyAlias(), config.getKeyPassword());

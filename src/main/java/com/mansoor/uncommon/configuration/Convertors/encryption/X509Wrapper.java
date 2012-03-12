@@ -31,7 +31,6 @@ public class X509Wrapper {
         return palinText;
     }
 
-    @Override
     public String toString() {
         return palinText;
     }

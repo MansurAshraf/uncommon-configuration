@@ -31,11 +31,11 @@ import java.security.KeyStore;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<SymmetricKeyWrapper> {
+public class SymmetricKeyConverter extends EncryptionConverter implements Converter<SymmetricKeyWrapper> {
     private final Cipher cipher;
     private final SecretKeySpec keySpec;
 
-    public SymmetricKeyEncryptionConverter(final KeyConfig config) {
+    public SymmetricKeyConverter(final KeyConfig config) {
         Preconditions.checkNull(config, "config is null");
         final KeyStore keyStore = getKeyStore(config);
         this.keySpec = (SecretKeySpec) EncryptionUtil.getSecretKey(keyStore, config.getKeyAlias(), config.getKeyPassword());

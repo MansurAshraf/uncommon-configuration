@@ -103,7 +103,7 @@ public class KeyConfig {
             return this;
         }
 
-        public KeyConfig createSymmetricKeyCofig() {
+        public KeyConfig createKeyCofig() {
             validate();
             return new KeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword, keyStore);
         }

@@ -17,13 +17,9 @@
 package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
-import com.mansoor.uncommon.configuration.util.EncryptionUtil;
+import com.mansoor.uncommon.configuration.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.crypto.SecretKey;
-import java.io.File;
-import java.security.KeyStore;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -32,28 +28,14 @@ import static org.hamcrest.Matchers.*;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyEncryptionConverterTest {
+public class SymmetricKeyConverterTest {
 
-    private final char[] keyPassword = "123456789".toCharArray();
-    private final char[] keyStorePassword = "password".toCharArray();
     private Converter<SymmetricKeyWrapper> converter;
 
     @Before
     public void setUp() throws Exception {
-        final KeyStore keyStore = EncryptionUtil.createKeyStore(EncryptionUtil.JCEKS);
-        final SecretKey key = EncryptionUtil.createSecretAESKey();
-        EncryptionUtil.storeSecretKey(keyStore, key, keyPassword, "secret");
-        final String tempLocation = System.getProperty("java.io.tmpdir");
-        final String path = tempLocation + File.separator + "keyStore.jceks";
-        EncryptionUtil.saveKeyStore(keyStore, keyStorePassword, path);
-        final KeyConfig config = new KeyConfig.Builder()
-                .keyAlias("secret")
-                .keyPassword(keyPassword)
-                .keyStorePassword(keyStorePassword)
-                .keyStoreType(EncryptionUtil.JCEKS)
-                .keyStorePath(path)
-                .createSymmetricKeyCofig();
-        converter = new SymmetricKeyEncryptionConverter(config);
+        final KeyConfig config = TestUtil.createSymmetricKeyConfig();
+        converter = new SymmetricKeyConverter(config);
     }
 
     @Test

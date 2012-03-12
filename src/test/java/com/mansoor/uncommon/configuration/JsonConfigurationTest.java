@@ -17,17 +17,12 @@
 package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
-import com.mansoor.uncommon.configuration.Convertors.encryption.KeyConfig;
-import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyEncryptionConverter;
-import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyWrapper;
-import com.mansoor.uncommon.configuration.util.EncryptionUtil;
+import com.mansoor.uncommon.configuration.Convertors.encryption.*;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.crypto.SecretKey;
 import java.io.File;
-import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,28 +37,18 @@ import static org.hamcrest.Matchers.*;
  */
 public class JsonConfigurationTest {
     private Configuration configuration;
-    private final char[] keyPassword = "123456789".toCharArray();
-    private final char[] keyStorePassword = "password".toCharArray();
 
     @Before
     public void setUp() throws Exception {
-        final KeyStore keyStore = EncryptionUtil.createKeyStore(EncryptionUtil.JCEKS);
-        final SecretKey key = EncryptionUtil.createSecretAESKey();
-        EncryptionUtil.storeSecretKey(keyStore, key, keyPassword, "secret");
-        final String tempLocation = System.getProperty("java.io.tmpdir");
-        final String path = tempLocation + File.separator + "keyStore.jceks";
-        EncryptionUtil.saveKeyStore(keyStore, keyStorePassword, path);
-        final KeyConfig config = new KeyConfig.Builder()
-                .keyAlias("secret")
-                .keyPassword(keyPassword)
-                .keyStorePassword(keyStorePassword)
-                .keyStoreType(EncryptionUtil.JCEKS)
-                .keyStorePath(path)
-                .createSymmetricKeyCofig();
-        final Converter<SymmetricKeyWrapper> converter = new SymmetricKeyEncryptionConverter(config);
-        configuration = TestUtil.getJsonConfiguration("/test.json");
-        configuration.getConverterRegistry().addConverter(SymmetricKeyWrapper.class, converter);
+        final KeyConfig symmetricKeyConfig = TestUtil.createSymmetricKeyConfig();
+        final KeyConfig X509Config = TestUtil.createX509KeyConfig();
 
+        final Converter<SymmetricKeyWrapper> symmetricKeyConverter = new SymmetricKeyConverter(symmetricKeyConfig);
+        final Converter<X509Wrapper> x509CertConverter = new X509CertConverter(X509Config);
+
+        configuration = TestUtil.getJsonConfiguration("/test.json");
+        configuration.getConverterRegistry().addConverter(SymmetricKeyWrapper.class, symmetricKeyConverter);
+        configuration.getConverterRegistry().addConverter(X509Wrapper.class, x509CertConverter);
     }
 
     @Test
@@ -172,7 +157,7 @@ public class JsonConfigurationTest {
         assertThat(decryptPassword.getPlainText(), is(equalTo(plainPassword)));
 
         final String tempLocation = System.getProperty("java.io.tmpdir");
-        final File prop = configuration.save(tempLocation + File.separator + "encjson.json");
+        final File prop = configuration.save(tempLocation + File.separator + "encryptedJson.json");
         assertThat(prop, is(notNullValue()));
         assertTrue(prop.exists());
     }
