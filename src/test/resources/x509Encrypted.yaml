@@ -1,0 +1,15 @@
+hello: world
+ex: [abc]
+development:
+  adapter: mysql
+  database: project_development
+  username: root
+  password:
+    socket: [/tmp/mysql.sock, /tmp/postgresql.sock]
+    database: TjmYtjoeHUh0ryd9UOdltvMtXO30L1Wu1Q9VQE6X/pj3AKxhPA5e27RzUApyDYp7nybS4D3SxGqJ46D7+f9tjV6rolhPegpVtOn5mGBJ0VGxQZM5vi1unY7k60h6SmZEMwmKQdXfYv5Y1tHXzsCg5wEK9SXiLRm6K2gQM7Ts7Oo=
+    jms: secret jms password
+dateTwo: 02-12-2012
+list: [milk, pumpkin pie, eggs, juice]
+invalidDate: 123
+dateList: [02/12/2012, 02/13/2012, 02/14/2012, 02/15/2012]
+dateOne: 02/23/2012
