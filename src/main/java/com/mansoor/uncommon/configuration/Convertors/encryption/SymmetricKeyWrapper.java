@@ -18,21 +18,21 @@ package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 /**
  * @author Muhammad Ashraf
- * @since 3/11/12
+ * @since 3/10/12
  */
-public class ASDecryptString {
-    private final String decryptedText;
+public class SymmetricKeyWrapper {
+    private final String plainText;
 
-    public ASDecryptString(final String encryptedText) {
-        this.decryptedText = encryptedText;
+    public SymmetricKeyWrapper(final String encryptedText) {
+        this.plainText = encryptedText;
     }
 
-    public String getDecryptedText() {
-        return decryptedText;
+    public String getPlainText() {
+        return plainText;
     }
 
     @Override
     public String toString() {
-        return decryptedText;
+        return plainText;
     }
 }

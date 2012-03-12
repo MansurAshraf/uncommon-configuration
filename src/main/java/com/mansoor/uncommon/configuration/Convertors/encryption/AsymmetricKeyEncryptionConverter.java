@@ -31,7 +31,7 @@ import java.security.PublicKey;
  */
 
 
-public class AsymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<ASDecryptString> {
+public class AsymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<X509Wrapper> {
 
     private final PublicKey publicKey;
     private final Key privateKey;
@@ -51,13 +51,13 @@ public class AsymmetricKeyEncryptionConverter extends EncryptionConverter implem
      * @param input value to be converted
      * @return converted value
      */
-    public ASDecryptString convert(final String input) {
-        final ASDecryptString decryptString;
+    public X509Wrapper convert(final String input) {
+        final X509Wrapper decryptString;
         try {
             final byte[] encryptedString = Base64.decode(input.getBytes());
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             final byte[] decryptedBytes = cipher.doFinal(encryptedString);
-            decryptString = new ASDecryptString(new String(decryptedBytes));
+            decryptString = new X509Wrapper(new String(decryptedBytes));
         } catch (Exception e) {
             throw new IllegalStateException("Decryption failed", e);
         }
@@ -71,15 +71,16 @@ public class AsymmetricKeyEncryptionConverter extends EncryptionConverter implem
      * @param input input to be converted
      * @return String
      */
-    public String toString(final ASDecryptString input) {
+    public String toString(final X509Wrapper input) {
         final String enc;
         try {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            final byte[] cipherText = cipher.doFinal(input.getDecryptedText().getBytes());
+            final byte[] cipherText = cipher.doFinal(input.getPalinText().getBytes());
             enc = new String(Base64.encode(cipherText));
         } catch (Exception e) {
             throw new IllegalStateException("Encryption failed", e);
         }
         return enc;
     }
+
 }

@@ -18,8 +18,8 @@ package com.mansoor.uncommon.configuration;
 
 import com.mansoor.uncommon.configuration.Convertors.Converter;
 import com.mansoor.uncommon.configuration.Convertors.encryption.KeyConfig;
-import com.mansoor.uncommon.configuration.Convertors.encryption.SDecryptString;
 import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyEncryptionConverter;
+import com.mansoor.uncommon.configuration.Convertors.encryption.SymmetricKeyWrapper;
 import com.mansoor.uncommon.configuration.util.EncryptionUtil;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -60,9 +60,9 @@ public class JsonConfigurationTest {
                 .keyStoreType(EncryptionUtil.JCEKS)
                 .keyStorePath(path)
                 .createSymmetricKeyCofig();
-        final Converter<SDecryptString> converter = new SymmetricKeyEncryptionConverter(config);
+        final Converter<SymmetricKeyWrapper> converter = new SymmetricKeyEncryptionConverter(config);
         configuration = TestUtil.getJsonConfiguration("/test.json");
-        configuration.getConverterRegistry().addConverter(SDecryptString.class, converter);
+        configuration.getConverterRegistry().addConverter(SymmetricKeyWrapper.class, converter);
 
     }
 
@@ -165,11 +165,11 @@ public class JsonConfigurationTest {
     public void testEncryptedPassword() throws Exception {
         final String plainPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
         assertThat(plainPassword, is(equalTo("super secret password")));
-        configuration.setNested("glossary.GlossDiv.GlossList.GlossEntry.Password", new SDecryptString(plainPassword));
+        configuration.setNested("glossary.GlossDiv.GlossList.GlossEntry.Password", new SymmetricKeyWrapper(plainPassword));
         final String encryptedPassword = configuration.getNested(String.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
         assertThat(encryptedPassword, is(not(equalTo(plainPassword))));
-        final SDecryptString decryptPassword = configuration.getNested(SDecryptString.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
-        assertThat(decryptPassword.getDecryptedText(), is(equalTo(plainPassword)));
+        final SymmetricKeyWrapper decryptPassword = configuration.getNested(SymmetricKeyWrapper.class, "glossary.GlossDiv.GlossList.GlossEntry.Password");
+        assertThat(decryptPassword.getPlainText(), is(equalTo(plainPassword)));
 
         final String tempLocation = System.getProperty("java.io.tmpdir");
         final File prop = configuration.save(tempLocation + File.separator + "encjson.json");

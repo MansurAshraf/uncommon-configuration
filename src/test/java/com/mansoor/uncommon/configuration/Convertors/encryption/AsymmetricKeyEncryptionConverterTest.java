@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class AsymmetricKeyEncryptionConverterTest {
 
-    private Converter<ASDecryptString> converter;
+    private Converter<X509Wrapper> converter;
 
     @Before
     public void setUp() throws Exception {
@@ -45,11 +45,11 @@ public class AsymmetricKeyEncryptionConverterTest {
     }
 
     @Test
-    public void testEncryption() throws Exception {
+    public void testSymmetricalEncryption() throws Exception {
         final String plainTextPassword = "super secret password";
-        final String encryptedPassword = converter.toString(new ASDecryptString(plainTextPassword));
+        final String encryptedPassword = converter.toString(new X509Wrapper(plainTextPassword));
         assertThat(encryptedPassword, is(not(equalTo(plainTextPassword))));
-        final String decryptedPassword = converter.convert(encryptedPassword).getDecryptedText();
+        final String decryptedPassword = converter.convert(encryptedPassword).getPalinText();
         assertThat(plainTextPassword, is(equalTo(decryptedPassword)));
 
     }

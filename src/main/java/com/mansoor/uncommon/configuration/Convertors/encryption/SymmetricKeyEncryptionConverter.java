@@ -31,7 +31,7 @@ import java.security.KeyStore;
  * @author Muhammad Ashraf
  * @since 3/10/12
  */
-public class SymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<SDecryptString> {
+public class SymmetricKeyEncryptionConverter extends EncryptionConverter implements Converter<SymmetricKeyWrapper> {
     private final Cipher cipher;
     private final SecretKeySpec keySpec;
 
@@ -49,19 +49,19 @@ public class SymmetricKeyEncryptionConverter extends EncryptionConverter impleme
      * @param input value to be converted
      * @return converted value
      */
-    public SDecryptString convert(final String input) {
+    public SymmetricKeyWrapper convert(final String input) {
 
-        SDecryptString SDecryptString = null;
+        SymmetricKeyWrapper SymmetricKeyWrapper = null;
         try {
             final IvParameterSpec ips = new IvParameterSpec(new byte[16]);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ips);
             final byte[] bytes = Base64.decode(input.getBytes());
             final byte[] cipherText = cipher.doFinal(bytes);
-            SDecryptString = new SDecryptString(new String(cipherText));
+            SymmetricKeyWrapper = new SymmetricKeyWrapper(new String(cipherText));
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
-        return SDecryptString;
+        return SymmetricKeyWrapper;
     }
 
     /**
@@ -70,17 +70,34 @@ public class SymmetricKeyEncryptionConverter extends EncryptionConverter impleme
      * @param input input to be converted
      * @return String
      */
-    public String toString(final SDecryptString input) {
+    public String toString(final SymmetricKeyWrapper input) {
         String enc = null;
         try {
             final IvParameterSpec ips = new IvParameterSpec(new byte[16]);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ips);
-            final byte[] bytes = input.getDecryptedText().getBytes();
+            final byte[] bytes = input.getPlainText().getBytes();
             final byte[] cipherText = cipher.doFinal(bytes);
             enc = new String(Base64.encode(cipherText));
         } catch (Exception e) {
             Throwables.propertyConversionException("encryption failed", e);
         }
         return enc;
+    }
+
+    public class PlainText {
+        private final String decryptedText;
+
+        public PlainText(final String encryptedText) {
+            this.decryptedText = encryptedText;
+        }
+
+        public String getDecryptedText() {
+            return decryptedText;
+        }
+
+        public String toString() {
+            return decryptedText;
+        }
+
     }
 }
