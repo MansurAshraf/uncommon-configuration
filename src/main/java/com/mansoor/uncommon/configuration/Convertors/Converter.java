@@ -17,13 +17,26 @@
 package com.mansoor.uncommon.configuration.Convertors;
 
 /**
+ * The  {@code Converter} interface defines methods to transform a raw {@code String} value to generic value {@code T} and vice versa.
+ * All {@link com.mansoor.uncommon.configuration.Configuration} implementations are responsible for calling appropriate converter for
+ * a given type. A {@code Configuration} can be configured to use a {@code Converter} by adding it to  {@code Configuration's} {@link ConverterRegistry}
+ *
+ * <p>
+ *     For example this is how a programmer will add a {@link FloatConverter} to {@link com.mansoor.uncommon.configuration.YamlConfiguration}
+ *     <pre>
+ *         Configuration configuration = new YamlConfiguration();
+ *         configuration.getConverterRegistry().addConverter(Float.class, new FloatConverter());
+ *     </pre>
+ * </p>
+ *
  * @author Muhammad Ashraf
  * @since 2/9/12
  */
 public interface Converter<T> {
 
     /**
-     * Converts a value to type T
+     * Converts a {@link String} value to type T. This method is called immediately after
+     * a property value is read from a configuration.
      *
      * @param input value to be converted
      * @return converted value
@@ -31,7 +44,8 @@ public interface Converter<T> {
     T convert(String input);
 
     /**
-     * Converts type T to String
+     * Converts type {@code T} to {@code String}. This method is called before setting the
+     * value to a configuration.
      *
      * @param input input to be converted
      * @return String

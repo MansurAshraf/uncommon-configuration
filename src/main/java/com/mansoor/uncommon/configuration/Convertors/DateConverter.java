@@ -25,11 +25,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Converts a Date to a String and vice versa.
  * @author Muhammad Ashraf
  * @since 2/12/12
  */
 public class DateConverter implements Converter<Date> {
+    /**
+     * Default Date format
+     */
     private final static String default_format = "MM/dd/yyyy";
+    /**
+     * Date format instance that will be used to formatting the date.
+     */
     private DateFormat df;
 
     public DateConverter() {
@@ -41,7 +48,7 @@ public class DateConverter implements Converter<Date> {
     }
 
     /**
-     * Converts a value to type T
+     * Converts a {@code String} to a {@code Date} based on the Date Format.
      *
      * @param input value to be converted
      * @return converted value
@@ -51,7 +58,7 @@ public class DateConverter implements Converter<Date> {
     }
 
     /**
-     * Converts type T to String
+     * Converts a {@code Date} to {@code String}
      *
      * @param input input to be converted
      * @return String
@@ -60,6 +67,11 @@ public class DateConverter implements Converter<Date> {
         return Preconditions.isNotNull(input) ? df.format(input) : null;
     }
 
+    /**
+     * Transforms a String to Date by using the configured {@link DateFormat}
+     * @param input String that is converted to a Date
+     * @return Date
+     */
     private Date parseDate(final String input) {
         try {
             return df.parse(input);
@@ -68,6 +80,11 @@ public class DateConverter implements Converter<Date> {
         }
     }
 
+
+    /**
+     * Sets DateFormat instance that will be used to format the date
+     * @param format format that will be used during conversion.
+     */
     public void setDateFormat(final String format) {
         Preconditions.checkBlank(format, "invalid format" + format);
         this.df = new SimpleDateFormat(format);

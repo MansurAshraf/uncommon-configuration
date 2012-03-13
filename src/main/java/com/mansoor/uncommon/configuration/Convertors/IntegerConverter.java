@@ -19,12 +19,13 @@ package com.mansoor.uncommon.configuration.Convertors;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
 /**
+ * Converts an {@code Integer} to {@code String} and vice versa
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 0.1
  */
 public class IntegerConverter implements Converter<Integer> {
     /**
-     * Converts a value to Integer
+     * Converts a String to Integer
      *
      * @param input value to be converted
      * @return converted value
@@ -34,7 +35,7 @@ public class IntegerConverter implements Converter<Integer> {
     }
 
     /**
-     * Converts type T to String
+     * Converts Integer to String
      *
      * @param input input to be converted
      * @return String

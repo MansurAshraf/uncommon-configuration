@@ -19,14 +19,15 @@ package com.mansoor.uncommon.configuration.Convertors;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
 /**
+ * Converts a {@code String} to {@code Long} and vice versa
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class LongConverter implements Converter<Long> {
     /**
-     * Converts a value to type T
+     * Converts a String to Long
      *
-     * @param input value to be converted
+     * @param input String to be converted
      * @return converted value
      */
     public Long convert(final String input) {
@@ -34,7 +35,7 @@ public class LongConverter implements Converter<Long> {
     }
 
     /**
-     * Converts type T to String
+     * Converts Long to String
      *
      * @param input input to be converted
      * @return String

@@ -19,12 +19,13 @@ package com.mansoor.uncommon.configuration.Convertors;
 import com.mansoor.uncommon.configuration.util.Preconditions;
 
 /**
+ * Converts a {@code String} to {@code Float} and vice versa
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class FloatConverter implements Converter<Float> {
     /**
-     * Converts a value to type T
+     * Converts a String to type Float
      *
      * @param input value to be converted
      * @return converted value
@@ -34,7 +35,7 @@ public class FloatConverter implements Converter<Float> {
     }
 
     /**
-     * Converts type T to String
+     * Converts Float to String
      *
      * @param input input to be converted
      * @return String

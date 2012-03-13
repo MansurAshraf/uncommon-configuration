@@ -20,13 +20,13 @@ import com.mansoor.uncommon.configuration.util.Preconditions;
 
 import java.io.File;
 
-/**
+/** Converts a {@code String} to {@code File} and vice versa.
  * @author Muhammad Ashraf
  * @since 2/11/12
  */
 public class FileConverter implements Converter<File> {
     /**
-     * Converts a value to type T
+     * Converts a {@code String} to type {@code File}
      *
      * @param input value to be converted
      * @return converted value
@@ -36,7 +36,7 @@ public class FileConverter implements Converter<File> {
     }
 
     /**
-     * Converts type T to String
+     * Converts {@code File} to {@code String}
      *
      * @param input input to be converted
      * @return String

@@ -18,13 +18,14 @@ package com.mansoor.uncommon.configuration.Convertors;
 
 import java.util.HashMap;
 
-/**
+/** Provides a {@code Map} based implementation of {@link ConverterRegistry}
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 0.1
  */
-public class DefaultConverterRegistry extends BaseConverterRegistry implements ConverterRegistry {
+public class DefaultConverterRegistry extends BaseConverterRegistry {
     public DefaultConverterRegistry() {
         super(new HashMap<Class<?>, Converter<?>>());
+        loadDefaultConverters();
     }
 
 

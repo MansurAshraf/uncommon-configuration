@@ -25,17 +25,21 @@ import java.util.Date;
 import java.util.Map;
 
 /**
+ * {@code BaseConverterRegistry} provides a partial implementation of {@link ConverterRegistry} based on {@code Map}
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 0.1
  */
 abstract class BaseConverterRegistry implements ConverterRegistry {
+    /**
+     * Map that will be used to hold all the {@code Converters}
+     */
     protected final Map<Class<?>, Converter<?>> converters;
 
     public BaseConverterRegistry(final Map<Class<?>, Converter<?>> converters) {
         this.converters = converters;
-        loadDefaultConverters();
     }
 
+     /**{@inheritDoc}*/
     @SuppressWarnings(value = "unchecked")
     public <T> Converter<T> getConverter(final Class<T> type) {
         final Converter<T> converter = (Converter<T>) converters.get(type);
@@ -45,6 +49,9 @@ abstract class BaseConverterRegistry implements ConverterRegistry {
         return converter;
     }
 
+    /**
+     * Loads most commons converters in the map.
+     */
     protected void loadDefaultConverters() {
         converters.put(Integer.class, new IntegerConverter());
         converters.put(Date.class, new DateConverter());

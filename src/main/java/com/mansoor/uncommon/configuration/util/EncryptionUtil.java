@@ -36,7 +36,6 @@ public class EncryptionUtil {
     public static final String JCEKS = "JCEKS";
     public static final String BC = "BC";
     public static final String AES_CBC_PKCS7_PADDING = "AES/CBC/PKCS7Padding";
-    public static final String RSA = "RSA";
     public static final String RSA_NONE_NO_PADDING = "RSA/None/NoPadding";
     public static final String JKS = "JKS";
 

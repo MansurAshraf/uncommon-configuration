@@ -23,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
+ * Converts a {@code String} to {@code URI} and vice versa
  * @author Muhammad Ashraf
  * @since 2/11/12
  */
@@ -30,7 +31,7 @@ public class URIConverter implements Converter<URI> {
     /**
      * Converts a value to type T
      *
-     * @param input value to be converted
+     * @param input String to be converted
      * @return converted value
      */
     public URI convert(final String input) {
@@ -46,7 +47,7 @@ public class URIConverter implements Converter<URI> {
     }
 
     /**
-     * Converts type T to String
+     * Converts URI to String
      *
      * @param input input to be converted
      * @return String

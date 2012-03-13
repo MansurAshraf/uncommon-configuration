@@ -17,12 +17,13 @@
 package com.mansoor.uncommon.configuration.Convertors;
 
 /**
+ * Dummy converter that gets invoke during String transformation.
  * @author Muhammad Ashraf
  * @since 2/11/12
  */
 public class StringConverter implements Converter<String> {
     /**
-     * Converts a value to type T
+     * NOOP
      *
      * @param input value to be converted
      * @return converted value
@@ -32,7 +33,7 @@ public class StringConverter implements Converter<String> {
     }
 
     /**
-     * Converts type T to String
+     * NOOP
      *
      * @param input input to be converted
      * @return String
