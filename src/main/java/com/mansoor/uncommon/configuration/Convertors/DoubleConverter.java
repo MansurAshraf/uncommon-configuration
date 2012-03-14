@@ -21,7 +21,7 @@ import com.mansoor.uncommon.configuration.util.Preconditions;
 /**
  * Converts a {@code Double} to {@code String} and vice verca.
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class DoubleConverter implements Converter<Double> {
     /**

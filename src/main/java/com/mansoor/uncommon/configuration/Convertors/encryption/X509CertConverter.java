@@ -26,8 +26,28 @@ import java.security.KeyStore;
 import java.security.PublicKey;
 
 /**
+ * A simple X509 certificate based converter. This converter is configured to use a RSA/None/NoPadding
+ * algorithm for encryption and decryption. A {@link com.mansoor.uncommon.configuration.Configuration}
+ * implementation can be configured to use this converter by adding it to {@code Configuration's} converter
+ * registry
+ * <p/>
+ * <pre>
+ *   KeyConfig = new KeyConfig.Builder()
+ *      .keyAlias("uncommon-key")
+ *      .keyPassword("password".toCharArray())
+ *      .keyStorePassword("password".toCharArray())
+ *      .keyStorePath(/path/to/keystore)
+ *      .keyStoreType(EncryptionUtil.JKS)
+ *      .createKeyCofig();
+ *
+ *   Converter<X509Wrapper> x509CertConverter = new X509CertConverter(X509Config);
+ *
+ *   Configuration configuration = new YamlConfiguration();
+ *   configuration.getConverterRegistry().addConverter(X509Wrapper.class, x509CertConverter);
+ * </pre>
+ *
  * @author Muhammad Ashraf
- * @since 3/11/12
+ * @since 0.1
  */
 
 
@@ -46,10 +66,10 @@ public class X509CertConverter extends EncryptionConverter implements Converter<
 
 
     /**
-     * Converts a value to type T
+     * Decrypts the value using the private key
      *
-     * @param input value to be converted
-     * @return converted value
+     * @param input value to be decrypted
+     * @return decrypted value
      */
     public X509Wrapper convert(final String input) {
         final X509Wrapper decryptString;
@@ -66,10 +86,10 @@ public class X509CertConverter extends EncryptionConverter implements Converter<
     }
 
     /**
-     * Converts type T to String
+     * Encrypts the value using public key
      *
-     * @param input input to be converted
-     * @return String
+     * @param input value to be encrypted
+     * @return encrypted String
      */
     public String toString(final X509Wrapper input) {
         final String enc;

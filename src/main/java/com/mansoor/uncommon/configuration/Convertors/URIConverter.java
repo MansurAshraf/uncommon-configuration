@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
 /**
  * Converts a {@code String} to {@code URI} and vice versa
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class URIConverter implements Converter<URI> {
     /**

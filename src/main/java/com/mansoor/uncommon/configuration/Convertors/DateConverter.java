@@ -27,7 +27,7 @@ import java.util.Date;
 /**
  * Converts a Date to a String and vice versa.
  * @author Muhammad Ashraf
- * @since 2/12/12
+ * @since 0.1
  */
 public class DateConverter implements Converter<Date> {
     /**

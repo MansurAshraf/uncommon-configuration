@@ -17,8 +17,9 @@
 package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 /**
+ * Wrapper used by {@link SymmetricKeyConverter} to encrypt and decrypt value
  * @author Muhammad Ashraf
- * @since 3/10/12
+ * @since 0.1
  */
 public class SymmetricKeyWrapper {
     private final String plainText;
@@ -31,7 +32,6 @@ public class SymmetricKeyWrapper {
         return plainText;
     }
 
-    @Override
     public String toString() {
         return plainText;
     }

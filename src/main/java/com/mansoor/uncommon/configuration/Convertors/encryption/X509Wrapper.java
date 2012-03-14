@@ -17,6 +17,7 @@
 package com.mansoor.uncommon.configuration.Convertors.encryption;
 
 /**
+ * Wrapper used by {@link X509CertConverter} to encrypt and decrypt value
  * @author Muhammad Ashraf
  * @since 3/11/12
  */

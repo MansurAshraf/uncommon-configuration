@@ -30,7 +30,7 @@ package com.mansoor.uncommon.configuration.Convertors;
  * </p>
  *
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 0.1
  */
 public interface Converter<T> {
 

@@ -32,11 +32,6 @@ import java.util.List;
  * thrown to the caller.
  * </p>
  * <p>
- * Setter methods do a strict validation and throw {@link IllegalArgumentException} if either {@code Key} or
- * {@code value} are null. In the case of {@code setList} and {@code setNestedList} method an empty List also
- * results in {@link IllegalArgumentException}.
- * <p/>
- * <p>
  * It is recommended that instead of implementing this interface directly, {@link BaseConfiguration} class should be
  * overriden as it already provides an implementation for most methods.
  * </p>
@@ -46,152 +41,97 @@ import java.util.List;
  */
 public abstract class Configuration {
     /**
-     * Converts the value associated with {@code key} to type {@code E} and returns it. This method is
-     * thread safe and non blocking
+     * Converts the value associated with {@code key} to type {@code E} and returns it.
      *
      * @param type type the raw value will be converted to
      * @param key  key to use to retrieve the value
-     * @param <E>  generic type E
      * @return converted value
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *          if no converter is
-     *          configured to convert the value to type {@code E} and  com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *          if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> E get(Class<E> type, String key);
 
     /**
-     * Converts all the values associated with this key and convert them to type {@code E}.This method is
-     * thread safe and non blocking.
+     * Retrieves the value of the given key, converts it into a list of
+     * of given type and returns the List
      *
      * @param type type the raw value will be converted to
      * @param key  key to use to retrieve the value
-     * @param <E>  generic type E
      * @return List of type {@code E}
      * @since {@code 0.1}
      */
     public abstract <E> List<E> getList(Class<E> type, String key);
 
     /**
-     * Converts the value associated with this nested key and convert it to type {@code E}.This method is
-     * thread safe and non blocking.
+     * Retrieves the value of the given key, converts it into given type and returns it
      *
      * @param type type the raw value will be converted to
      * @param key  nested key to use to retrieve the value
-     * @param <E>  generic type E
      * @return value of type {@code E}
      * @since {@code 0.1}
      */
     public abstract <E> E getNested(Class<E> type, String key);
 
     /**
-     * Converts all the values associated with this nested key and convert them to type {@code E}.This method is
-     * thread safe and non blocking.
+     * Converts all the values associated with this nested key, converts them to List of given type
+     * and returns the list
      *
      * @param type type the raw value will be converted to
      * @param key  nested key to use to retrieve the value
-     * @param <E>  generic type E
      * @return List of type {@code E}
      * @since {@code 0.1}
      */
     public abstract <E> List<E> getNestedList(Class<E> type, String key);
 
     /**
-     * Converts the input to String, associate it with the given key and sets it in the configuration. This methods is
-     * thread safe and blocking.
+     * Converts the input to String, associate it with the given key and sets it in the configuration.
      *
      * @param key   the key for the value to set
      * @param input value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is
-     *                                  configured to convert the value to {@code String}
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void set(String key, E input);
 
     /**
      * Converts all the values in the input List to String, associate it with the given key and sets it in the configuration.
-     * This methods is thread safe and blocking.
      *
      * @param key   the key for the value to set
      * @param input List of value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is
-     *                                  configured to convert the value to {@code String}
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void setList(String key, List<E> input);
 
     /**
      * Converts all the values in the input List to String, associate it with the given key and sets it in the configuration.
-     * This methods is thread safe and blocking.
      *
      * @param key   the key for the value to set
      * @param input List of value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is
-     *                                  configured to convert the value to {@code String}.
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void setList(final String key, final E... input);
 
     /**
-     * Converts the input to String, associate it with the given nested key and sets it in the configuration. This methods is
-     * thread safe and blocking.
+     * Converts the input to String, associate it with the given nested key and sets it in the configuration.
      *
      * @param key   the key for the value to set
      * @param input value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is configured to convert the value to {@code String}
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void setNested(String key, E input);
 
     /**
-     * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration. This methods is
-     * thread safe and blocking.
+     * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration.
      *
      * @param key   the key for the value to set
      * @param input List of value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is configured to convert the value to {@code String}
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void setNestedList(String key, List<E> input);
 
     /**
-     * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration. This methods is
-     * thread safe and blocking.
+     * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration.
      *
      * @param key   the key for the value to set
      * @param input List of value to set
-     * @param <E>   type of value
-     * @throws IllegalArgumentException if key or value is null
-     * @throws com.mansoor.uncommon.configuration.exceptions.ConverterNotFoundException
-     *                                  if no converter is configured to convert the value to {@code String}
-     * @throws com.mansoor.uncommon.configuration.exceptions.PropertyConversionException
-     *                                  if conversion fails.
      * @since {@code 0.1}
      */
     public abstract <E> void setNestedList(final String key, final E... input);

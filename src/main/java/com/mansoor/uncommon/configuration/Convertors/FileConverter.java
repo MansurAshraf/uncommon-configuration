@@ -22,7 +22,7 @@ import java.io.File;
 
 /** Converts a {@code String} to {@code File} and vice versa.
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class FileConverter implements Converter<File> {
     /**

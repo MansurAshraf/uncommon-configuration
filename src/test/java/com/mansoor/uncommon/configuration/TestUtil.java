@@ -19,6 +19,8 @@ package com.mansoor.uncommon.configuration;
 import com.mansoor.uncommon.configuration.Convertors.encryption.KeyConfig;
 import com.mansoor.uncommon.configuration.util.EncryptionUtil;
 
+import java.security.KeyStore;
+
 /**
  * @author Muhammad Ashraf
  * @since 2/12/12
@@ -64,5 +66,13 @@ public final class TestUtil {
                 .keyStoreType(EncryptionUtil.JKS)
                 .createKeyCofig();
 
+    }
+
+    public static KeyConfig createKeyConfig(final KeyStore keyStore){
+        return new KeyConfig.Builder()
+                .keyStore(keyStore)
+                .keyAlias("uncommon-key")
+                .keyPassword("password".toCharArray())
+                .createKeyCofig();
     }
 }

@@ -87,19 +87,94 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
         });
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * Retrieves the value of the given key and converts it into a list of
+     * of given type
+     *   <pre>
+     *      Properties File
+     *      files= /tmp/doc1.txt,/tmp/doc2.txt
+     *      List<File> files = propertyConfiguration.getList(File.class, "files");
+     *
+     *      Yaml
+     *      files: [/tmp/doc1.txt,/tmp/doc2.txt]
+     *      List<File> files = yamlConfiguration.getList(File.class, "files");
+     *
+     *      Json
+     *      "files": [/tmp/doc1.txt,/tmp/doc2.txt]
+     *      List<File> files = jsonConfiguration.getList(File.class, "files");
+     *
+     *      System variable
+     *      List<File> classpath  = systemPropertyConfiguration.getList(File.class, "java.class.path");
+     *  </pre>
+     *
+     * @param type type the raw value will be converted to
+     * @param key  key to use to retrieve the value
+     * @return List of type {@code E}
+     * @since {@code 0.1}
+     */
     public <E> List<E> getList(final Class<E> type, final String key) {
         final Object value = properties.get(key);
         return transformList(type, value);
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * Converts all the values associated with this nested key, converts them to List of given type
+     * and returns the list
+     *   <pre>
+     *      Properties File
+     *      temporary.files= /tmp/doc1.txt,/tmp/doc2.txt
+     *      List<File> files = propertyConfiguration.getNestedList(File.class, "temporary.files");
+     *
+     *      Yaml
+     *      temporary:
+     *          files: [/tmp/doc1.txt,/tmp/doc2.txt]
+     *      List<File> files = yamlConfiguration.getNestedList(File.class, "temporary.files");
+     *
+     *      Json
+     *      "temporary":{
+     *          "files": [/tmp/doc1.txt,/tmp/doc2.txt]
+     *          }
+     *      List<File> files = jsonConfiguration.getNestedList(File.class, "temporary.files");
+     *
+     *      System variable
+     *      List<File> classpath  = systemPropertyConfiguration.getNestedList(File.class, "java.class.path");
+     *  </pre>
+     *
+     * @param type type the raw value will be converted to
+     * @param key  nested key to use to retrieve the value
+     * @return List of type {@code E}
+     * @since {@code 0.1}
+     */
     public <E> List<E> getNestedList(final Class<E> type, final String key) {
         final Object nestedValue = getNestedValue(key);
         return transformList(type, nestedValue);
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * Converts all the values in the input List to String, associate it with the given key
+     * and sets it in the configuration.
+     *
+     *  <pre>
+     *      Properties File
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      propertyConfiguration.setList("tempFiles",files);
+     *      tempFiles= /tmp/doc1.txt,/tmp/doc2.txt
+     *
+     *      Yaml
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      yamlConfiguration.setList("tempFiles",files);
+     *      tempFiles: [/tmp/doc1.txt,/tmp/doc2.txt]
+     *
+     *      Json
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      jsonConfiguration.setList("tempFiles",files);
+     *      "tempFiles": [/tmp/doc1.txt,/tmp/doc2.txt]
+     *  </pre>
+     *
+     * @param key   the key for the value to set
+     * @param input List of value to set
+     * @since {@code 0.1}
+     */
     public <E> void setList(final String key, final List<E> input) {
         Preconditions.checkArgument(Preconditions.isNotNull(key), "key is null");
         Preconditions.checkArgument(Preconditions.isNotEmpty(input), "input is empty");
@@ -117,7 +192,6 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      * Transforms the given value to the <code>List of E</code>
      * @param type type of list given object will be converted to.
      * @param value value that is converted.
-     * @param <E>  generic type E
      * @return List of E
      */
     @SuppressWarnings("unchecked")
@@ -155,7 +229,33 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
     public <E> void setList(final String key, final E... input) {
         setList(key, Arrays.asList(input));
     }
-    /**{@inheritDoc}*/
+
+    /**
+     * Converts the input to String, associate it with the given nested key and sets it in the configuration.
+     *
+     *
+     *  <pre>
+     *      Properties File
+     *      propertyConfiguration.setNested("production.url","www.acme.com/rest");
+     *      production.url=www.acme.com/rest
+     *
+     *      Yaml
+     *      yamlConfiguration.setNested("production.url","www.acme.com/rest");
+     *      production:
+     *               url: www.acme.com/rest
+     *
+     *      Json
+     *      jsonConfiguration.setNested("production.url","www.acme.com/rest");
+     *      "production":{
+     *               "url": www.acme.com/rest
+     *             }
+     *  </pre>
+     *
+     *
+     * @param key   the key for the value to set
+     * @param input value to set
+     * @since {@code 0.1}
+     */
     @SuppressWarnings("unchecked")
     public <E> void setNested(final String key, final E input) {
         Preconditions.checkNull(input, "input is null");
@@ -165,7 +265,32 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
 
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration.
+     *
+     * <pre>
+     *      Properties File
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      propertyConfiguration.setNestedList("production.files",files);
+     *      production.files=/tmp/doc1.txt,/tmp/doc2.txt
+     *
+     *      Yaml
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      yamlConfiguration.setNestedList("production.files",files);
+     *      production:
+     *          files:[/tmp/doc1.txt,/tmp/doc2.txt]
+     *
+     *      Json
+     *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
+     *      jsonConfiguration.setNestedList("production.files",files);
+     *      "production":{
+     *          "files":[/tmp/doc1.txt,/tmp/doc2.txt]
+     *          }
+     *  </pre>
+     * @param key   the key for the value to set
+     * @param input List of value to set
+     * @since {@code 0.1}
+     */
     @SuppressWarnings("unchecked")
     public <E> void setNestedList(final String key, final List<E> input) {
         Preconditions.checkNull(key, "key is null");

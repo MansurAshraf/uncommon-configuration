@@ -17,8 +17,9 @@
 package com.mansoor.uncommon.configuration.exceptions;
 
 /**
+ * Exception thrown when a property conversion fails
  * @author Muhammad Ashraf
- * @since 2/10/12
+ * @since 0.1
  */
 public class PropertyConversionException extends RuntimeException {
     public PropertyConversionException(final String msg) {

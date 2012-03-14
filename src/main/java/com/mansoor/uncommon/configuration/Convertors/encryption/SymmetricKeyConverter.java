@@ -28,8 +28,28 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.KeyStore;
 
 /**
+ * A simple Symmetric Key based converter. This converter is configured to use a AES/CBC/PKCS7Padding
+ * algorithm for encryption and decryption. A {@link com.mansoor.uncommon.configuration.Configuration}
+ * implementation can be configured to use this converter by adding it to {@code Configuration's} converter
+ * registry
+ * <p/>
+ * <pre>
+ *   KeyConfig = new KeyConfig.Builder()
+ *          .keyAlias("keyAlias")
+ *          .keyPassword("keyPassword".toCharArray())
+ *          .keyStorePassword("storePassword".toCharArray())
+ *          .keyStoreType(EncryptionUtil.JCEKS)
+ *          .keyStorePath("/path/to/store)
+ *          .createKeyConfig();
+ *
+ *   Converter<SymmetricKeyWrapper> symmetricKeyConverter = new SymmetricKeyConverter(symmetricKeyConfig);
+ *
+ *   Configuration configuration = new YamlConfiguration();
+ *   configuration.getConverterRegistry().addConverter(SymmetricKeyWrapper.class, symmetricKeyConverter);
+ * </pre>
+ *
  * @author Muhammad Ashraf
- * @since 3/10/12
+ * @since 0.1
  */
 public class SymmetricKeyConverter extends EncryptionConverter implements Converter<SymmetricKeyWrapper> {
     private final Cipher cipher;
@@ -44,10 +64,10 @@ public class SymmetricKeyConverter extends EncryptionConverter implements Conver
     }
 
     /**
-     * Converts a value to type T
+     * Decrypts the input String using Symmetric Key.
      *
-     * @param input value to be converted
-     * @return converted value
+     * @param input encrypted value
+     * @return instance of SymmetricKeyWrapper containing decrypted value
      */
     public SymmetricKeyWrapper convert(final String input) {
 
@@ -65,10 +85,10 @@ public class SymmetricKeyConverter extends EncryptionConverter implements Conver
     }
 
     /**
-     * Converts type T to String
+     * Encrypts the input value using Symmetric Key.
      *
-     * @param input input to be converted
-     * @return String
+     * @param input input to be encrypted
+     * @return encrypted String
      */
     public String toString(final SymmetricKeyWrapper input) {
         String enc = null;
@@ -84,20 +104,4 @@ public class SymmetricKeyConverter extends EncryptionConverter implements Conver
         return enc;
     }
 
-    public class PlainText {
-        private final String decryptedText;
-
-        public PlainText(final String encryptedText) {
-            this.decryptedText = encryptedText;
-        }
-
-        public String getDecryptedText() {
-            return decryptedText;
-        }
-
-        public String toString() {
-            return decryptedText;
-        }
-
-    }
 }

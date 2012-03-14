@@ -17,8 +17,9 @@
 package com.mansoor.uncommon.configuration.exceptions;
 
 /**
+ * Exception thrown when no converter is found for a given type
  * @author Muhammad Ashraf
- * @since 2/9/12
+ * @since 0.1
  */
 public class ConverterNotFoundException extends RuntimeException {
     public ConverterNotFoundException(final String msg) {

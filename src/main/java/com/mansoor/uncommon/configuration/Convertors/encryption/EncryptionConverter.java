@@ -22,19 +22,33 @@ import javax.crypto.Cipher;
 import java.security.KeyStore;
 
 /**
+ * Provides common encryption related methods
  * @author Muhammad Ashraf
- * @since 3/11/12
+ * @since 0.1
  */
 public abstract class EncryptionConverter {
 
+    /**
+     * Returns an instance of {@link KeyStore} based on information provided in {@code KeyConfig}. If {@code KeyConfig} contains an instance
+     * of {@code KeyStore}, it will be returned from this method. Otherwise KeyStorePath, KeyStoreType and KeyStorePassword fields will
+     * be used to load a new instance of KeyStore from the file system.
+     * @param config KeyConfig containing information required to load the key store
+     * @return KeyStore
+     * @throws IllegalStateException if loading fails
+     */
     KeyStore getKeyStore(final KeyConfig config) {
         return config.getKeyStore() == null ? EncryptionUtil.loadKeyStore(config.getKeyStorePath(), config.getKeyStoreType(), config.getKeyStorePassword()) : config.getKeyStore();
     }
 
-    Cipher getCipher(final String algo) {
+    /**
+     * Returns a {@link Cipher} configured with provided algorithm.
+     * @param algorithm algorithm that will be used by the Cipger
+     * @return Cipher
+     */
+    Cipher getCipher(final String algorithm) {
         Cipher instance = null;
         try {
-            instance = Cipher.getInstance(algo, EncryptionUtil.BC);
+            instance = Cipher.getInstance(algorithm, EncryptionUtil.BC);
         } catch (Exception e) {
             throw new IllegalStateException("unable to get cipher", e);
         }

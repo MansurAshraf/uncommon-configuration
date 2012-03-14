@@ -21,15 +21,59 @@ import com.mansoor.uncommon.configuration.util.Preconditions;
 import java.security.KeyStore;
 
 /**
+ * Configuration object encapsulating information required to load a KeyStore and a Key within that Store.
+ * Client can either provide either a fully populated KeyStore or KeyStorePath, KeyStoreType and KeyStorePassword
+ * to load key store from the file systme.
+ *
+ * <p>
+ * To load a KeyStore from a file system, a KeyConfig will be populated as
+ * <pre>
+ *         new KeyConfig.Builder()
+ *          .keyAlias("keyAlias")
+ *          .keyPassword("keyPassword".toCharArray())
+ *          .keyStorePassword("storePassword".toCharArray())
+ *          .keyStoreType(EncryptionUtil.JCEKS)
+ *          .keyStorePath("/path/to/store)
+ *          .createKeyConfig();
+ *  </pre>
+ * </p>
+ * <p>
+ * To use an initialized KeyStore, configure the KeyConfig as
+ *     <pre>
+ *         new KeyConfig.Builder()
+            .keyStore(keyStore)
+            .keyAlias("uncommon-key")
+            .keyPassword("password".toCharArray())
+            .createKeyCofig();
+ *     </pre>
+ * </p>
  * @author Muhammad Ashraf
- * @since 3/10/12
+ * @since 0.1
  */
 public class KeyConfig {
+    /**
+     * Key Store Path
+     */
     private final String keyStorePath;
+    /**
+     * Key Store Path
+     */
     private final char[] keyStorePassword;
+    /**
+     * Key Store Type
+     */
     private final String keyStoreType;
+    /**
+     * Key Alias
+     */
     private final String keyAlias;
+    /**
+     * Key Password
+     */
     private final char[] keyPassword;
+    /**
+     * Key Store
+     */
     private final KeyStore keyStore;
 
     private KeyConfig(final String keyStorePath, final char[] keyStorePassword, final String keyStoreType, final String keyAlias, final char[] keyPassword, final KeyStore keyStore) {
@@ -108,6 +152,9 @@ public class KeyConfig {
             return new KeyConfig(keyStorePath, keyStorePassword, keyStoreType, keyAlias, keyPassword, keyStore);
         }
 
+        /**
+         * Verifies that all required field are populated.
+         */
         void validate() {
             Preconditions.checkBlank(keyAlias, "keyAlias is null");
             Preconditions.checkNull(keyPassword, "KeyPassword is null");

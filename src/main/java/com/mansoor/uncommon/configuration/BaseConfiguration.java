@@ -78,6 +78,9 @@ public abstract class BaseConfiguration extends Configuration {
 
     /**
      * Sets the deliminator character that will be used to split the values
+     * <pre>
+     *     configuration.setDeliminator('-');
+     * </pre>
      *
      * @param deliminator deliminator
      */
@@ -86,7 +89,21 @@ public abstract class BaseConfiguration extends Configuration {
     }
 
     /**
-     * {@inheritDoc}
+     * Converts the input to String, associate it with the given key and sets it in the configuration.
+     * <pre>
+     *      propertyConfiguration.set("env","production");
+     *      result: env = production
+     *
+     *      yamlConfiguration.set("env","production");
+     *      result: env: production
+     *
+     *      jsonConfiguration.set("env","production");
+     *      result: "env": "production"
+     * </pre>
+     *
+     * @param key   the key for the value to set
+     * @param input value to set
+     * @since {@code 0.1}
      */
     @SuppressWarnings("unchecked")
     public <E> void set(final String key, final E input) {
@@ -101,7 +118,30 @@ public abstract class BaseConfiguration extends Configuration {
     }
 
     /**
-     * {@inheritDoc}
+     * Converts the value associated with {@code key} to type {@code E} and returns it.
+     * <p/>
+     * <pre>
+     *      Properties File
+     *      expiration= 02/23/2012
+     *      Date expiration = propertyConfiguration.get(Date.class, "expiration");
+     *
+     *      Yaml
+     *      expiration: 02/23/2012
+     *      Date expiration = yamlConfiguration.get(Date.class, "expiration");
+     *
+     *      Json
+     *      "expiration": "02/23/2012"
+     *      Date expiration = yamlConfiguration.get(Date.class, "expiration");
+     *
+     *      System variable
+     *      java.io.tmpdir= /tmp
+     *      File tmpDir = systemPropertyConfiguration.get(File.class, "java.io.tmpdir");
+     *  </pre>
+     *
+     * @param type type the raw value will be converted to
+     * @param key  key to use to retrieve the value
+     * @return converted value
+     * @since {@code 0.1}
      */
     public <E> E get(final Class<E> type, final String key) {
         final Converter<E> converter = converterRegistry.getConverter(type);
@@ -114,7 +154,35 @@ public abstract class BaseConfiguration extends Configuration {
     }
 
     /**
-     * {@inheritDoc}
+     * Converts the value associated with this nested key and convert it to type {@code E}.
+     * <pre>
+     *      Properties File
+     *      development.password.database= secret_password
+     *      String password = propertyConfiguration.getNested(String.class, "development.password.database");
+     *
+     *      Yaml
+     *      development:
+     *            password:
+     *                database: secret_password
+     *      String password = yamlConfiguration.getNested(String.class, "development.password.database");
+     *
+     *      Json
+     *      "development":{
+     *            "password":{
+     *                "database": "secret_password"
+     *                }
+     *               }
+     *      String password = jsonConfiguration.getNested(String.class, "development.password.database");
+     *
+     *      System variable
+     *      java.io.tmpdir= /tmp
+     *      File tmpDir = systemPropertyConfiguration.getNested(File.class, "java.io.tmpdir");
+     *  </pre>
+     *
+     * @param type type the raw value will be converted to
+     * @param key  nested key to use to retrieve the value
+     * @return value of type {@code E}
+     * @since {@code 0.1}
      */
     public <E> E getNested(final Class<E> type, final String key) {
         final Object value = getNestedValue(key);

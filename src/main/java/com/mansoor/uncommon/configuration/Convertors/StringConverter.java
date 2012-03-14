@@ -19,7 +19,7 @@ package com.mansoor.uncommon.configuration.Convertors;
 /**
  * Dummy converter that gets invoke during String transformation.
  * @author Muhammad Ashraf
- * @since 2/11/12
+ * @since 0.1
  */
 public class StringConverter implements Converter<String> {
     /**
