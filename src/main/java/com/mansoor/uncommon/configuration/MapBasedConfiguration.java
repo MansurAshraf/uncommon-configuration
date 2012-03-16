@@ -91,19 +91,19 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      * Retrieves the value of the given key and converts it into a list of
      * of given type
      *   <pre>
-     *      Properties File
+     *      <b>Properties File</b>
      *      files= /tmp/doc1.txt,/tmp/doc2.txt
      *      List<File> files = propertyConfiguration.getList(File.class, "files");
      *
-     *      Yaml
+     *      <b>Yaml</b>
      *      files: [/tmp/doc1.txt,/tmp/doc2.txt]
      *      List<File> files = yamlConfiguration.getList(File.class, "files");
      *
-     *      Json
+     *      <b>Json</b>
      *      "files": [/tmp/doc1.txt,/tmp/doc2.txt]
      *      List<File> files = jsonConfiguration.getList(File.class, "files");
      *
-     *      System variable
+     *      <b>System variable</b>
      *      List<File> classpath  = systemPropertyConfiguration.getList(File.class, "java.class.path");
      *  </pre>
      *
@@ -121,22 +121,22 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      * Converts all the values associated with this nested key, converts them to List of given type
      * and returns the list
      *   <pre>
-     *      Properties File
+     *      <b>Properties File</b>
      *      temporary.files= /tmp/doc1.txt,/tmp/doc2.txt
      *      List<File> files = propertyConfiguration.getNestedList(File.class, "temporary.files");
      *
-     *      Yaml
+     *      <b>Yaml</b>
      *      temporary:
      *          files: [/tmp/doc1.txt,/tmp/doc2.txt]
      *      List<File> files = yamlConfiguration.getNestedList(File.class, "temporary.files");
      *
-     *      Json
+     *      <b>Json</b>
      *      "temporary":{
      *          "files": [/tmp/doc1.txt,/tmp/doc2.txt]
      *          }
      *      List<File> files = jsonConfiguration.getNestedList(File.class, "temporary.files");
      *
-     *      System variable
+     *      <b>System variable</b>
      *      List<File> classpath  = systemPropertyConfiguration.getNestedList(File.class, "java.class.path");
      *  </pre>
      *
@@ -155,17 +155,17 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      * and sets it in the configuration.
      *
      *  <pre>
-     *      Properties File
+     *      <b>Properties File</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      propertyConfiguration.setList("tempFiles",files);
      *      tempFiles= /tmp/doc1.txt,/tmp/doc2.txt
      *
-     *      Yaml
+     *      <b>Yaml</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      yamlConfiguration.setList("tempFiles",files);
      *      tempFiles: [/tmp/doc1.txt,/tmp/doc2.txt]
      *
-     *      Json
+     *      <b>Json</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      jsonConfiguration.setList("tempFiles",files);
      *      "tempFiles": [/tmp/doc1.txt,/tmp/doc2.txt]
@@ -235,16 +235,16 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      *
      *
      *  <pre>
-     *      Properties File
+     *      <b>Properties File</b>
      *      propertyConfiguration.setNested("production.url","www.acme.com/rest");
      *      production.url=www.acme.com/rest
      *
-     *      Yaml
+     *      <b>Yaml</b>
      *      yamlConfiguration.setNested("production.url","www.acme.com/rest");
      *      production:
      *               url: www.acme.com/rest
      *
-     *      Json
+     *      <b>Json</b>
      *      jsonConfiguration.setNested("production.url","www.acme.com/rest");
      *      "production":{
      *               "url": www.acme.com/rest
@@ -269,18 +269,18 @@ public abstract class MapBasedConfiguration extends BaseConfiguration {
      * Converts all the values in input {@code List} to String, associate it with the given nested key and sets it in the configuration.
      *
      * <pre>
-     *      Properties File
+     *      <b>Properties File</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      propertyConfiguration.setNestedList("production.files",files);
      *      production.files=/tmp/doc1.txt,/tmp/doc2.txt
      *
-     *      Yaml
+     *      <b>Yaml</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      yamlConfiguration.setNestedList("production.files",files);
      *      production:
      *          files:[/tmp/doc1.txt,/tmp/doc2.txt]
      *
-     *      Json
+     *      <b>Json</b>
      *      List<File> files = Arrays.asList(new File(/tmp/doc1.txt),new File(/tmp/doc2.txt));
      *      jsonConfiguration.setNestedList("production.files",files);
      *      "production":{

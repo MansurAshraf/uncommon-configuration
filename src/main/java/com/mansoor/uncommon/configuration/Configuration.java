@@ -27,13 +27,13 @@ import java.util.List;
  * This interface contain various type safe methods to manipulate underlying configuration.
  * </p>
  * <p>
- * Property retrieval methods such as {@code get},{@code getList} and {@code getNestedMethods} return
+ * Property retrieval methods such as {@code get}, {@code getList} and {@code getNestedMethods} return
  * {@code null} if property is not found. Unrecoverable errors are converted to {@code unchecked exceptions} and
  * thrown to the caller.
  * </p>
  * <p>
- * It is recommended that instead of implementing this interface directly, {@link BaseConfiguration} class should be
- * overriden as it already provides an implementation for most methods.
+ * It is recommended that  {@link BaseConfiguration} class should be extended as it
+ * provides generic implementations for most methods in this interface.
  * </p>
  *
  * @author Muhammad Ashraf
