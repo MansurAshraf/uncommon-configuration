@@ -15,12 +15,33 @@
   ~    limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.uncommon-configuration</groupId>
     <artifactId>uncommon-configuration</artifactId>
     <version>0.2-SNAPSHOT</version>
+    <name>uncommon-configuration</name>
+    <url>https://github.com/MuhammadAshraf/uncommon-configuration</url>
+    <description>uncommon-configuration provides a simple and type safe facade to read configuration data from various
+        configuration sources such as properties files , XML, JSon etc
+    </description>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Muhammad Ashraf</name>
+            <email>mansoor.ashraf@gmail.com</email>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
