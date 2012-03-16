@@ -20,7 +20,7 @@
 
     <groupId>com.github.uncommon-configuration</groupId>
     <artifactId>uncommon-configuration</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <name>uncommon-configuration</name>
     <url>https://github.com/MuhammadAshraf/uncommon-configuration</url>
     <description>uncommon-configuration provides a simple and type safe facade to read configuration data from various
