@@ -66,7 +66,7 @@ support for most boiler plate tasks that are typically performed on a configurat
            slf4j-1.6.4 [required]
            snakeyaml-1.10  [only if you are using YAML configuration]
            json-simple-1.1 [only if you are using JSON configuration]
-           bouncycastle-140 [nly if you are using encryption]
+           bouncycastle-140 [only if you are using encryption]
            (JCE) Unlimited Strength Jurisdiction Policy Files  [only if you are using encryption]
 
 ###License
