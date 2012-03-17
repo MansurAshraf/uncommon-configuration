@@ -13,12 +13,16 @@ support for most boiler plate tasks that are typically performed on a configurat
 + Support for nested configuration.
 
 ###Documentation
-[tutorial](https://github.com/MuhammadAshraf/uncommon-configuration/wiki)
-[javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
++  [tutorial](https://github.com/MuhammadAshraf/uncommon-configuration/wiki)
+
++  [javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
 ###Download
-binary: [uncommon-configuration-0.1.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1/uncommon-configuration-0.1.jar)
-source: [uncommon-configuration-0.1-sources.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-sources.jar)
-javadocs: [uncommon-configuration-0.1-javadoc.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-javadoc.jar)
++  binary: [uncommon-configuration-0.1.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1/uncommon-configuration-0.1.jar)
+
++  source: [uncommon-configuration-0.1-sources.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-sources.jar)
+
++  javadocs: [uncommon-configuration-0.1-javadoc.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-javadoc.jar)
+
 
 ###Maven
            <dependency>
