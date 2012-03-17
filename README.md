@@ -2,7 +2,7 @@
 uncommon-configuration provides a simple and type safe API to read configuration data from various configuration sources such as properties files , YAML, JSON etc. It comes equipped with out of the box
 support for most boiler plate tasks that are typically performed on a configuration file.
 
-###Features include
+###Features
 
 + Type safe conversion to most common data types.
 
@@ -10,7 +10,7 @@ support for most boiler plate tasks that are typically performed on a configurat
 
 + Encryption and decryption using both symmetric and asymmetric keys.
 
-+ Support for nested configuration.
++ Support for nested properties.
 
 + Uniform API for reading YAML, JSON, system variables and Java properties files.
 
