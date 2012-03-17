@@ -12,6 +12,10 @@ support for most boiler plate tasks that are typically performed on a configurat
 
 + Support for nested configuration.
 
++ Uniform API for reading YAML, JSON, system variables and Java properties files.
+
++ Easily extensible to support new types
+
 ###Examples
 
            #sample properties file
