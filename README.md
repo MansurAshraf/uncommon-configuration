@@ -12,11 +12,21 @@ support for most boiler plate tasks that are typically performed on a configurat
 
 + Support for nested configuration.
 
+###Examples
+#####Reading from a properties file
+           'sample.properties'
+           passwordExpiration=02/23/2012
+
+           final Date passwordExpiration = configuration.get(Date.class, "passwordExpiration");
+
+
 ###Documentation
 +  [tutorial](https://github.com/MuhammadAshraf/uncommon-configuration/wiki)
 
 +  [javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
+
 ###Download
+
 +  binary: [uncommon-configuration-0.1.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1/uncommon-configuration-0.1.jar)
 
 +  source: [uncommon-configuration-0.1-sources.jar](https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-sources.jar)
