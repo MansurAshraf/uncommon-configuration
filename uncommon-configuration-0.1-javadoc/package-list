@@ -1,0 +1,8 @@
+com.mansoor.uncommon.configuration
+com.mansoor.uncommon.configuration.Convertors
+com.mansoor.uncommon.configuration.Convertors.encryption
+com.mansoor.uncommon.configuration.exceptions
+com.mansoor.uncommon.configuration.functional
+com.mansoor.uncommon.configuration.functional.functions
+com.mansoor.uncommon.configuration.transformers
+com.mansoor.uncommon.configuration.util
