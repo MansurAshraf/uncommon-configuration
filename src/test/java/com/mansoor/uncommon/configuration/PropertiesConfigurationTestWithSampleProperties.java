@@ -1,5 +1,7 @@
 package com.mansoor.uncommon.configuration;
 
+import com.mansoor.uncommon.configuration.Convertors.DateTimeConverter;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -21,12 +23,12 @@ import static org.hamcrest.Matchers.*;
 public class PropertiesConfigurationTestWithSampleProperties {
 
     PropertyConfiguration configuration;
-    private static final Logger logger= LoggerFactory.getLogger(JSONConfigurationTestWithSampleJson.class);
+    private static final Logger logger = LoggerFactory.getLogger(JSONConfigurationTestWithSampleJson.class);
 
     @Before
     public void setUp() throws Exception {
-     configuration=new PropertyConfiguration(5, TimeUnit.MINUTES);
-     configuration.load(this.getClass().getResource("/sample.properties").getPath());
+        configuration = new PropertyConfiguration(5, TimeUnit.MINUTES);
+        configuration.load(this.getClass().getResource("/sample.properties").getPath());
     }
 
     @Test
@@ -37,44 +39,52 @@ public class PropertiesConfigurationTestWithSampleProperties {
     @Test
     public void testGetpasswordExpirationAsString() throws Exception {
         String expiration = configuration.get(String.class, "development.passwordExpiration");
-        assertThat(expiration,is(equalTo("03/12/2014")));
+        assertThat(expiration, is(equalTo("03/12/2014")));
         logger.info("expiration = " + expiration);
     }
 
     @Test
     public void testGetpasswordExpirationAsDate() throws Exception {
         Date expiration = configuration.get(Date.class, "development.passwordExpiration");
-        assertThat(expiration,notNullValue());
+        assertThat(expiration, notNullValue());
         logger.info("expiration = " + expiration);
     }
 
     @Test
     public void testGetUri() throws Exception {
         URI uri = configuration.get(URI.class, "development.url");
-        assertThat(uri,is(equalTo(new URI("http://localhost:8080/demo"))));
+        assertThat(uri, is(equalTo(new URI("http://localhost:8080/demo"))));
         logger.info("url = " + uri);
     }
 
     @Test
     public void testMaxCount() throws Exception {
         Integer maxConnections = configuration.get(Integer.class, "development.maxConnection");
-        assertThat(maxConnections,is(equalTo(2)));
+        assertThat(maxConnections, is(equalTo(2)));
         logger.info("maxConnections = " + maxConnections);
     }
 
     @Test
     public void testGetList() throws Exception {
         List<File> logs = configuration.getList(File.class, "development.logFiles");
-        assertThat(logs,hasItems(new File("/logs/debug.log"),new File("/logs/error.log")));
+        assertThat(logs, hasItems(new File("/logs/debug.log"), new File("/logs/error.log")));
         logger.info("logs = " + logs);
 
     }
 
     @Test
+    public void testGetDateTime() throws Exception {
+        configuration.getConverterRegistry().addConverter(DateTime.class, new DateTimeConverter());
+        DateTime expiration = configuration.get(DateTime.class, "development.passwordExpiration");
+        assertThat(expiration, notNullValue());
+        logger.info("expiration = " + expiration);
+    }
+
+    @Test
     public void testSetDate() throws Exception {
-        Date today=new Date();
-        configuration.set("today",today);
-        configuration.setList("authorizedUsers","Bob","Jim","Alex","Joe");
-        configuration.save("/tmp/date_"+today+".properties");
+        Date today = new Date();
+        configuration.set("today", today);
+        configuration.setList("authorizedUsers", "Bob", "Jim", "Alex", "Joe");
+        configuration.save("/tmp/date_" + today + ".properties");
     }
 }
