@@ -23,9 +23,9 @@ support for most boiler plate tasks that are typically performed on a configurat
 
 +  Working with [YAML](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/YAMLFile)
 
-+  Working with [JSON](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/PropertiesFile)
++  Working with [JSON](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/JsonFile)
 
-+  Working with [System variables](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/JsonFile)
++  Working with [System variables](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/SystemProperties)
 
 +  [javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
 
