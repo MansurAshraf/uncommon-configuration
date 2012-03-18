@@ -1,0 +1,11 @@
+description: development environment
+development:
+    database: mysql
+    username: admin
+    maxConnection: 2
+    url: http://localhost:8080/demo
+    logFiles: [/logs/debug.log,/logs/error.log]
+    password:
+      dbpassword: TjmYtjoeHUh0ryd9UOdltv
+      expiration: 03/12/2014
+
