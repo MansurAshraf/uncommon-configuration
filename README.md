@@ -16,33 +16,16 @@ support for most boiler plate tasks that are typically performed on a configurat
 
 + Easily extensible to support new types
 
-###Examples
-
-           #sample properties file
-           passwordExpiration=02/23/2012
-           development.accounts=/home/bob,/home/andy,/home/jeff
-           password=TjmYtjoeHUh0ryd9UOdltv #encrypted password
-
-#####Reading from a properties file
-
-           final Date passwordExpiration = configuration.get(Date.class, "passwordExpiration");
-
-#####Reading a List from a properties file
-
-           final List<String> result = configuration.getList(String.class, "development.accounts");
-
-#####Reading an encrypted password
-
-           final SymmetricKeyWrapper decryptedPassword = configuration.get(SymmetricKeyWrapper.class, "password")
-
-#####Configuration reload
-
-            configuration = new PropertyConfiguration(5, TimeUnit.SECONDS); //poll configuration every 5 seconds for changes
-
-
-
 ###Documentation
-+  [tutorial](https://github.com/MuhammadAshraf/uncommon-configuration/wiki)
++  Complete documentation is on the [wiki](https://github.com/MuhammadAshraf/uncommon-configuration/wiki).
+
++  Working with Java [[properties|PropertiesFile]]
+
++  Working with [[YAML | YAMLFile]]
+
++  Working with [[JSON | JsonFile]]
+
++  Working with [[System variables | SystemProperties]
 
 +  [javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
 
