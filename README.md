@@ -19,13 +19,13 @@ support for most boiler plate tasks that are typically performed on a configurat
 ###Documentation
 +  Complete documentation is on the [wiki](https://github.com/MuhammadAshraf/uncommon-configuration/wiki).
 
-+  Working with Java [[properties|PropertiesFile]]
++  Working with Java [properties](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/PropertiesFile)
 
-+  Working with [[YAML | YAMLFile]]
++  Working with [YAML](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/YAMLFile)
 
-+  Working with [[JSON | JsonFile]]
++  Working with [JSON](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/PropertiesFile)
 
-+  Working with [[System variables | SystemProperties]
++  Working with [System variables](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/SystemProperties)
 
 +  [javadocs](http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/)
 
