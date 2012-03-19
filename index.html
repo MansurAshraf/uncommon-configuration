@@ -1,88 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8'>
+    <meta charset='utf-8'>
 
-  <title>MuhammadAshraf/uncommon-configuration @ GitHub</title>
+    <title>uncommon-configuration</title>
 
-  <style type="text/css">
-    body {
-      margin-top: 1.0em;
-      background-color: #addd5b;
-      font-family: Helvetica, Arial, FreeSans, san-serif;
-      color: #000000;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-    h1 { font-size: 3.8em; color: #5222a4; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #5222a4; }
-    h3 { text-align: center; color: #5222a4; }
-    a { color: #5222a4; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-  </style>
+    <style type="text/css">
+        body {
+        margin-top: 1.0em;
+        background-color: #FFFFFF;
+        font-family: Helvetica, Arial, FreeSans, san-serif;
+        color: #000000;
+        }
+        #container {
+        margin: 0 auto;
+        width: 700px;
+        }
+        h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
+        h1 .small { font-size: 0.4em; }
+        h1 a { text-decoration: none }
+        h2 { font-size: 1.5em; color: #000000; }
+        h3 { text-align: center; color: #000000; }
+        a { color: #5222a4; }
+        .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+        .download { float: right; }
+        pre { background: #000; color: #fff; padding: 15px;}
+        hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+        .footer { text-align:center; padding-top:30px; font-style: italic; }
+    </style>
 </head>
 
 <body>
-  <a href="https://github.com/MuhammadAshraf/uncommon-configuration"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+<a href="https://github.com/MuhammadAshraf/uncommon-configuration"><img
+        style="position: absolute; top: 0; right: 0; border: 0;"
+        src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"/></a>
 
-  <div id="container">
+<div id="container">
 
-    <div class="download">
-      <a href="https://github.com/MuhammadAshraf/uncommon-configuration/zipball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
-      <a href="https://github.com/MuhammadAshraf/uncommon-configuration/tarball/master">
-        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
+
+    <h2>uncommon-configuration</h2>
+
+    <div>
+        uncommon-configuration provides a simple and type safe API to read configuration data from various configuration
+        sources such as properties files , YAML, JSON etc. It comes equipped with out of the box support for most boiler
+        plate tasks that are typically performed on a configuration file.
     </div>
+    <h2>Features</h2>
 
-    <h1><a href="https://github.com/MuhammadAshraf/uncommon-configuration">uncommon-configuration</a>
-      <span class="small">by <a href="https://github.com/MuhammadAshraf">MuhammadAshraf</a></span></h1>
+    <div>
 
-    <div class="description">
-      uncommon-configuration provides a simple and type safe facade to read configuration data from various configuration sources such as properties files , XML, JSon etc
+        <ul>
+            <li><p>Type safe conversion to most common data types.</p></li>
+            <li><p>Automatic polling and reloading of configuration file.</p></li>
+            <li><p>Encryption and decryption using both symmetric and asymmetric keys.</p></li>
+            <li><p>Support for nested properties.</p></li>
+            <li><p>Uniform API for reading YAML, JSON, system variables and Java properties files.</p></li>
+            <li><p>Easily extensible to support new types</p></li>
+        </ul>
     </div>
+    <h2>Documentation</h2>
 
-    
-
-    
-
-    
-
-    
-
-    
-      <h2>Authors</h2>
-      <p>Muhammad Ashraf (mansoor.ashraf@gmail.com)<br/>      </p>
-    
-
-    
-      <h2>Contact</h2>
-      <p>Muhammad Ashraf (mansoor.ashraf@gmail.com)<br/>      </p>
-    
+    <div>
+        <ul>
+            <li><p>Complete documentation is on the <a
+                    href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki">wiki</a>.</p></li>
+            <li><p><a href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki/Overview">Overview</a> of the
+                key components</p></li>
+            <li><p>Working with Java <a
+                    href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki/PropertiesFile">properties</a>
+            </p></li>
+            <li><p>Working with <a
+                    href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki/YAMLFile">YAML</a></p></li>
+            <li><p>Working with <a
+                    href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki/JsonFile">JSON</a></p></li>
+            <li><p>Working with <a
+                    href="https://github.com/MuhammadAshraf/uncommon-configuration/wiki/SystemProperties">System
+                variables</a></p></li>
+            <li><p><a
+                    href="http://muhammadashraf.github.com/uncommon-configuration/uncommon-configuration-0.1-javadoc/">javadocs</a>
+            </p></li>
+        </ul>
+    </div>
 
     <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="https://github.com/MuhammadAshraf/uncommon-configuration/zipball/master">zip</a> or
-      <a href="https://github.com/MuhammadAshraf/uncommon-configuration/tarball/master">tar formats.
+    <ul>
+        <li><p>binary: <a
+                href="https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1/uncommon-configuration-0.1.jar">uncommon-configuration-0.1.jar</a>
+        </p></li>
+        <li><p>source: <a
+                href="https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-sources.jar">uncommon-configuration-0.1-sources.jar</a>
+        </p></li>
+        <li><p>javadocs: <a
+                href="https://oss.sonatype.org/service/local/repositories/releases/content/com/github/uncommon-configuration/uncommon-configuration/0.1//uncommon-configuration-0.1-javadoc.jar">uncommon-configuration-0.1-javadoc.jar</a>
+        </p></li>
+    </ul>
+
+    <h2>Maven</h2>
+
+<pre><code>
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.github.uncommon-configuration&lt;/groupId&gt;
+      &lt;artifactId&gt;uncommon-configuration&lt;/artifactId&gt;
+      &lt;version&gt;0.1&lt;/version&gt;
+    &lt;/dependency&gt;
+</code></pre>
+
+    <h2>Dependencies</h2>
+
+<pre><code>
+    slf4j-1.6.4 [required]
+    snakeyaml-1.10 [only if you are using YAML configuration]
+    json-simple-1.1 [only if you are using JSON configuration]
+    bouncycastle-140 [only if you are using encryption]
+    (JCE) Unlimited Strength Jurisdiction Policy Files [only if you are using encryption]
+</code></pre>
+
+    <h2>License</h2>
+
+    <p>ASL 2 - <a href="http://www.apache.org/licenses/LICENSE-2.0"></a><a
+            href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>
     </p>
+
     <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/MuhammadAshraf/uncommon-configuration</pre>
+        by running:
+    <pre>$ git clone git://github.com/MuhammadAshraf/uncommon-configuration</pre>
     </p>
 
     <div class="footer">
-      get the source code on GitHub : <a href="https://github.com/MuhammadAshraf/uncommon-configuration">MuhammadAshraf/uncommon-configuration</a>
+        get the source code on GitHub : <a href="https://github.com/MuhammadAshraf/uncommon-configuration">MuhammadAshraf/uncommon-configuration</a>
     </div>
 
-  </div>
+</div>
 
 </body>
 </html>
