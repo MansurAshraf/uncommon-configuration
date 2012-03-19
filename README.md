@@ -19,6 +19,8 @@ support for most boiler plate tasks that are typically performed on a configurat
 ###Documentation
 +  Complete documentation is on the [wiki](https://github.com/MuhammadAshraf/uncommon-configuration/wiki).
 
++  [Overview](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/Overview) of the key components
+
 +  Working with Java [properties](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/PropertiesFile)
 
 +  Working with [YAML](https://github.com/MuhammadAshraf/uncommon-configuration/wiki/YAMLFile)
